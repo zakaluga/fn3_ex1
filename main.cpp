@@ -17,9 +17,9 @@ public:
     void display()
     {
         std::cout << "Имя предмета: " << name << std::endl;
-        std::cout << "Ширина: " << stulPar.width << std::endl;
-        std::cout << "Высота: " << stulPar.height << std::endl;
-        std::cout << "Длина: " << stulPar.length << std::endl;
+        std::cout << "Ширина: " << stulPar.width << " м\n";
+        std::cout << "Высота: " << stulPar.height << " м\n";
+        std::cout << "Длина: " << stulPar.length << " м\n";
     }
 };
 class Parta
@@ -32,9 +32,9 @@ public:
     void display()
     {
         std::cout << "Имя предмета: " << name << std::endl;
-        std::cout << "Ширина: " << partaPar.width << std::endl;
-        std::cout << "Высота: " << partaPar.height << std::endl;
-        std::cout << "Длина: " << partaPar.length << std::endl;
+        std::cout << "Ширина: " << partaPar.width << " м\n";
+        std::cout << "Высота: " << partaPar.height << " м\n";
+        std::cout << "Длина: " << partaPar.length << " м\n";
     }
 };
 class Monitor
@@ -71,8 +71,8 @@ public:
         std::cout << "Имя предмета: " << name << std::endl;
         std::cout << "Процессор: " << proc << std::endl;
         std::cout << "Видеокарта: " << vid << std::endl;
-        std::cout << "Постоянная память: " << mem << " Гб" << std::endl;
-        std::cout << "Оперативная память: " << ram << " Гб" << std::endl;
+        std::cout << "Постоянная память: " << mem << " Гб\n";
+        std::cout << "Оперативная память: " << ram << " Гб\n";
         std::cout << (pkvkl ? "Включен" : "Выключен") << std::endl;
     }
 };
@@ -85,9 +85,9 @@ public:
     void display()
     {
         std::cout << "Имя предмета: " << name << std::endl;
-        std::cout << "Ширина: " << bespPar.width << std::endl;
-        std::cout << "Высота: " << bespPar.height << std::endl;
-        std::cout << "Длина: " << bespPar.length << std::endl;
+        std::cout << "Ширина: " << bespPar.width << " м\n";
+        std::cout << "Высота: " << bespPar.height << " м\n";
+        std::cout << "Длина: " << bespPar.length << " м\n";
     }
 };
 class Shkaf
@@ -100,10 +100,10 @@ public:
     void display()
     {
         std::cout << "Имя предмета: " << name << std::endl;
-        std::cout << "Материал: " << material << std::endl;
-        std::cout << "Ширина: " << shkafPar.width << std::endl;
-        std::cout << "Высота: " << shkafPar.height << std::endl;
-        std::cout << "Длина: " << shkafPar.length << std::endl;
+        std::cout << "Материал: " << material << " м\n";
+        std::cout << "Ширина: " << shkafPar.width << " м\n";
+        std::cout << "Высота: " << shkafPar.height << " м\n";
+        std::cout << "Длина: " << shkafPar.length << " м\n";
     }
 };
 /// Характеристики мониторов
@@ -124,21 +124,28 @@ int main()
     Parta *parts = new Parta[kolvoPart];
     Monitor *monitors = new Monitor[kolvoMoniks];
     PK *komps = new PK[kolvoMoniks];
+    std::cout << "Список стульев:\n"; 
     for (int i = 0; i < kolvoStulov; i++)
     {
         stulya[i].name = stulya[i].name + std::to_string(i + 1);
         stulya[i].display();
     }
+    std::cout << "\n";
+    std::cout << "Список парт:\n";
     for (int i = 0; i < kolvoPart; i++)
     {
         parts[i].name = parts[i].name + std::to_string(i + 1);
         parts[i].display();
     }
+    std::cout << "\n";
+    std::cout << "Список мониторов:\n";
     for (int i = 0; i < kolvoMoniks; i++)
     {
         monitors[i].name = monitors[i].name + std::to_string(i + 1);
         monitors[i].display();
     }
+    std::cout << "\n";
+    std::cout << "Список системных блоков:\n";
     for (int i = 0; i < kolvoMoniks; i++)
     {
         komps[i].name = komps[i].name + std::to_string(i + 1);
