@@ -3,8 +3,8 @@
 class Parametr
 {
 public:
-    double height;
     double width;
+    double height;
     double length;
 };
 class Stul
@@ -12,6 +12,7 @@ class Stul
 public:
     Parametr stulPar;
     std::string name;
+    Stul() : stulPar({0.5, 1, 0.5}), name("Стул ") {}
     Stul(double w, double h, double l, std::string n) : stulPar({w, h, l}), name(n) {}
     void display()
     {
@@ -26,6 +27,7 @@ class Parta
 public:
     Parametr partaPar;
     std::string name;
+    Parta(): partaPar({0.75, 1, 2.5}), name("Парта "){}
     Parta(double w, double h, double l, std::string n) : partaPar({w, h, l}), name(n) {}
     void display()
     {
@@ -43,6 +45,7 @@ public:
     static int resY;
     static int diag;
     std::string name;
+    Monitor() : monvkl(false), name("Монитор "){}
     Monitor(bool v, std::string n) : monvkl(v), name(n) {}
     void display()
     {
@@ -61,6 +64,7 @@ public:
     static int ram;
     bool pkvkl;
     std::string name;
+    PK() : pkvkl(false), name("Системный блок "){}
     PK(bool v, std::string n) : pkvkl(v), name(n) {}
     void display()
     {
@@ -113,5 +117,31 @@ int PK::mem = 1024;
 int PK::ram = 32;
 int main()
 {
-          
+    const int kolvoStulov = 33;
+    const int kolvoPart = 20;
+    const int kolvoMoniks = 15;
+    Stul *stulya = new Stul[kolvoStulov];
+    Parta *parts = new Parta[kolvoPart];
+    Monitor *monitors = new Monitor[kolvoMoniks];
+    PK *komps = new PK[kolvoMoniks];
+    for (int i = 0; i < kolvoStulov; i++)
+    {
+        stulya[i].name = stulya[i].name + std::to_string(i + 1);
+        stulya[i].display();
+    }
+    for (int i = 0; i < kolvoPart; i++)
+    {
+        parts[i].name = parts[i].name + std::to_string(i + 1);
+        parts[i].display();
+    }
+    for (int i = 0; i < kolvoMoniks; i++)
+    {
+        monitors[i].name = monitors[i].name + std::to_string(i + 1);
+        monitors[i].display();
+    }
+    for (int i = 0; i < kolvoMoniks; i++)
+    {
+        komps[i].name = komps[i].name + std::to_string(i + 1);
+        komps[i].display();
+    }
 }
