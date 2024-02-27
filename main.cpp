@@ -1,8 +1,12 @@
 #include <iostream>
 
+class Items {
+
+};
+
+
 int main()
 {
-    std::cout << "Привет!" << std::endl;
-
+    
     return 0;
 }
