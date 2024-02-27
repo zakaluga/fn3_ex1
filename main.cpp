@@ -11,9 +11,11 @@ class Stul
 {
 public:
     Parametr stulPar;
-    Stul(double w, double h, double l) : stulPar({w, h, l}) {}
+    std::string name;
+    Stul(double w, double h, double l, std::string n) : stulPar({w, h, l}), name(n) {}
     void display()
     {
+        std::cout << "Имя предмета: " << name << std::endl;
         std::cout << "Ширина: " << stulPar.width << std::endl;
         std::cout << "Высота: " << stulPar.height << std::endl;
         std::cout << "Длина: " << stulPar.length << std::endl;
@@ -23,9 +25,11 @@ class Parta
 {
 public:
     Parametr partaPar;
-    Parta(double w, double h, double l) : partaPar({w, h, l}) {}
+    std::string name;
+    Parta(double w, double h, double l, std::string n) : partaPar({w, h, l}), name(n) {}
     void display()
     {
+        std::cout << "Имя предмета: " << name << std::endl;
         std::cout << "Ширина: " << partaPar.width << std::endl;
         std::cout << "Высота: " << partaPar.height << std::endl;
         std::cout << "Длина: " << partaPar.length << std::endl;
@@ -38,9 +42,11 @@ public:
     static int resX;
     static int resY;
     static int diag;
-    Monitor(bool v) : monvkl(v) {}
+    std::string name;
+    Monitor(bool v, std::string n) : monvkl(v), name(n) {}
     void display()
     {
+        std::cout << "Имя предмета: " << name << std::endl;
         std::cout << "Разрешение экрана: " << resX << " на " << resY << " пикселей" << std::endl;
         std::cout << "Диагональ: " << diag << " дюймов" << std::endl;
         std::cout << (monvkl ? "Включен" : "Выключен") << std::endl;
@@ -54,9 +60,11 @@ public:
     static int mem;
     static int ram;
     bool pkvkl;
-    PK(bool v) : pkvkl(v) {}
+    std::string name;
+    PK(bool v, std::string n) : pkvkl(v), name(n) {}
     void display()
     {
+        std::cout << "Имя предмета: " << name << std::endl;
         std::cout << "Процессор: " << proc << std::endl;
         std::cout << "Видеокарта: " << vid << std::endl;
         std::cout << "Постоянная память: " << mem << " Гб" << std::endl;
@@ -78,6 +86,22 @@ public:
         std::cout << "Длина: " << bespPar.length << std::endl;
     }
 };
+class Shkaf
+{
+public:
+    Parametr shkafPar;
+    std::string material;
+    std::string name;
+    Shkaf(double w, double h, double l, std::string m, std::string n) : shkafPar({w, h, l}), material(m), name(n) {}
+    void display()
+    {
+        std::cout << "Имя предмета: " << name << std::endl;
+        std::cout << "Материал: " << material << std::endl;
+        std::cout << "Ширина: " << shkafPar.width << std::endl;
+        std::cout << "Высота: " << shkafPar.height << std::endl;
+        std::cout << "Длина: " << shkafPar.length << std::endl;
+    }
+};
 /// Характеристики мониторов
 int Monitor::resX = 3840;
 int Monitor::resY = 2160;
@@ -89,14 +113,5 @@ int PK::mem = 1024;
 int PK::ram = 32;
 int main()
 {
-    Stul stul(1, 0.5, 0.75);
-    stul.display();
-    Parta parta(1, 1, 2.5);
-    parta.display();
-    Monitor monitor(true);
-    monitor.display();
-    PK pk(false);
-    pk.display();
-    Bespoleznie kartina(0.1, 0.5, 0.7, "Картина Эйнштейна");
-    kartina.display();
+          
 }
