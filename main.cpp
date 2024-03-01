@@ -1,79 +1,67 @@
 #include <iostream>
-
+#include <string>
 class Parametr
 {
 public:
+    double length;
     double width;
     double height;
-    double length;
+    const int kolvo;
+    std::string name;
+    void display()
+    {
+        std::cout << "Предмет: " << name << "\tКоличество: " << kolvo << " шт\t"
+                  << "Характеристики: " << length << " x " << width << " x " << height << "\n";
+        std::cout << "\n";
+    }
 };
 class Stul
 {
 public:
     Parametr stulPar;
-    std::string name;
-    Stul() : stulPar({0.5, 1, 0.5}), name("Стул ") {}
-    Stul(double w, double h, double l, std::string n) : stulPar({w, h, l}), name(n) {}
+    Stul() : stulPar({50, 100, 50, 15, "Стул "}) {}
+    Stul(double l, double w, double h, const int k, std::string n) : stulPar({w, h, l, k, n}) {}
     void display()
     {
-        std::cout << "Имя предмета: " << name << std::endl;
-        std::cout << "Ширина: " << stulPar.width << " м\n";
-        std::cout << "Высота: " << stulPar.height << " м\n";
-        std::cout << "Длина: " << stulPar.length << " м\n";
-    }
+        stulPar.display();
+    };
 };
 class Parta
 {
 public:
     Parametr partaPar;
     std::string name;
-    Parta(): partaPar({0.75, 1, 2.5}), name("Парта "){}
-    Parta(double w, double h, double l, std::string n) : partaPar({w, h, l}), name(n) {}
+    Parta() : partaPar({75, 100, 250, 10, "Парта "}) {}
+    Parta(double w, double h, double l, const int k, std::string n) : partaPar({w, h, l, k, n}) {}
     void display()
     {
-        std::cout << "Имя предмета: " << name << std::endl;
-        std::cout << "Ширина: " << partaPar.width << " м\n";
-        std::cout << "Высота: " << partaPar.height << " м\n";
-        std::cout << "Длина: " << partaPar.length << " м\n";
-    }
-};
-class Monitor
-{
-public:
-    bool monvkl;
-    static int resX;
-    static int resY;
-    static int diag;
-    std::string name;
-    Monitor() : monvkl(false), name("Монитор "){}
-    Monitor(bool v, std::string n) : monvkl(v), name(n) {}
-    void display()
-    {
-        std::cout << "Имя предмета: " << name << std::endl;
-        std::cout << "Разрешение экрана: " << resX << " на " << resY << " пикселей" << std::endl;
-        std::cout << "Диагональ: " << diag << " дюймов" << std::endl;
-        std::cout << (monvkl ? "Включен" : "Выключен") << std::endl;
-    }
+        partaPar.display();
+    };
 };
 class PK
 {
 public:
-    static std::string proc;
-    static std::string vid;
-    static int mem;
-    static int ram;
+    const int kolvo;
     bool pkvkl;
+    int resX;
+    int resY;
+    int diag;
+    int mem;
+    int ram;
+    std::string proc;
+    std::string vid;
     std::string name;
-    PK() : pkvkl(false), name("Системный блок "){}
-    PK(bool v, std::string n) : pkvkl(v), name(n) {}
+    PK() : kolvo(15), resX(3840), resY(2160), diag(27), proc("Intel core i7-14700k"), vid("NVIDIA 4060"), mem(1024), ram(32), pkvkl(false), name("ПК ") {}
+    PK(const int k, int x, int y, int d, std::string p, std::string v, int m, int r, bool vkl, std::string n) : kolvo(x), resX(x), resY(y), diag(d), proc(p), vid(v), mem(m), ram(r), pkvkl(vkl), name(n) {}
     void display()
     {
-        std::cout << "Имя предмета: " << name << std::endl;
-        std::cout << "Процессор: " << proc << std::endl;
-        std::cout << "Видеокарта: " << vid << std::endl;
-        std::cout << "Постоянная память: " << mem << " Гб\n";
-        std::cout << "Оперативная память: " << ram << " Гб\n";
-        std::cout << (pkvkl ? "Включен" : "Выключен") << std::endl;
+        std::cout << "Предмет: " << name << "\tКоличество: " << kolvo << " шт\t"
+                  << "Разрешение экрана: " << resX << " x " << resX << "пикселей\t"
+                  << "Диагональ: " << diag << " дюймов\t"
+                  << "Постоянная память: " << mem << " ГБ\t"
+                  << "Оперативная память: " << ram << " Гб\t"
+                  << "Процессор: " << proc << "\tВидеокарта: " << vid << "\n";
+        std::cout << "\n";
     }
 };
 class Bespoleznie
@@ -85,9 +73,9 @@ public:
     void display()
     {
         std::cout << "Имя предмета: " << name << std::endl;
-        std::cout << "Ширина: " << bespPar.width << " м\n";
-        std::cout << "Высота: " << bespPar.height << " м\n";
-        std::cout << "Длина: " << bespPar.length << " м\n";
+        std::cout << "Ширина: " << bespPar.width << " см\n";
+        std::cout << "Высота: " << bespPar.height << " см\n";
+        std::cout << "Длина: " << bespPar.length << " см\n";
     }
 };
 class Shkaf
@@ -97,58 +85,22 @@ public:
     std::string material;
     std::string name;
     Shkaf(double w, double h, double l, std::string m, std::string n) : shkafPar({w, h, l}), material(m), name(n) {}
-    void display()
-    {
-        std::cout << "Имя предмета: " << name << std::endl;
-        std::cout << "Материал: " << material << " м\n";
-        std::cout << "Ширина: " << shkafPar.width << " м\n";
-        std::cout << "Высота: " << shkafPar.height << " м\n";
-        std::cout << "Длина: " << shkafPar.length << " м\n";
-    }
 };
-/// Характеристики мониторов
-int Monitor::resX = 3840;
-int Monitor::resY = 2160;
-int Monitor::diag = 27;
-/// Характеристики самих блоков
-std::string PK::proc = "Intel core i9 -12400F";
-std::string PK::vid = "NVIDIA RTX 5090";
-int PK::mem = 1024;
-int PK::ram = 32;
+template <typename T>
+T *makeArr(const int kolvo)
+{
+    T *klass = new T[kolvo];
+    for (int i = 0; i < kolvo; i++)
+    {
+        klass[i].name = klass[i].name + std::to_string(i + 1);
+    };
+    return klass;
+};
 int main()
 {
-    const int kolvoStulov = 33;
-    const int kolvoPart = 20;
-    const int kolvoMoniks = 15;
-    Stul *stulya = new Stul[kolvoStulov];
-    Parta *parts = new Parta[kolvoPart];
-    Monitor *monitors = new Monitor[kolvoMoniks];
-    PK *komps = new PK[kolvoMoniks];
-    std::cout << "Список стульев:\n"; 
-    for (int i = 0; i < kolvoStulov; i++)
-    {
-        stulya[i].name = stulya[i].name + std::to_string(i + 1);
-        stulya[i].display();
-    }
-    std::cout << "\n";
-    std::cout << "Список парт:\n";
-    for (int i = 0; i < kolvoPart; i++)
-    {
-        parts[i].name = parts[i].name + std::to_string(i + 1);
-        parts[i].display();
-    }
-    std::cout << "\n";
-    std::cout << "Список мониторов:\n";
-    for (int i = 0; i < kolvoMoniks; i++)
-    {
-        monitors[i].name = monitors[i].name + std::to_string(i + 1);
-        monitors[i].display();
-    }
-    std::cout << "\n";
-    std::cout << "Список системных блоков:\n";
-    for (int i = 0; i < kolvoMoniks; i++)
-    {
-        komps[i].name = komps[i].name + std::to_string(i + 1);
-        komps[i].display();
-    }
+    Stul *stulArr = makeArr<Stul>(1);
+    Parta *partaArr = makeArr<Parta>(5);
+    stulArr.display();
+    delete[] stulArr;
+    delete[] partaArr;
 }
