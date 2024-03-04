@@ -15,7 +15,7 @@ class Computer
     
     void get_info()
     {
-        cout<< " Компьютер "<<"Модель: " <<model << " Колличество  " << quantity <<  endl;
+        cout<< " Компьютер: "<<"Модель: " <<model << " Колличество  " << quantity <<  endl;
     };
         class Monitor
     {
@@ -108,7 +108,6 @@ class Chair{
 
 int main(){
     setlocale(LC_ALL, "RU");
-    
     Computer laptop ("Acer", 20);
     laptop.get_info();
     Computer::Monitor monitor(21,0.294, "Lenovo");
@@ -123,3 +122,6 @@ int main(){
     chair.get_info();
     return 0;
 };
+
+
+
