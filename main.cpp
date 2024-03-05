@@ -10,7 +10,7 @@ public:
     std::string name;
     void display()
     {
-        std::cout << "Предмет: " << name << "\tКоличество: " << kolvo << " шт\t"
+        std::cout << "Предмет: " << name << "\t\tКоличество: " << kolvo << " шт\t\t"
                   << "Характеристики: " << length << " x " << width << " x " << height << "\n";
         std::cout << "\n";
     }
@@ -52,16 +52,16 @@ public:
     std::string proc;
     std::string vid;
     std::string name;
-    PK() : kolvo(15), resX(3840), resY(2160), diag(27), proc("Intel core i7-14700k"), vid("NVIDIA 4060"), mem(1024), ram(32), pkvkl(false), name("ПК ") {}
+    PK() : kolvo(26), resX(3840), resY(2160), diag(27), proc("Intel core i7-14700k"), vid("NVIDIA 4060"), mem(1024), ram(32), pkvkl(false), name("ПК ") {}
     PK(const int k, int x, int y, int d, std::string p, std::string v, int m, int r, bool vkl, std::string n) : kolvo(k), resX(x), resY(y), diag(d), proc(p), vid(v), mem(m), ram(r), pkvkl(vkl), name(n) {}
     void display()
     {
-        std::cout << "Предмет: " << name << "\tКоличество: " << kolvo << " шт\t"
-                  << "Разрешение экрана: " << resX << " x " << resX << "пикселей\t"
-                  << "Диагональ: " << diag << " дюймов\t"
-                  << "Постоянная память: " << mem << " ГБ\t"
-                  << "Оперативная память: " << ram << " Гб\t"
-                  << "Процессор: " << proc << "\tВидеокарта: " << vid << "\n";
+        std::cout << "Предмет: " << name << "\t\tКоличество: " << kolvo << " шт\t\t"
+                  << "Разрешение экрана: " << resX << " x " << resX << "пикселей\t\t"
+                  << "\nДиагональ: " << diag << " дюймов\t\t"
+                  << "Постоянная память: " << mem << " ГБ\t\t"
+                  << "Оперативная память: " << ram << " Гб\t\t"
+                  << "\nПроцессор: " << proc << "\t\tВидеокарта: " << vid << "\n";
         std::cout << "\n";
     }
 };
@@ -100,9 +100,13 @@ T *makeArr(const int kolvo)
 };
 int main()
 {
-    Stul *stulArr = makeArr<Stul>(1);
-    Parta *partaArr = makeArr<Parta>(5);
-    stulArr[1].display();
+    Stul *stulArr = makeArr<Stul>(15);
+    Parta *partArr = makeArr<Parta>(10);
+    PK *pkArr = makeArr<PK>(26);
+    stulArr[0].display();
+    partArr[0].display();
+    pkArr[0].display();
     delete[] stulArr;
-    delete[] partaArr;
+    delete[] partArr;
+    delete[] pkArr;
 }
