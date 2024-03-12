@@ -6,7 +6,7 @@ class Subject {
 public:
 std::string name;
 std::string location;
-std::string serialN;
+std::string serialN; 
     void set_name(std::string subj_name){
         name = subj_name;
     }
@@ -23,7 +23,7 @@ std::string serialN;
 
     void set_serialN(std::string subj_serialN){
         serialN = subj_serialN;
-
+        
     }
     std::string get_serialN(){
         return serialN;
@@ -78,8 +78,7 @@ Subject *two = new Subject;
     delete smt;
     smt->Print();
     two->Print();
-
-
+//
 
     return 0;
 }
