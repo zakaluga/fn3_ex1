@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <locale>
 class Parametr
 {
 public:
@@ -12,6 +13,7 @@ public:
     std::string name;
     std::string material;
     std::string number;
+    std::string about;
     void display()
     {
         std::cout << "Предмет: " << name << "  Количество: " << kolvo << "  Размеры: "
@@ -22,10 +24,25 @@ public:
     {
         std::cout << "Количество объектов: ";
         std::cin >> kolvo;
-        std::cout << "Материал объекта: ";
-        std::cin >> material;
-        std::cout << "Размеры: ";
-        std::cin >> length >> width >> height;
+        if (kolvo > 0)
+        {
+            std::cout << "Материал объекта: ";
+            std::cin >> material;
+            std::cout << "Размеры: ";
+            std::cin >> length >> width >> height;
+        }
+    }
+    void getUnreg()
+    {
+        getInf();
+        std::cout << "Дополнительная информация об объекте: ";
+        std::cin >> about;
+    }
+    void addInToFile(std::ofstream &File)
+    {
+        File << "Предмет: " << name << "   Количество: " << kolvo << "   Размеры: "
+             << length << " x " << width << " x " << height << "   Материал: " << material;
+        File << "\n";
     }
 };
 class ClassroomInv
@@ -47,26 +64,48 @@ public:
 };
 int main()
 {
-    setlocale(LC_ALL, "Rus");
+    setlocale(LC_ALL, "Ru");
+    std::ofstream List("Result.txt");
+    List.clear();
+    int unregTypeCount;
     ClassroomInv inventory;
+
     std::cout << "Стулья:\n";
     Parametr stul;
     stul.name = "Стул";
     stul.getInf();
     inventory.addRegisteredItem(stul);
-    stul.display();
+    stul.addInToFile(List);
 
     Parametr parta;
     std::cout << "Парты:\n";
     parta.name = "Парта";
     parta.getInf();
     inventory.addRegisteredItem(parta);
-    parta.display();
+    parta.addInToFile(List);
 
     Parametr scaf;
     std::cout << "Шкафы:\n";
     scaf.name = "Шкаф";
     scaf.getInf();
     inventory.addRegisteredItem(scaf);
-    scaf.display();
+    scaf.addInToFile(List);
+    
+    std::cout << "Сколько типов незарегистрированных объектов у вас будет? ";
+    std::cin >> unregTypeCount;
+
+    if (unregTypeCount > 0)
+    {
+        Parametr unreg;
+        Parametr unregitems[unregTypeCount];
+        for (int i = 0; i < unregTypeCount; i++)
+        {
+            unregitems[i].getUnreg();
+            inventory.addUnregisteredItem(unregitems[i]);
+            unregitems[i].addInToFile(List);
+        }
+        delete[] unregitems;
+    }
+    List.close();
+    return 0;
 }
