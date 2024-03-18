@@ -2,7 +2,6 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <locale>
 class Parametr
 {
 public:
@@ -16,32 +15,32 @@ public:
     std::string about;
     void display()
     {
-        std::cout << "Предмет: " << name << "  Количество: " << kolvo << "  Размеры: "
-                  << length << " x " << width << " x " << height << "  Материал: " << material;
+        std::cout << "Item name: " << name << "  Quantity: " << kolvo << "  Size: "
+                  << length << " x " << width << " x " << height << "  Material: " << material;
         std::cout << "\n";
     }
     void getInf()
     {
-        std::cout << "Количество объектов: ";
+        std::cout << "Number of items: ";
         std::cin >> kolvo;
         if (kolvo > 0)
         {
-            std::cout << "Материал объекта: ";
+            std::cout << "Material of item: ";
             std::cin >> material;
-            std::cout << "Размеры: ";
+            std::cout << "Size: ";
             std::cin >> length >> width >> height;
         }
     }
     void getUnreg()
     {
         getInf();
-        std::cout << "Дополнительная информация об объекте: ";
+        std::cout << "Extra information about item: ";
         std::cin >> about;
     }
     void addInToFile(std::ofstream &File)
     {
-        File << "Предмет: " << name << "   Количество: " << kolvo << "   Размеры: "
-             << length << " x " << width << " x " << height << "   Материал: " << material;
+        File << "Item name: " << name << "  Quantity: " << kolvo << "  Size: "
+                  << length << " x " << width << " x " << height << "  Material: " << material;
         File << "\n";
     }
 };
@@ -50,7 +49,6 @@ class ClassroomInv
 private:
     std::vector<Parametr> registeredItems;
     std::vector<Parametr> unregisteredItems;
-
 public:
     void addRegisteredItem(const Parametr &item)
     {
@@ -61,37 +59,48 @@ public:
     {
         unregisteredItems.push_back(item);
     }
+    void deleteItems(){
+        registeredItems.clear();
+        unregisteredItems.clear();
+    }
 };
 int main()
 {
-    setlocale(LC_ALL, "Ru");
     std::ofstream List("Result.txt");
     List.clear();
     int unregTypeCount;
     ClassroomInv inventory;
+    std::cout << "Registred items:\n";
 
-    std::cout << "Стулья:\n";
+    std::cout << "Chairs:\n";
     Parametr stul;
-    stul.name = "Стул";
+    stul.name = "Chair";
     stul.getInf();
     inventory.addRegisteredItem(stul);
     stul.addInToFile(List);
 
     Parametr parta;
-    std::cout << "Парты:\n";
-    parta.name = "Парта";
+    std::cout << "Desks:\n";
+    parta.name = "Dessk";
     parta.getInf();
     inventory.addRegisteredItem(parta);
     parta.addInToFile(List);
 
     Parametr scaf;
-    std::cout << "Шкафы:\n";
-    scaf.name = "Шкаф";
+    std::cout << "Wardrobes:\n";
+    scaf.name = "Wardrobe";
     scaf.getInf();
     inventory.addRegisteredItem(scaf);
     scaf.addInToFile(List);
+
+    Parametr board;
+    std::cout << "Boards:\n";
+    board.name = "Board";
+    board.getInf();
+    inventory.addRegisteredItem(board);
+    board.addInToFile(List);
     
-    std::cout << "Сколько типов незарегистрированных объектов у вас будет? ";
+    std::cout << "How many types of unregistered items will you have? ";
     std::cin >> unregTypeCount;
 
     if (unregTypeCount > 0)
@@ -107,5 +116,6 @@ int main()
         delete[] unregitems;
     }
     List.close();
+    inventory.deleteItems();
     return 0;
 }
