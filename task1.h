@@ -8,7 +8,7 @@ public:
         return this->efficiency;
     }
 
-    int SetEfficienty(int val)
+    void SetEfficienty(int val)
     {
         this->efficiency = val;
     }
@@ -18,7 +18,7 @@ public:
         return this->processor_clock_frequency;
     }
 
-    int SetEfficienty(int val)
+    void SetProcessor_clock_frequency(int val)
     {
         this->processor_clock_frequency = val;
     }
@@ -28,13 +28,12 @@ public:
         return this->processor_capacity;
     }
 
-    int SetEfficienty(int val)
+    void SetProcessorCapacity(int val)
     {
         this->processor_capacity = val;
     }
 
     Laptop(int EffVal, int ClockVal, int CapVal) : efficiency(EffVal), processor_clock_frequency(ClockVal), processor_capacity(CapVal) {}
-
     ~Laptop() = default;
 
 private:
@@ -51,7 +50,7 @@ public:
         return this->charge;
     }
 
-    int SetCharge(int val)
+    void SetCharge(int val)
     {
         this->charge = val;
     }
@@ -63,6 +62,9 @@ public:
             return this->charge == 0 ? true : false;
         }
     }
+
+    Pen(int procent, bool wm) : charge(procent), WithMe(wm) {}
+    ~Pen() = default;
 
 private:
     int charge = 100;
@@ -77,7 +79,7 @@ public:
         return this->height;
     }
 
-    int SetHeight(int val)
+    void SetHeight(int val)
     {
         this->height = val;
     }
@@ -87,7 +89,7 @@ public:
         return this->weight;
     }
 
-    int SetWeight(int val)
+    void SetWeight(int val)
     {
         this->weight = val;
     }
@@ -97,7 +99,7 @@ public:
         return this->lenght;
     }
 
-    int SetLenght(int val)
+    void SetLenght(int val)
     {
         this->lenght = val;
     }
@@ -107,26 +109,56 @@ public:
         return this->width;
     }
 
-    int SetWidth(int val)
+    void SetWidth(int val)
     {
         this->width = val;
     }
 
-    std::string GetMaterial(){
+    std::string GetMaterial()
+    {
         return this->material;
     }
 
-    std::string SetMaterial(std::string val){
+    void SetMaterial(std::string val)
+    {
         this->material = val;
     }
 
-Table(int h, int w, int len, int wd, std::string mat): height(h), weight(w), lenght(len), width(wd), material(mat){}
+    Table(int h, int len, int wd, int w, std::string mat) : height(h), weight(w), lenght(len), width(wd), material(mat) {}
+    ~Table() = default;
+
 private:
     int height = 0;
-    int weight = 0;
     int lenght = 0;
     int width = 0;
+    int weight = 0;
     std::string material = "";
 };
 
-int main(){}
+class Notebook
+{
+public:
+    int GetKol(){
+        return this->kol;
+    }
+
+    int GetPageNumber(){
+        return this->page_number;
+    }
+
+    void SetPageNumber(int val){
+        this->page_number = val;
+    }
+
+    void MakeUsed(){
+        this->Isnew = false;
+    }
+
+    Notebook(int k, int pn): kol(k), page_number(pn){}
+    ~Notebook() = default;
+
+private:
+    int kol = 0;
+    int page_number = 0;
+    bool Isnew = true;
+};
