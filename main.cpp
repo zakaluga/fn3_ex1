@@ -1,7 +1,4 @@
-#include <iostream>
 #include <spec.h>
-
-
 
 int main()
 {
