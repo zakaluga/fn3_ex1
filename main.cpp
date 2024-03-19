@@ -28,6 +28,7 @@ int main()
             std::cout << "3 Get/Set processor capacity, write 3 and print get or set and value\n";
             // Как будто никто смотреть это не будет
         }
+        break;
     }
     case 2:
     {
@@ -38,6 +39,7 @@ int main()
         bool withMe;
         std::cin >> withMe;
         Pen pen(charge, withMe);
+        break;
     }
     case 3:
     {
@@ -57,6 +59,7 @@ int main()
         std::string mat;
         std::cin >> mat;
         Table table(height, len, width, weight, mat);
+        break;
     }
     case 4:
     {
@@ -71,6 +74,7 @@ int main()
         {
             notebook.MakeUsed();
         }
+        break;
     }
     default:
         break;
