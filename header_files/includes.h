@@ -1,6 +1,7 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
-#include<list>
-#include<map>
-#include<tuple>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <list>
+#include <map>
+#include <tuple>
