@@ -167,8 +167,8 @@ private:
     bool Isnew = true;
 };
 
-template <class T, class U>
-void addLaptop(std::map<T, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::tuple<int, int, int> &t)
+template <class T>
+void addLaptop(std::map<std::string, std::vector<T>> &inf, std::vector<T> &v, int &cnt, std::tuple<int, int, int> &t)
 {
 
     Laptop laptop(std::get<0>(t), std::get<1>(t), std::get<2>(t));
@@ -179,8 +179,8 @@ void addLaptop(std::map<T, std::vector<U>> &inf, std::vector<U> &v, int &cnt, st
     inf.insert(inf.end(), {"Laptop", v});
 }
 
-template <class T, class U>
-void addPen(std::map<T, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::pair<int, bool> &t)
+template <class T>
+void addPen(std::map<std::string, std::vector<T>> &inf, std::vector<T> &v, int &cnt, std::pair<int, bool> &t)
 {
 
     Pen pen(t.first, t.second);
@@ -191,8 +191,8 @@ void addPen(std::map<T, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::
     inf.insert(inf.end(), {"Pen", v});
 }
 
-template <class T, class U>
-void addTable(std::map<T, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::tuple<int, int, int, int, std::string> &t)
+template <class U>
+void addTable(std::map<std::string, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::tuple<int, int, int, int, std::string> &t)
 {
 
     Table table(std::get<0>(t), std::get<1>(t), std::get<2>(t), std::get<3>(t), std::get<4>(t));
@@ -203,8 +203,8 @@ void addTable(std::map<T, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std
     inf.insert(inf.end(), {"Table", v});
 }
 
-template <class T, class U>
-void addNotebook(std::map<T, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::pair<int, int> &t)
+template <class U>
+void addNotebook(std::map<std::string, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::pair<int, int> &t)
 {
 
     Notebook book(t.first, t.second);
@@ -214,6 +214,12 @@ void addNotebook(std::map<T, std::vector<U>> &inf, std::vector<U> &v, int &cnt, 
     }
     inf.insert(inf.end(), {"Notebook", v});
 }
+
+template<class U>
+std::map<std::string, std::vector<U>> inf;
+
+template<class T>
+std::vector<T> sp;
 
 int main()
 {
@@ -237,12 +243,13 @@ int main()
         int cap;
         std::cin >> cap;
         Laptop laptop(ef, freq, cap);
+        addLaptop(inf<std::string, std::vector<Laptop>>, sp<Laptop>, count, std::make_tuple(ef, freq, cap));
         bool finish = true;
         while (finish)
         {
-            std::cout << "Availible operations\n1 Get/Set efficiency, write 1 and print get or set and value\n";
-            std::cout << "2 Get/Set processor clock frequency, write 1.2 and print get or set and value\n";
-            std::cout << "3 Get/Set processor capacity, write 1.3 and print get or set and value\n";
+            std::cout << "Availible operations\n1. Get/Set efficiency, write 1 and print get or set and value\n";
+            std::cout << "2. Get/Set processor clock frequency, write 2 and print get or set and value\n";
+            std::cout << "3. Get/Set processor capacity, write 3 and print get or set and value\n";
             int k;
             std::string s;
             std::cin >> k >> s;
