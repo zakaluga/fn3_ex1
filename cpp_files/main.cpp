@@ -3,6 +3,10 @@
 class Laptop
 {
 public:
+
+    Laptop(int EffVal, int ClockVal, int CapVal) : efficiency(EffVal), processor_clock_frequency(ClockVal), processor_capacity(CapVal) {}
+    ~Laptop() = default;
+
     int GetEfficienty()
     {
         return this->efficiency;
@@ -33,9 +37,6 @@ public:
         this->processor_capacity = val;
     }
 
-    Laptop(int EffVal, int ClockVal, int CapVal) : efficiency(EffVal), processor_clock_frequency(ClockVal), processor_capacity(CapVal) {}
-    ~Laptop() = default;
-
 private:
     int efficiency = 0;
     int processor_clock_frequency = 0;
@@ -45,6 +46,10 @@ private:
 class Pen
 {
 public:
+
+    Pen(int procent, bool wm) : charge(procent), WithMe(wm) {}
+    ~Pen() = default;
+
     int GetCharge()
     {
         return this->charge;
@@ -63,9 +68,6 @@ public:
         }
     }
 
-    Pen(int procent, bool wm) : charge(procent), WithMe(wm) {}
-    ~Pen() = default;
-
 private:
     int charge = 100;
     bool WithMe = true;
@@ -74,6 +76,10 @@ private:
 class Table
 {
 public:
+
+    Table(int h, int len, int wd, int w, std::string mat) : height(h), weight(w), lenght(len), width(wd), material(mat) {}
+    ~Table() = default;
+
     int GetHeight()
     {
         return this->height;
@@ -124,9 +130,6 @@ public:
         this->material = val;
     }
 
-    Table(int h, int len, int wd, int w, std::string mat) : height(h), weight(w), lenght(len), width(wd), material(mat) {}
-    ~Table() = default;
-
 private:
     int height = 0;
     int lenght = 0;
@@ -138,6 +141,10 @@ private:
 class Notebook
 {
 public:
+
+    Notebook(int k, int pn): kol(k), page_number(pn){}
+    ~Notebook() = default;
+
     int GetKol(){
         return this->kol;
     }
@@ -153,9 +160,6 @@ public:
     void MakeUsed(){
         this->Isnew = false;
     }
-
-    Notebook(int k, int pn): kol(k), page_number(pn){}
-    ~Notebook() = default;
 
 private:
     int kol = 0;
