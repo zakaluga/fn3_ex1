@@ -3,7 +3,6 @@
 class Laptop
 {
 public:
-
     Laptop(int EffVal, int ClockVal, int CapVal) : efficiency(EffVal), processor_clock_frequency(ClockVal), processor_capacity(CapVal) {}
     ~Laptop() = default;
 
@@ -37,6 +36,17 @@ public:
         this->processor_capacity = val;
     }
 
+    template <class T, class U>
+    void addLaptop(std::map<T, std::vector<U>> &inf, int &cnt, std::tuple<int, int, int> &t)
+    {
+
+        Laptop laptop(std::get<0>(t), std::get<1>(t), std::get<2>(t));
+        for (int i = 0; i < cnt; ++i)
+        {
+            inf["Laptop"].push_back(laptop);
+        }
+    }
+
 private:
     int efficiency = 0;
     int processor_clock_frequency = 0;
@@ -46,7 +56,6 @@ private:
 class Pen
 {
 public:
-
     Pen(int procent, bool wm) : charge(procent), WithMe(wm) {}
     ~Pen() = default;
 
@@ -68,6 +77,16 @@ public:
         }
     }
 
+    template <class T, class U>
+    void addPen(std::map<U, std::vector<T>> &inf, int &cnt, std::pair<int, bool> &t)
+    {
+        Pen pen(t.first, t.second);
+        for (int i = 0; i < cnt; ++i)
+        {
+            inf["Pen"].push_back(pen);
+        }
+    }
+
 private:
     int charge = 100;
     bool WithMe = true;
@@ -76,7 +95,6 @@ private:
 class Table
 {
 public:
-
     Table(int h, int len, int wd, int w, std::string mat) : height(h), weight(w), lenght(len), width(wd), material(mat) {}
     ~Table() = default;
 
@@ -130,6 +148,17 @@ public:
         this->material = val;
     }
 
+    template <class T, class U>
+    void addTable(std::map<T, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::tuple<int, int, int, int, std::string> &t)
+    {
+
+        Table table(std::get<0>(t), std::get<1>(t), std::get<2>(t), std::get<3>(t), std::get<4>(t));
+        for (int i = 0; i < cnt; ++i)
+        {
+            inf["Table"].push_back(table);
+        }
+    }
+
 private:
     int height = 0;
     int lenght = 0;
@@ -141,24 +170,38 @@ private:
 class Notebook
 {
 public:
-
-    Notebook(int k, int pn): kol(k), page_number(pn){}
+    Notebook(int k, int pn) : kol(k), page_number(pn) {}
     ~Notebook() = default;
 
-    int GetKol(){
+    int GetKol()
+    {
         return this->kol;
     }
 
-    int GetPageNumber(){
+    int GetPageNumber()
+    {
         return this->page_number;
     }
 
-    void SetPageNumber(int val){
+    void SetPageNumber(int val)
+    {
         this->page_number = val;
     }
 
-    void MakeUsed(){
+    void MakeUsed()
+    {
         this->Isnew = false;
+    }
+
+    template <class T, class U>
+    void addNotebook(std::map<T, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::pair<int, int> &t)
+    {
+
+        Notebook book(t.first, t.second);
+        for (int i = 0; i < cnt; ++i)
+        {
+            inf["Book"].push_back(book);
+        }
     }
 
 private:
@@ -167,59 +210,18 @@ private:
     bool Isnew = true;
 };
 
-template <class T>
-void addLaptop(std::map<std::string, std::vector<T>> &inf, std::vector<T> &v, int &cnt, std::tuple<int, int, int> &t)
-{
-
-    Laptop laptop(std::get<0>(t), std::get<1>(t), std::get<2>(t));
-    for (int i = 0; i < cnt; ++i)
-    {
-        v.push_back(laptop);
-    }
-    inf.insert(inf.end(), {"Laptop", v});
-}
-
-template <class T>
-void addPen(std::map<std::string, std::vector<T>> &inf, std::vector<T> &v, int &cnt, std::pair<int, bool> &t)
-{
-
-    Pen pen(t.first, t.second);
-    for (int i = 0; i < cnt; ++i)
-    {
-        v.push_back(pen);
-    }
-    inf.insert(inf.end(), {"Pen", v});
-}
-
-template <class U>
-void addTable(std::map<std::string, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::tuple<int, int, int, int, std::string> &t)
-{
-
-    Table table(std::get<0>(t), std::get<1>(t), std::get<2>(t), std::get<3>(t), std::get<4>(t));
-    for (int i = 0; i < cnt; ++i)
-    {
-        v.push_back(table);
-    }
-    inf.insert(inf.end(), {"Table", v});
-}
-
-template <class U>
-void addNotebook(std::map<std::string, std::vector<U>> &inf, std::vector<U> &v, int &cnt, std::pair<int, int> &t)
-{
-
-    Notebook book(t.first, t.second);
-    for (int i = 0; i < cnt; ++i)
-    {
-        v.push_back(book);
-    }
-    inf.insert(inf.end(), {"Notebook", v});
-}
-
-template<class U>
-std::map<std::string, std::vector<U>> inf;
-
 template<class T>
-std::vector<T> sp;
+void addVector(std::vector<T> &a1, std::vector<T> a2){
+    for (int i = 0; i<a2.size(); ++i){
+        a1.push_back(a2[i]);
+    }
+}
+
+template <class T, class U>
+std::map<T, std::vector<U>> inf;
+
+// Заменить данные
+// добавить данные
 
 int main()
 {
@@ -243,13 +245,14 @@ int main()
         int cap;
         std::cin >> cap;
         Laptop laptop(ef, freq, cap);
-        addLaptop(inf<std::string, std::vector<Laptop>>, sp<Laptop>, count, std::make_tuple(ef, freq, cap));
+        std::vector<Laptop> v(count, laptop);
+        inf<std::string, Laptop>.emplace("Laptop", v);
         bool finish = true;
         while (finish)
         {
-            std::cout << "Availible operations\n1. Get/Set efficiency, write 1 and print get or set and value\n";
-            std::cout << "2. Get/Set processor clock frequency, write 2 and print get or set and value\n";
-            std::cout << "3. Get/Set processor capacity, write 3 and print get or set and value\n";
+            std::cout << "Availible operations\n1. Get/Set efficiency, write 1 and print Get or Set and value\n";
+            std::cout << "2. Get/Set processor clock frequency, write 2 and print Get or Set and value\n";
+            std::cout << "3. Get/Set processor capacity, write 3 and print Get or Set and value\n";
             int k;
             std::string s;
             std::cin >> k >> s;
@@ -257,29 +260,51 @@ int main()
             {
             case 1:
             {
-                if (s == "get")
+                if (s == "Get" || s == "get")
                 {
-                    std::cout << laptop.GetEfficienty();
+                    std::cout << laptop.GetEfficienty() << std::endl;
                 }
                 else
                 {
-                    int val;
-                    std::cin >> val;
-                    laptop.SetEfficienty(val);
+                    if (s == "Set" || s == "set")
+                    {
+                        int val;
+                        std::cin >> val;
+                        laptop.SetEfficienty(val);
+                    }
+                    else
+                    {
+                        while (s != "Set" || s != "set" || s != "Get" || s != "get")
+                        {
+                            std::cout << "Enter correct command: ";
+                            std::cin >> s;
+                        }
+                    }
                 }
                 break;
             }
             case 2:
             {
-                if (s == "get")
+                if (s == "Get" || s == "get")
                 {
-                    std::cout << laptop.GetProcessor_clock_frequency();
+                    std::cout << laptop.GetProcessor_clock_frequency() << std::endl;
                 }
                 else
                 {
-                    int val;
-                    std::cin >> val;
-                    laptop.SetProcessor_clock_frequency(val);
+                    if (s == "Set" || s == "set")
+                    {
+                        int val;
+                        std::cin >> val;
+                        laptop.SetProcessor_clock_frequency(val);
+                    }
+                    else
+                    {
+                        while (s != "Set" || s != "set" || s != "Get" || s != "get")
+                        {
+                            std::cout << "Enter correct command: ";
+                            std::cin >> s;
+                        }
+                    }
                 }
                 break;
             }
@@ -287,7 +312,7 @@ int main()
             {
                 if (s == "get")
                 {
-                    std::cout << laptop.GetProcessorCapacity();
+                    std::cout << laptop.GetProcessorCapacity() << std::endl;
                 }
                 else
                 {
@@ -298,7 +323,11 @@ int main()
                 break;
             }
             default:
-                break;
+                while (k < 1 || k > 3)
+                {
+                    std::cout << "Enter correct number of command: ";
+                    std::cin >> k;
+                }
             }
             // Как будто никто смотреть это не будет
         }
