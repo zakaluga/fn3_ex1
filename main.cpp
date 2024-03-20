@@ -2,22 +2,23 @@
 #include <string>
 #include <fstream>
 #include <vector>
-class Parametr
+#include <locale>
+#include <windows.h>
+#include <map>
+class AggregatedSettings
 {
 public:
-    double length;
-    double width;
-    double height;
-    int kolvo;
+    std::string size;
+    int count;
     std::string name;
     std::string material;
     std::string number;
-    std::string about;
+    std::string extraInf;
     void display()
     {
-        std::cout << "Item name: " << name << "  Quantity: " << kolvo << "  Size: "
-                  << length << " x " << width << " x " << height << "  Material: " << material
-                  << "  Extra information: " << about;
+        std::cout << "Item name: " << name << "  Quantity: " << count << "  Size: "
+                  << size << "  Material: " << material
+                  << "  Extra information: " << extraInf;
         std::cout << "\n";
     }
     void getInf()
@@ -25,23 +26,24 @@ public:
         std::cout << "Enter item name: ";
         std::cin >> name;
         std::cout << "Number of items: ";
-        std::cin >> kolvo;
-        if (kolvo > 0)
+        std::cin >> count;
+        if (count > 0)
         {
             std::cout << "Material of item: ";
             std::cin >> material;
             std::cout << "Size: ";
-            std::cin >> length >> width >> height;
-            std::cout << "Extra information about item: ";
             std::cin.ignore();
-            std::getline(std::cin, about);
+            std::getline(std::cin, size);
+            std::cout << "Extra information extraInf item: ";
+            std::cin.ignore();
+            std::getline(std::cin, extraInf);
         }
     }
     void addInToFile(std::ofstream &File)
     {
-        File << "Item name: " << name << "  Quantity: " << kolvo << "  Size: "
-             << length << " x " << width << " x " << height << "  Material: " << material
-             << "  Extra information: " << about;
+        File << "Item name: " << name << "  Quantity: " << count << "  Size: "
+             << size << "  Material: " << material
+             << "  Extra information: " << extraInf;
         File << "\n";
     }
 };
@@ -49,15 +51,15 @@ class ClassroomInv
 {
 private:
     int tempCount;
-    std::vector<Parametr> registeredItems;
-    std::vector<Parametr> unregisteredItems;
+    std::vector<AggregatedSettings> registeredItems;
+    std::vector<AggregatedSettings> unregisteredItems;
 
 public:
-    void addRegisteredItem(const Parametr &item)
+    void addRegisteredItem(const AggregatedSettings &item)
     {
         registeredItems.push_back(item);
     }
-    void addUnregisteredItem(const Parametr &item)
+    void addUnregisteredItem(const AggregatedSettings &item)
     {
         unregisteredItems.push_back(item);
     }
@@ -71,45 +73,51 @@ public:
         std::cout << "Enter number of types registred items: ";
         std::cin >> tempCount;
     }
-    void fillTempArr(ClassroomInv inv, std::ofstream &File)
+};
+void Menu(int choice, std::map<std::string, AggregatedSettings> &item, std::ofstream &file)
+{
+    int i;
+    AggregatedSettings temp;
+    std::cout << "Меню:\n";
+    std::cout << "1) Добавить стандартный предмет.\n";
+    std::cout << "2) Добавить нестандартный предмет.\n";
+    std::cout << "3) Изменить свойство выбранного предмета.\n";
+    std::cout << "4) Изменить количество предметов выбранного типа.\n";
+    std::cout << "5) Выйти из программы.\n";
+    std::cin >> choice;
+    switch (choice)
     {
-        Parametr *tempArr = new Parametr[tempCount];
-        for (int i = 0; i < tempCount; i++)
-        {
-            tempArr[i].getInf();
-            inv.addRegisteredItem(tempArr[i]);
-            tempArr[i].addInToFile(File);
-        }
-        delete[] tempArr;
+    case 1:
+        temp.getInf();
+        temp.addInToFile(file);
+        item[temp.name] = temp;
+        break;
+    case 2:
+
+        break;
+    case 3:
+
+        break;
+    case 4:
+
+        break;
+    case 5:
+
+        break;
+
+    default:
+        std::cout << "Такого пункта меню нет!";
+        break;
     }
 };
 int main()
 {
+    std::map<std::string, AggregatedSettings> Regitems;
+    int choise;
+    setlocale(LC_ALL, "Russian");
     std::ofstream List("Result.txt");
-    List.clear();
-    int unregTypeCount;
-    ClassroomInv inventory;
-
-    std::cout << "Registred items:\n";
-    inventory.getTempCount();
-    inventory.fillTempArr(inventory, List);
-
-    std::cout << "How many types of unregistered items will you have? ";
-    std::cin >> unregTypeCount;
-
-    if (unregTypeCount > 0)
+    while (choise != 5)
     {
-        Parametr unreg;
-        Parametr *unregitems = new Parametr[unregTypeCount];
-        for (int i = 0; i < unregTypeCount; i++)
-        {
-            unregitems[i].getInf();
-            inventory.addUnregisteredItem(unregitems[i]);
-            unregitems[i].addInToFile(List);
-        }
-        delete[] unregitems;
     }
-    List.close();
-    inventory.deleteItems();
     return 0;
 }
