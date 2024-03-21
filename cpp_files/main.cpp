@@ -37,9 +37,8 @@ public:
     }
 
     template <class T, class U>
-    void addLaptop(std::map<T, std::vector<U>> &inf, int &cnt)
+    void addLaptop(std::map<T, std::vector<U>> &inf, int cnt = 1)
     {
-
         for (int i = 0; i < cnt; ++i)
         {
             inf["Laptop"].push_back(*this);
@@ -77,7 +76,7 @@ public:
     }
 
     template <class T, class U>
-    void addPen(std::map<U, std::vector<T>> &inf, int &cnt)
+    void addPen(std::map<U, std::vector<T>> &inf, int cnt = 1)
     {
         for (int i = 0; i < cnt; ++i)
         {
@@ -147,7 +146,7 @@ public:
     }
 
     template <class T, class U>
-    void addTable(std::map<T, std::vector<U>> &inf, int &cnt)
+    void addTable(std::map<T, std::vector<U>> &inf, int cnt = 1)
     {
 
         for (int i = 0; i < cnt; ++i)
@@ -191,7 +190,7 @@ public:
     }
 
     template <class T, class U>
-    void addBook(std::map<T, std::vector<U>> &inf, int &cnt)
+    void addBook(std::map<T, std::vector<U>> &inf, int cnt = 1)
     {
 
         for (int i = 0; i < cnt; ++i)
@@ -205,15 +204,6 @@ private:
     int page_number = 0;
     bool Isnew = true;
 };
-
-template <class T>
-void addVect(std::vector<T> &a1, const std::vector<T> a2)
-{
-    for (int i = 0; i < a2.size(); ++i)
-    {
-        a1.push_back(a2[i]);
-    }
-}
 
 bool isdigit(const std::string s)
 {
@@ -240,6 +230,7 @@ int main()
     int count;
     std::cout << "Enter count of objects: ";
     std::cin >> count;
+    std::cout << std::endl;
     switch (n)
     {
     case 1:
@@ -253,12 +244,13 @@ int main()
         std::cout << "Enter processor capacity: ";
         int cap;
         std::cin >> cap;
+        std::cout << std::endl;
         Laptop laptop(ef, freq, cap);
-        std::vector<Laptop> v(count, laptop);
-        addVect(inf<std::string, Laptop>["Laptop"], v);
+        laptop.addLaptop(inf<std::string, Laptop>);
         bool finish = false;
         while (!finish)
         {
+            bool flag = false;
             std::cout << "Availible operations\n1. Get/Set efficiency, write 1 and print Get or Set or Add and value\n";
             std::cout << "2. Get/Set processor clock frequency, write 2 and print Get or Set or Add and value\n";
             std::cout << "3. Get/Set processor capacity, write 3 and print Get or Set or Add and value\n";
@@ -266,13 +258,12 @@ int main()
             std::cout << "5. Count of elements\n";
             std::cout << "Enter number of operation: ";
             int k;
-            std::string s;
             std::cin >> k;
+            std::string s;
             switch (k)
             {
             case 1:
             {
-                std::string s;
                 std::cin >> s;
                 if (s == "Get" || s == "get")
                 {
@@ -294,6 +285,7 @@ int main()
                             {
                                 std::cout << "Enter correct command: ";
                                 std::cin >> s;
+                                flag = true;
                             }
                         }
                     }
@@ -302,7 +294,6 @@ int main()
             }
             case 2:
             {
-                std::string s;
                 std::cin >> s;
 
                 if (s == "Get" || s == "get")
@@ -334,6 +325,7 @@ int main()
                         {
                             std::cout << "Enter correct command: ";
                             std::cin >> s;
+                            flag = true;
                         }
                     }
                 }
@@ -341,7 +333,6 @@ int main()
             }
             case 3:
             {
-                std::string s;
                 std::cin >> s;
                 if (s == "Get" || s == "get")
                 {
@@ -372,6 +363,7 @@ int main()
                         {
                             std::cout << "Enter correct command: ";
                             std::cin >> s;
+                            flag = true;
                         }
                     }
                 }
@@ -394,42 +386,51 @@ int main()
                 std::cin >> cnt;
                 Laptop laptop1(ef1, freq1, cap1);
                 laptop1.addLaptop(inf<std::string, Laptop>, cnt);
+                break;
             }
             case 5:
             {
                 std::cout << inf<std::string, Laptop>["Laptop"].size() << std::endl;
+                break;
             }
             default:
+            {
                 while (k < 1 || k > 5)
                 {
                     std::cout << "Enter correct number of command: ";
                     std::cin >> k;
+                    flag = true;
                 }
             }
-            std::cout << "If you want to continue to work with class Laptop press [y] else press [n]: ";
-            char symbol;
-            std::cin >> symbol;
-            if (symbol == 'n')
-            {
-                finish = true;
-            }
-            else
-            {
-                if (symbol != 'y')
-                {
-                    while (symbol != 'y' && symbol != 'n')
-                    {
-                        std::cout << "Enter correct command: ";
-                        std::cin >> symbol;
-                    }
-                }
-                else
-                {
-                    continue;
-                }
+                //     if (flag)
+                //     {
+                //         std::cout << "If you want to continue to work with class Laptop press [y] else press [n]: ";
+                //         char symbol;
+                //         std::cin >> symbol;
+                //         if (symbol == 'n')
+                //         {
+                //             finish = true;
+                //         }
+                //         else
+                //         {
+                //             if (symbol != 'y')
+                //             {
+                //                 while (symbol != 'y' && symbol != 'n')
+                //                 {
+                //                     std::cout << "Enter correct command: ";
+                //                     std::cin >> symbol;
+                //                 }
+                //             }
+                //             else
+                //             {
+                //                 continue;
+                //             }
+                //         }
+                //     }
+                // }
+                // break;
             }
         }
-        break;
     }
     case 2:
     {
@@ -440,8 +441,7 @@ int main()
         bool withMe;
         std::cin >> withMe;
         Pen pen(charge, withMe);
-        break;
-    }
+    }   break;
     case 3:
     {
         std::cout << "Enter height of the table: ";
@@ -478,13 +478,12 @@ int main()
         break;
     }
     default:
-    {
         while (n < 1 || n > 4)
         {
             std::cout << "Enter correct number of object: ";
             std::cin >> n;
         }
+
+        return 0;
     }
-    }
-    return 0;
 }
