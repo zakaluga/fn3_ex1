@@ -251,12 +251,45 @@ int main()
 {
     std::cout << "You can choose:\n1. Laptop\n2. Pen\n3. Table\n4. Notebook" << std::endl;
     std::cout << "Enter number of object: ";
+
+    std::string nstr;
     int n;
-    std::cin >> n;
-    int count;
+    std::string capstr;
+    if (Digit(nstr))
+    {
+        n = std::stoi(nstr);
+    }
+    else
+    {
+        while (!Digit(nstr))
+        {
+            std::cout << "Enter correct efficienty: ";
+            std::cin >> nstr;
+        }
+        n = std::stoi(nstr);
+    }
+
     std::cout << "Enter count of objects: ";
-    std::cin >> count;
+
+    std::string countstr;
+    int count;
+    std::cin >> countstr;
+    if (Digit(capstr))
+    {
+        count = std::stoi(countstr);
+    }
+    else
+    {
+        while (!Digit(countstr))
+        {
+            std::cout << "Enter correct efficienty: ";
+            std::cin >> countstr;
+        }
+        count = std::stoi(countstr);
+    }
+
     std::cout << std::endl;
+
     switch (n)
     {
     case 1: // Full debag of class Laptop
@@ -279,11 +312,39 @@ int main()
             ef = std::stoi(efstr);
         }
         std::cout << "Enter processor clock frequency: ";
+        std::string freqstr;
         int freq;
-        std::cin >> freq;
+        std::cin >> freqstr;
+        if (Digit(freqstr))
+        {
+            freq = std::stoi(freqstr);
+        }
+        else
+        {
+            while (!Digit(freqstr))
+            {
+                std::cout << "Enter correct efficienty: ";
+                std::cin >> freqstr;
+            }
+            freq = std::stoi(freqstr);
+        }
         std::cout << "Enter processor capacity: ";
+        std::string capstr;
         int cap;
-        std::cin >> cap;
+        std::cin >> capstr;
+        if (Digit(capstr))
+        {
+            cap = std::stoi(capstr);
+        }
+        else
+        {
+            while (!Digit(capstr))
+            {
+                std::cout << "Enter correct efficienty: ";
+                std::cin >> capstr;
+            }
+            cap = std::stoi(capstr);
+        }
         std::cout << std::endl;
         Laptop laptop(ef, freq, cap);
         laptop.addLaptop(inf<std::string, Laptop>["Laptop"], count);
@@ -413,16 +474,72 @@ int main()
                 std::cout << "Enter parametrs of new Laptop:\n";
                 std::cout << "Enter efficiency: ";
                 int ef1;
-                std::cin >> ef1;
+                std::string ef1str;
+                std::cin >> ef1str;
+                if (Digit(ef1str))
+                {
+                    ef1 = std::stoi(ef1str);
+                }
+                else
+                {
+                    while (!Digit(ef1str))
+                    {
+                        std::cout << "Enter correct efficienty: ";
+                        std::cin >> efstr;
+                    }
+                    ef1 = std::stoi(ef1str);
+                }
                 std::cout << "Enter processor clock frequency: ";
+                std::string freq1str;
                 int freq1;
-                std::cin >> freq1;
+                std::cin >> freq1str;
+                if (Digit(freq1str))
+                {
+                    freq1 = std::stoi(freq1str);
+                }
+                else
+                {
+                    while (!Digit(freq1str))
+                    {
+                        std::cout << "Enter correct efficienty: ";
+                        std::cin >> freq1str;
+                    }
+                    freq1 = std::stoi(freq1str);
+                }
                 std::cout << "Enter processor capacity: ";
+                std::string cap1str;
                 int cap1;
-                std::cin >> cap1;
+                std::cin >> cap1str;
+                if (Digit(cap1str))
+                {
+                    cap1 = std::stoi(cap1str);
+                }
+                else
+                {
+                    while (!Digit(cap1str))
+                    {
+                        std::cout << "Enter correct efficienty: ";
+                        std::cin >> cap1str;
+                    }
+                    cap1 = std::stoi(cap1str);
+                }
                 std::cout << "Enter count of objects: ";
+                std::string cntstr;
                 int cnt;
-                std::cin >> cnt;
+                std::cin >> cntstr;
+                if (Digit(cntstr))
+                {
+                    cnt = std::stoi(cntstr);
+                }
+                else
+                {
+                    while (!Digit(cntstr))
+                    {
+                        std::cout << "Enter correct efficienty: ";
+                        std::cin >> cntstr;
+                    }
+                    cnt = std::stoi(cntstr);
+                }
                 Laptop laptop1(ef1, freq1, cap1);
                 laptop1.addLaptop(inf<std::string, Laptop>["Laptop"], cnt);
                 break;
