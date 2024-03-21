@@ -3,7 +3,7 @@
 class Laptop
 {
 public:
-    Laptop(int EffVal, int ClockVal, int CapVal) : efficiency(EffVal), processor_clock_frequency(ClockVal), processor_capacity(CapVal) {}
+    Laptop(int EffVal, int ClockVal, int CapVal) : efficiency(EffVal), ProcessorClockFrequency(ClockVal), processor_capacity(CapVal) {}
     ~Laptop() = default;
 
     int GetEfficienty()
@@ -16,14 +16,14 @@ public:
         this->efficiency = val;
     }
 
-    int GetProcessor_clock_frequency()
+    int GetProcessorClockFrequency()
     {
-        return this->processor_clock_frequency;
+        return this->ProcessorClockFrequency;
     }
 
-    void SetProcessor_clock_frequency(int val)
+    void SetProcessorClockFrequency(int val)
     {
-        this->processor_clock_frequency = val;
+        this->ProcessorClockFrequency = val;
     }
 
     int GetProcessorCapacity()
@@ -36,18 +36,47 @@ public:
         this->processor_capacity = val;
     }
 
-    template <class T, class U>
-    void addLaptop(std::map<T, std::vector<U>> &inf, int cnt = 1)
+    template <class T>
+    int isExist(std::vector<std::vector<T>> v)
     {
-        for (int i = 0; i < cnt; ++i)
+        bool ans = false;
+        for (int i = 0; i < v.size(); ++i)
         {
-            inf["Laptop"].push_back(*this);
+            if (!std::empty(v[i]))
+            {
+                ans = (v[i][0].processor_capacity == this->processor_capacity) &&
+                      (v[i][0].efficiency == this->efficiency) &&
+                      (v[i][0].ProcessorClockFrequency == this->ProcessorClockFrequency);
+            }
+            if (ans)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    template <class T>
+    void addLaptop(std::vector<std::vector<T>> &inf, int cnt = 1)
+    {
+        int t = this->isExist(inf);
+        if (t >= 0)
+        {
+            for (int i = 0; i < cnt; ++i)
+            {
+                inf[t].push_back(*this);
+            }
+        }
+        else
+        {
+            std::vector<Laptop> v(cnt, *this);
+            inf.push_back(v);
         }
     }
 
 private:
     int efficiency = 0;
-    int processor_clock_frequency = 0;
+    int ProcessorClockFrequency = 0;
     int processor_capacity = 0;
 };
 
@@ -205,26 +234,23 @@ private:
     bool Isnew = true;
 };
 
-bool isdigit(const std::string s)
+bool Digit(const std::string s)
 {
     bool ans = true;
     for (int i = 0; i < s.length(); ++i)
     {
-        ans = ans && ('0' <= s[i] <= '9');
+        ans = ans && std::isdigit(s[i]);
     }
     return ans;
 }
 
 template <class T, class U>
-std::map<T, std::vector<U>> inf;
-
-// Заменить данные
-// добавить данные
+std::map<T, std::vector<std::vector<U>>> inf;
 
 int main()
 {
-    std::cout << "You can choose\n1. Laptop\n2. Pen\n3. Table\n4. Notebook" << std::endl;
-    std::cout << "Enter number of obgect: ";
+    std::cout << "You can choose:\n1. Laptop\n2. Pen\n3. Table\n4. Notebook" << std::endl;
+    std::cout << "Enter number of object: ";
     int n;
     std::cin >> n;
     int count;
@@ -233,11 +259,25 @@ int main()
     std::cout << std::endl;
     switch (n)
     {
-    case 1:
+    case 1: // Full debag of class Laptop
     {
         std::cout << "Enter efficiency: ";
+        std::string efstr;
         int ef;
-        std::cin >> ef;
+        std::cin >> efstr;
+        if (Digit(efstr))
+        {
+            ef = std::stoi(efstr);
+        }
+        else
+        {
+            while (!Digit(efstr))
+            {
+                std::cout << "Enter correct efficienty: ";
+                std::cin >> efstr;
+            }
+            ef = std::stoi(efstr);
+        }
         std::cout << "Enter processor clock frequency: ";
         int freq;
         std::cin >> freq;
@@ -246,48 +286,54 @@ int main()
         std::cin >> cap;
         std::cout << std::endl;
         Laptop laptop(ef, freq, cap);
-        laptop.addLaptop(inf<std::string, Laptop>);
+        laptop.addLaptop(inf<std::string, Laptop>["Laptop"], count);
         bool finish = false;
         while (!finish)
         {
-            bool flag = false;
-            std::cout << "Availible operations\n1. Get/Set efficiency, write 1 and print Get or Set or Add and value\n";
-            std::cout << "2. Get/Set processor clock frequency, write 2 and print Get or Set or Add and value\n";
-            std::cout << "3. Get/Set processor capacity, write 3 and print Get or Set or Add and value\n";
+            std::cout << "Availible operations\n1. Get/Set efficiency, write 1 and print Get or Set and value\n";
+            std::cout << "2. Get/Set processor clock frequency, write 2 and print Get or Set and value\n";
+            std::cout << "3. Get/Set processor capacity, write 3 and print Get or Set and value\n";
             std::cout << "4. Add element\n";
             std::cout << "5. Count of elements\n";
+            std::cout << "6. Count of diffrent elements\n";
+            std::cout << "7. Show diffrent elements\n";
             std::cout << "Enter number of operation: ";
             int k;
             std::cin >> k;
             std::string s;
             switch (k)
             {
-            case 1:
+            case 1: // Полностью протестирован
             {
                 std::cin >> s;
+                if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                {
+                    while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                    {
+                        std::cout << "Enter correct command: ";
+                        std::cin >> s;
+                    }
+                }
                 if (s == "Get" || s == "get")
                 {
                     std::cout << laptop.GetEfficienty() << std::endl;
                 }
-                else
+                if (s == "Set" || s == "set")
                 {
-                    if (s == "Set" || s == "set")
+                    std::string val;
+                    std::cin >> val;
+                    if (Digit(val))
                     {
-                        std::string val;
-                        std::cin >> val;
-                        if (isdigit(val))
+                        laptop.SetEfficienty(std::stoi(val));
+                    }
+                    else
+                    {
+                        while (!Digit(val))
                         {
-                            laptop.SetEfficienty(std::stoi(val));
+                            std::cout << "Enter correct value: ";
+                            std::cin >> val;
                         }
-                        else
-                        {
-                            while (s != "Set" || s != "set" || s != "Get" || s != "get")
-                            {
-                                std::cout << "Enter correct command: ";
-                                std::cin >> s;
-                                flag = true;
-                            }
-                        }
+                        laptop.SetEfficienty(std::stoi(val));
                     }
                 }
                 break;
@@ -295,38 +341,34 @@ int main()
             case 2:
             {
                 std::cin >> s;
-
+                if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                {
+                    while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                    {
+                        std::cout << "Enter correct command: ";
+                        std::cin >> s;
+                    }
+                }
                 if (s == "Get" || s == "get")
                 {
-                    std::cout << laptop.GetProcessor_clock_frequency() << std::endl;
+                    std::cout << laptop.GetProcessorClockFrequency() << std::endl;
                 }
-                else
+                if (s == "Set" || s == "set")
                 {
-                    if (s == "Set" || s == "set")
+                    std::string val;
+                    std::cin >> val;
+                    if (Digit(val))
                     {
-                        std::string val;
-                        std::cin >> val;
-                        if (isdigit(val))
-                        {
-                            laptop.SetProcessor_clock_frequency(std::stoi(val));
-                        }
-                        else
-                        {
-                            while ((!isdigit(val)))
-                            {
-                                std::cout << "Enter correct value: ";
-                                std::cin >> val;
-                            }
-                        }
+                        laptop.SetProcessorClockFrequency(std::stoi(val));
                     }
                     else
                     {
-                        while (s != "Set" || s != "set" || s != "Get" || s != "get")
+                        while (!Digit(val))
                         {
-                            std::cout << "Enter correct command: ";
-                            std::cin >> s;
-                            flag = true;
+                            std::cout << "Enter correct value: ";
+                            std::cin >> val;
                         }
+                        laptop.SetProcessorClockFrequency(std::stoi(val));
                     }
                 }
                 break;
@@ -334,37 +376,34 @@ int main()
             case 3:
             {
                 std::cin >> s;
+                if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                {
+                    while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                    {
+                        std::cout << "Enter correct command: ";
+                        std::cin >> s;
+                    }
+                }
                 if (s == "Get" || s == "get")
                 {
                     std::cout << laptop.GetProcessorCapacity() << std::endl;
                 }
-                else
+                if (s == "Set" || s == "set")
                 {
-                    if (s == "Set" || s == "set")
+                    std::string val;
+                    std::cin >> val;
+                    if (Digit(val))
                     {
-                        std::string val;
-                        std::cin >> val;
-                        if (isdigit(val))
-                        {
-                            laptop.SetProcessorCapacity(std::stoi(val));
-                        }
-                        else
-                        {
-                            while (!isdigit(val))
-                            {
-                                std::cout << "Enter correct value: ";
-                                std::cin >> val;
-                            }
-                        }
+                        laptop.SetProcessorCapacity(std::stoi(val));
                     }
                     else
                     {
-                        while (s != "Set" || s != "set" || s != "Get" || s != "get")
+                        while (!Digit(val))
                         {
-                            std::cout << "Enter correct command: ";
-                            std::cin >> s;
-                            flag = true;
+                            std::cout << "Enter correct value: ";
+                            std::cin >> val;
                         }
+                        laptop.SetProcessorCapacity(std::stoi(val));
                     }
                 }
                 break;
@@ -385,52 +424,71 @@ int main()
                 int cnt;
                 std::cin >> cnt;
                 Laptop laptop1(ef1, freq1, cap1);
-                laptop1.addLaptop(inf<std::string, Laptop>, cnt);
+                laptop1.addLaptop(inf<std::string, Laptop>["Laptop"], cnt);
                 break;
             }
             case 5:
             {
+                int ans = 0;
+                for (int i = 0; i < inf<std::string, Laptop>["Laptop"].size(); ++i)
+                {
+                    ans += inf<std::string, Laptop>["Laptop"][i].size();
+                }
+                std::cout << ans << std::endl;
+                break;
+            }
+            case 6:
+            {
                 std::cout << inf<std::string, Laptop>["Laptop"].size() << std::endl;
+                break;
+            }
+            case 7:
+            {
+                std::cout << std::endl;
+                for (int i = 0; i < inf<std::string, Laptop>["Laptop"].size(); ++i)
+                {
+                    std::cout << "Efficienty: " << inf<std::string, Laptop>["Laptop"][i][0].GetEfficienty() << std::endl;
+                    std::cout << "Processor clock frequency: " << inf<std::string, Laptop>["Laptop"][i][0].GetProcessorClockFrequency() << std::endl;
+                    std::cout << "Processor capacity: " << inf<std::string, Laptop>["Laptop"][i][0].GetProcessorCapacity() << std::endl;
+                    std::cout << std::endl;
+                }
+                std::cout << std::endl;
                 break;
             }
             default:
             {
-                while (k < 1 || k > 5)
+                while (k < 1 || k > 7)
                 {
                     std::cout << "Enter correct number of command: ";
                     std::cin >> k;
-                    flag = true;
                 }
             }
-                //     if (flag)
-                //     {
-                //         std::cout << "If you want to continue to work with class Laptop press [y] else press [n]: ";
-                //         char symbol;
-                //         std::cin >> symbol;
-                //         if (symbol == 'n')
-                //         {
-                //             finish = true;
-                //         }
-                //         else
-                //         {
-                //             if (symbol != 'y')
-                //             {
-                //                 while (symbol != 'y' && symbol != 'n')
-                //                 {
-                //                     std::cout << "Enter correct command: ";
-                //                     std::cin >> symbol;
-                //                 }
-                //             }
-                //             else
-                //             {
-                //                 continue;
-                //             }
-                //         }
-                //     }
-                // }
-                // break;
+            }
+
+            std::cout << "If you want to continue to work with class Laptop press [y] else press [n]: ";
+            char symbol;
+            std::cin >> symbol;
+            if (symbol == 'n')
+            {
+                finish = true;
+            }
+            else
+            {
+                if (symbol != 'y')
+                {
+                    while (symbol != 'y' && symbol != 'n')
+                    {
+                        std::cout << "Enter correct command: ";
+                        std::cin >> symbol;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
             }
         }
+        break;
     }
     case 2:
     {
@@ -441,7 +499,8 @@ int main()
         bool withMe;
         std::cin >> withMe;
         Pen pen(charge, withMe);
-    }   break;
+    }
+    break;
     case 3:
     {
         std::cout << "Enter height of the table: ";
@@ -483,7 +542,6 @@ int main()
             std::cout << "Enter correct number of object: ";
             std::cin >> n;
         }
-
-        return 0;
     }
+    return 0;
 }
