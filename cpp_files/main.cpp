@@ -83,7 +83,7 @@ private:
 class Parameter
 {
 public:
-    Parameter() = default;
+    Parameter(std::string on, int sn, std::string wtd) : objectName(on), serialNumber(sn), whatToDo(wtd){};
     ~Parameter() = default;
     std::string getObjectName()
     {
@@ -94,22 +94,22 @@ public:
         this->objectName = str;
     }
 
-    int getserialNumber()
+    int getSerialNumber()
     {
         return this->serialNumber;
     }
 
-    void setserialNumber(int val)
+    void setSerialNumber(int val)
     {
         this->serialNumber = val;
     }
 
-    std::string getwhatToDo()
+    std::string getWhatToDo()
     {
         return this->whatToDo;
     }
 
-    void setwhatToDo(std::string &str)
+    void setWhatToDo(std::string &str)
     {
         this->whatToDo = str;
     }
@@ -122,7 +122,7 @@ public:
         {
             if (!std::empty(v[i]))
             {
-                ans = (v[i][0].getserialNumber() == this->serialNumber) && (v[i][0].getwhatToDo() == this->whatToDo);
+                ans = (v[i][0].getSerialNumber() == this->serialNumber) && (v[i][0].getWhatToDo() == this->whatToDo);
             }
             if (ans)
             {
@@ -291,6 +291,7 @@ int main()
     {
         std::cout << "You can choose:\n1. Academic object\n2. Abstract object\n3. Exit" << std::endl;
         std::cin >> classOfObject;
+        std::set<std::string> namesOfClasses;
         switch (classOfObject)
         {
         case 1:
@@ -587,8 +588,8 @@ int main()
                             }
                             cnt = std::stoi(cntstr);
                         }
-                        Laptop laptop1(ef1, freq1, cap1);
-                        laptop1.addLaptop(inf<std::string, Laptop>["Laptop"], cnt);
+                        Laptop newLaptop(ef1, freq1, cap1);
+                        newLaptop.addLaptop(inf<std::string, Laptop>["Laptop"], cnt);
                         break;
                     }
                     case 5:
@@ -756,10 +757,248 @@ int main()
                 }
             }
         }
-        case 2:{
+        case 2:
+        {
+            std::cout << "Enter name of object: ";
+            std::string className;
+            std::cin >> className;
+
+            std::cout << std::endl;
+            std::cout << "Enter count of objects: ";
+            int ocnt;
+            std::cin >> ocnt;
+            std::cout << "Enter serial number of object: ";
+            int serialNumber;
+            std::cin >> serialNumber;
+            std::cout << std::endl;
+            std::cout << "What action would you like to do with object: ";
+            std::string action;
+            std::getline(std::cin, action);
+            std::cout << std::endl;
+            Parameter parameter(className, serialNumber, action);
+            parameter.addParam(inf<std::string, Parameter>[className], ocnt);
+            bool finish = false;
+            int countOfElements = ocnt;
+            while (!finish)
+            {
+                std::cout << "Availible operations:\n1. Get name of class, write 1 and get\n";
+                std::cout << "2. Get/Set serial number, write 2 and print Get or Set and value\n";
+                std::cout << "3. Get/Set action, write 3 and print Get or Set and value\n";
+                std::cout << "4. Add element\n";
+                std::cout << "5. Count of elements\n";
+                std::cout << "6. Count of diffrent elements\n";
+                std::cout << "7. Show diffrent elements\n";
+                std::cout << "8. Delete all elements\n";
+                std::cout << "9. Return to abstract object menu\n";
+                std::cout << "Enter number of operation: ";
+                bool flag = false;
+                int k;
+                std::cin >> k;
+                std::string s;
+                switch (k)
+                {
+                case 1:
+                {
+                    std::cin >> s;
+                    if (s != "Get" || s != "get")
+                    {
+                        while (s != "Get" && s != "get")
+                        {
+                            std::cout << "Enter correct command: ";
+                            std::cin >> s;
+                        }
+                    }
+                    else
+                    {
+                        std::cout << parameter.getObjectName() << std::endl;
+                    }
+                    break;
+                }
+                case 2:
+                {
+                    std::cin >> s;
+                    if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                    {
+                        while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                        {
+                            std::cout << "Enter correct command: ";
+                            std::cin >> s;
+                        }
+                    }
+                    if (s == "Get" || s == "get")
+                    {
+                        std::cout << parameter.getSerialNumber() << std::endl;
+                    }
+                    if (s == "Set" || s == "set")
+                    {
+                        std::string val;
+                        std::cin >> val;
+                        if (Digit(val))
+                        {
+                            parameter.setSerialNumber(std::stoi(val));
+                        }
+                        else
+                        {
+                            while (!Digit(val))
+                            {
+                                std::cout << "Enter correct value: ";
+                                std::cin >> val;
+                            }
+                            parameter.setSerialNumber(std::stoi(val));
+                        }
+                    }
+                    break;
+                }
+                case 3:
+                {
+                    std::cin >> s;
+                    if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                    {
+                        while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                        {
+                            std::cout << "Enter correct command: ";
+                            std::cin >> s;
+                        }
+                    }
+                    if (s == "Get" || s == "get")
+                    {
+                        std::cout << parameter.getWhatToDo() << std::endl;
+                    }
+                    if (s == "Set" || s == "set")
+                    {
+                        std::string val;
+                        std::getline(std::cin, val);
+                        if (Digit(val))
+                        {
+                            parameter.setWhatToDo(val);
+                        }
+                        else
+                        {
+                            while (!Digit(val))
+                            {
+                                std::cout << "Enter correct value: ";
+                                std::cin >> val;
+                            }
+                            parameter.setWhatToDo(val);
+                        }
+                    }
+                    break;
+                }
+                case 4:
+                {
+                    std::cout << "Enter parametrs of new jbject:\n";
+                    std::cout << "Enter name of new class: ";
+                    std::string newClassName;
+                    std::cin >> newClassName;
+                    std::cout << "Enter serial number: ";
+                    int newSerialNumber;
+                    std::cin >> newSerialNumber;
+                    std::cout << "Enter what do you want to do: ";
+                    std::string action;
+                    std::getline(std::cin, action);
+                    std::cout << "Enter count of objects: ";
+                    std::string cntstr;
+                    int cnt;
+                    std::cin >> cntstr;
+                    if (Digit(cntstr))
+                    {
+                        cnt = std::stoi(cntstr);
+                    }
+                    else
+                    {
+                        while (!Digit(cntstr))
+                        {
+                            std::cout << "Enter correct efficienty: ";
+                            std::cin >> cntstr;
+                        }
+                        cnt = std::stoi(cntstr);
+                    }
+                    Parameter newParameter(newClassName, newSerialNumber, action);
+                    newParameter.addParam(inf<std::string, Parameter>[newClassName], cnt);
+                    countOfElements += cnt;
+                    namesOfClasses.insert(newClassName);
+                    break;
+                }
+                case 5:
+                {
+                    std::cout << countOfElements << std::endl;
+                    break;
+                }
+                case 6:
+                {
+                    std::cout << namesOfClasses.size() << std::endl;
+                    break;
+                }
+                case 7:
+                {
+                    std::cout << std::endl;
+                    for (auto it = namesOfClasses.begin(); it != namesOfClasses.end(); ++it)
+                    {
+                        for (int j = 0; j < inf<std::string, Parameter>[*it].size(); j++)
+                        {
+                            std::cout << "Name of class: " << inf<std::string, Parameter>[*it][j][0].getObjectName()<<std::endl;
+                            std::cout << "Serial number: " << inf<std::string, Parameter>[*it][j][0].getSerialNumber() << std::endl;
+                            std::cout << "What you can do with this object: " << inf<std::string, Parameter>[*it][j][0].getWhatToDo() << std::endl;
+                            std::cout << std::endl;
+                        }
+                    }
+                    std::cout << std::endl;
+                    break;
+                }
+                case 8:
+                {
+                    for(auto it = namesOfClasses.begin(); it!= namesOfClasses.end(); ++it){
+                        inf<std::string, Parameter>[*it].clear();
+                    }
+                    break;
+                }
+                case 9:
+                {
+                    finish = true;
+                    flag = true;
+                    break;
+                }
+                default:
+                {
+                    while (k < 1 || k > 9)
+                    {
+                        std::cout << "Enter correct number of command: ";
+                        std::cin >> k;
+                    }
+                    break;
+                }
+                }
+
+                if (!flag)
+                {
+                    std::cout << "If you want to continue to work with class Laptop press [y] else press [n]: ";
+                    char symbol;
+                    std::cin >> symbol;
+                    if (symbol == 'n')
+                    {
+                        finish = true;
+                    }
+                    else
+                    {
+                        if (symbol != 'y')
+                        {
+                            while (symbol != 'y' && symbol != 'n')
+                            {
+                                std::cout << "Enter correct command: ";
+                                std::cin >> symbol;
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+            }
             break;
         }
-        case 3:{
+        case 3:
+        {
             return 0;
         }
 
