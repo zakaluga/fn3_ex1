@@ -16,53 +16,106 @@ public:
     Identification(double positionX, double positionY, double positionZ, double length, double width, double height, uint32_t id):
      _positionX(positionX), _positionY(positionY), _positionZ(positionZ), _length(length), _width(width), _height(height), _id(id) {       
     }
-    double SetPositionX(double val) {
+//Position block start
+    void SetPositionX(double val) {
         _positionX = val;
     }
     double GetPositionX() {
         return this->_positionX;
     }
-    double SetPositionY(double val) {
+    
+    void SetPositionY(double val) {
         _positionY = val;
     }
     double GetPositionY() {
         return this->_positionY;
     }
-    double SetPositionZ(double val) {
+    
+    void SetPositionZ(double val) {
         _positionZ = val;
     }
     double GetPositionZ() {
         return this->_positionZ;
     }
-    void move(double x, double y, double z) {
-        _positionX = x;
-        _positionY = y;
-        _positionZ = z;
-    }
-    void def(uint32_t id) {
-        _id = id;
-    }
+//Position block end
 
+//Dimensions block start
+    void SetLength(double val){
+        _length = val;
+    }
+    double GetLength(){
+        return this->_length;
+    }
+    
+    void SetWidth(double val){
+        _width = val;
+    }
+    double GetWidth(){
+        return this->_width;
+    }
+    
+    void SetHeight(double val){
+        _height = val;
+    }
+    double GetHeight() {
+        return this->_height;
+    }
+//Dimensions block end
+
+//Id block start
+    void SetId(uint32_t val) {
+        _id = val;
+    }
+    uint32_t GetId() {
+        return this->_id;
+    }
+//Id block end
+
+//Cout block start
+
+
+
+//Cout block end
 };
 
 
 class Table {
 private:
-
+    std::string _material = "";
 public:
     Identification _ids;
-    Table(Identification ids) : _ids(ids){}
+    Table(Identification ids, std::string material) : _ids(ids), _material(material){}
     
-    void printInfo(){}
+    //Material block start
+    void SetMaterial(std::string val) {
+        _material = val;
+    }
+    std::string GetMaterial() {
+        return this->_material;
+    }
+    //Material block end
+
+    void printInfo(){
+        std::cout << "\n Table: \n" << "id: ";
+    }
     ~Table() = default;
 };
 class Computer {
 private:
-
+    double _cpuSpeed;
 public:
     Identification _ids;
-    Computer(Identification ids) : _ids(ids){}
+    Computer(Identification ids, double cpuSpeed) : _ids(ids), _cpuSpeed(cpuSpeed){}
     
+    //CpuSpeed block start
+    void SetCpuCSpeed(double val) {
+        _cpuSpeed = val;
+    }
+    double GetCpuSpeed() {
+        return this->_cpuSpeed;
+    }
+    //CpuSpeed block end
+
     void printInfo(){}
     ~Computer() = default;
 };
