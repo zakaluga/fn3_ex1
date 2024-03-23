@@ -118,7 +118,7 @@ public:
     int isExist(std::vector<std::vector<T>> v)
     {
         bool ans = false;
-        for (int i = 0; i < v.size.size(); ++i)
+        for (int i = 0; i < v.size(); ++i)
         {
             if (!std::empty(v[i]))
             {
@@ -211,13 +211,43 @@ public:
         this->material = val;
     }
 
-    template <class T, class U>
-    void addTable(std::map<T, std::vector<U>> &inf, int cnt = 1)
+    template <class T>
+    int isExist(std::vector<std::vector<T>> v)
     {
-
-        for (int i = 0; i < cnt; ++i)
+        bool ans = false;
+        for (int i = 0; i < v.size(); ++i)
         {
-            inf["Table"].push_back(*this);
+            if (!std::empty(v[i]))
+            {
+                ans = (v[i][0].height == this->height) &&
+                      (v[i][0].lenght == this->lenght) &&
+                      (v[i][0].width == this->width) &&
+                      (v[i][0].weight == this->weight) &&
+                      (v[i][0].material == this->material);
+            }
+            if (ans)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    template <class T>
+    void addTable(std::vector<std::vector<T>> &inf, int cnt = 1)
+    {
+        int t = this->isExist(inf);
+        if (t >= 0)
+        {
+            for (int i = 0; i < cnt; ++i)
+            {
+                inf[t].push_back(*this);
+            }
+        }
+        else
+        {
+            std::vector<Table> v(cnt, *this);
+            inf.push_back(v);
         }
     }
 
@@ -229,11 +259,11 @@ private:
     std::string material = "";
 };
 
-class Notebook
+class Book
 {
 public:
-    Notebook(int k, int pn) : kol(k), page_number(pn) {}
-    ~Notebook() = default;
+    Book(int k, int pn) : kol(k), pageNumber(pn) {}
+    ~Book() = default;
 
     int GetKol()
     {
@@ -242,12 +272,12 @@ public:
 
     int GetPageNumber()
     {
-        return this->page_number;
+        return this->pageNumber;
     }
 
     void SetPageNumber(int val)
     {
-        this->page_number = val;
+        this->pageNumber = val;
     }
 
     void MakeUsed()
@@ -255,19 +285,51 @@ public:
         this->Isnew = false;
     }
 
-    template <class T, class U>
-    void addBook(std::map<T, std::vector<U>> &inf, int cnt = 1)
+    bool GetIsnew()
     {
+        return this->Isnew;
+    }
 
-        for (int i = 0; i < cnt; ++i)
+    template <class T>
+    int isExist(std::vector<std::vector<T>> v)
+    {
+        bool ans = false;
+        for (int i = 0; i < v.size(); ++i)
         {
-            inf["Book"].push_back(*this);
+            if (!std::empty(v[i]))
+            {
+                ans = (v[i][0].kol == this->kol) &&
+                      (v[i][0].pageNumber == this->pageNumber);
+            }
+            if (ans)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    template <class T>
+    void addBook(std::vector<std::vector<T>> &inf, int cnt = 1)
+    {
+        int t = this->isExist(inf);
+        if (t >= 0)
+        {
+            for (int i = 0; i < cnt; ++i)
+            {
+                inf[t].push_back(*this);
+            }
+        }
+        else
+        {
+            std::vector<Book> v(cnt, *this);
+            inf.push_back(v);
         }
     }
 
 private:
     int kol = 0;
-    int page_number = 0;
+    int pageNumber = 0;
     bool Isnew = true;
 };
 
@@ -296,7 +358,7 @@ int main()
         {
         case 1:
         {
-            std::cout << "You can choose:\n1. Laptop\n2. Table\n3. Notebook\n4. Exit to main menu" << std::endl;
+            std::cout << "You can choose:\n1. Laptop\n2. Table\n3. Book\n4. Exit to main menu" << std::endl;
             std::cout << "Enter number of object: ";
 
             std::string nstr;
@@ -705,9 +767,368 @@ int main()
                 int weight;
                 std::cin >> weight;
                 std::cout << "Enter material of the table: ";
-                std::string mat;
-                std::cin >> mat;
-                Table table(height, len, width, weight, mat);
+                std::string material;
+                std::getline(std::cin, material);
+                std::getline(std::cin, material);
+                Table table(height, len, width, weight, material);
+                table.addTable(inf<std::string, Table>["Table"], count);
+                bool finish = false;
+                while (!finish)
+                {
+                    std::cout << "Availible operations\n1. Get/Set height, write 1 and print Get or Set and value\n";
+                    std::cout << "2. Get/Set lenght, write 2 and print Get or Set and value\n";
+                    std::cout << "3. Get/Set width, write 3 and print Get or Set and value\n";
+                    std::cout << "4. Get/Set weight, write 2 and print Get or Set and value\n";
+                    std::cout << "5. Get/Set material, write 2 and print Get or Set and value\n";
+                    std::cout << "6. Add element\n";
+                    std::cout << "7. Count of elements\n";
+                    std::cout << "8. Count of diffrent elements\n";
+                    std::cout << "9. Show diffrent elements\n";
+                    std::cout << "10. Delete all Laptop elements\n";
+                    std::cout << "11. Return to academic object menu\n";
+                    std::cout << "Enter number of operation: ";
+                    bool flag = false;
+                    int k;
+                    std::cin >> k;
+                    std::string s;
+                    switch (k)
+                    {
+                    case 1: // Полностью протестирован
+                    {
+                        std::cin >> s;
+                        if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                        {
+                            while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                            {
+                                std::cout << "Enter correct command: ";
+                                std::cin >> s;
+                            }
+                        }
+                        if (s == "Get" || s == "get")
+                        {
+                            std::cout << table.GetHeight() << std::endl;
+                        }
+                        if (s == "Set" || s == "set")
+                        {
+                            std::string val;
+                            std::cin >> val;
+                            if (Digit(val))
+                            {
+                                table.SetHeight(std::stoi(val));
+                            }
+                            else
+                            {
+                                while (!Digit(val))
+                                {
+                                    std::cout << "Enter correct value: ";
+                                    std::cin >> val;
+                                }
+                                table.SetHeight(std::stoi(val));
+                            }
+                        }
+                        break;
+                    }
+                    case 2:
+                    {
+                        std::cin >> s;
+                        if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                        {
+                            while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                            {
+                                std::cout << "Enter correct command: ";
+                                std::cin >> s;
+                            }
+                        }
+                        if (s == "Get" || s == "get")
+                        {
+                            std::cout << table.GetLenght() << std::endl;
+                        }
+                        if (s == "Set" || s == "set")
+                        {
+                            std::string val;
+                            std::cin >> val;
+                            if (Digit(val))
+                            {
+                                table.SetLenght(std::stoi(val));
+                            }
+                            else
+                            {
+                                while (!Digit(val))
+                                {
+                                    std::cout << "Enter correct value: ";
+                                    std::cin >> val;
+                                }
+                                table.SetLenght(std::stoi(val));
+                            }
+                        }
+                        break;
+                    }
+                    case 3:
+                    {
+                        std::cin >> s;
+                        if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                        {
+                            while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                            {
+                                std::cout << "Enter correct command: ";
+                                std::cin >> s;
+                            }
+                        }
+                        if (s == "Get" || s == "get")
+                        {
+                            std::cout << table.GetWidth() << std::endl;
+                        }
+                        if (s == "Set" || s == "set")
+                        {
+                            std::string val;
+                            std::cin >> val;
+                            if (Digit(val))
+                            {
+                                table.SetWidth(std::stoi(val));
+                            }
+                            else
+                            {
+                                while (!Digit(val))
+                                {
+                                    std::cout << "Enter correct value: ";
+                                    std::cin >> val;
+                                }
+                                table.SetWidth(std::stoi(val));
+                            }
+                        }
+                        break;
+                    }
+                    case 4:
+                    {
+                        std::cin >> s;
+                        if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                        {
+                            while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                            {
+                                std::cout << "Enter correct command: ";
+                                std::cin >> s;
+                            }
+                        }
+                        if (s == "Get" || s == "get")
+                        {
+                            std::cout << table.GetWeight() << std::endl;
+                        }
+                        if (s == "Set" || s == "set")
+                        {
+                            std::string val;
+                            std::cin >> val;
+                            if (Digit(val))
+                            {
+                                table.SetWeight(std::stoi(val));
+                            }
+                            else
+                            {
+                                while (!Digit(val))
+                                {
+                                    std::cout << "Enter correct value: ";
+                                    std::cin >> val;
+                                }
+                                table.SetWeight(std::stoi(val));
+                            }
+                        }
+                        break;
+                    }
+                    case 5:
+                    {
+                        std::cin >> s;
+                        if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                        {
+                            while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                            {
+                                std::cout << "Enter correct command: ";
+                                std::cin >> s;
+                            }
+                        }
+                        if (s == "Get" || s == "get")
+                        {
+                            std::cout << table.GetMaterial() << std::endl;
+                        }
+                        if (s == "Set" || s == "set")
+                        {
+                            std::string val;
+                            std::cin >> val;
+                            table.SetMaterial(val);
+                        }
+                        break;
+                    }
+                    case 6:
+                    {
+                        std::cout << "Enter parametrs of new Table:\n";
+                        std::cout << "Enter height: ";
+                        int newHeight;
+                        std::string newHeightstr;
+                        std::cin >> newHeightstr;
+                        if (Digit(newHeightstr))
+                        {
+                            newHeight = std::stoi(newHeightstr);
+                        }
+                        else
+                        {
+                            while (!Digit(newHeightstr))
+                            {
+                                std::cout << "Enter correct height: ";
+                                std::cin >> newHeightstr;
+                            }
+                            newHeight = std::stoi(newHeightstr);
+                        }
+                        std::cout << "Enter lenght: ";
+                        std::string newLenstr;
+                        int newLen;
+                        std::cin >> newLenstr;
+                        if (Digit(newLenstr))
+                        {
+                            newLen = std::stoi(newLenstr);
+                        }
+                        else
+                        {
+                            while (!Digit(newLenstr))
+                            {
+                                std::cout << "Enter correct lenght: ";
+                                std::cin >> newLenstr;
+                            }
+                            newLen = std::stoi(newLenstr);
+                        }
+                        std::cout << "Enter width: ";
+                        std::string newWidthstr;
+                        int newWidth;
+                        std::cin >> newWidthstr;
+                        if (Digit(newWidthstr))
+                        {
+                            newWidth = std::stoi(newWidthstr);
+                        }
+                        else
+                        {
+                            while (!Digit(newWidthstr))
+                            {
+                                std::cout << "Enter correct width: ";
+                                std::cin >> newWidthstr;
+                            }
+                            newWidth = std::stoi(newWidthstr);
+                        }
+                        std::cout << "Enter weight: ";
+                        std::string newWeightstr;
+                        int newWeight;
+                        std::cin >> newWeightstr;
+                        if (Digit(newWeightstr))
+                        {
+                            newWeight = std::stoi(newWeightstr);
+                        }
+                        else
+                        {
+                            while (!Digit(newWeightstr))
+                            {
+                                std::cout << "Enter correct width: ";
+                                std::cin >> newWeightstr;
+                            }
+                            newWeight = std::stoi(newWidthstr);
+                        }
+                        std::cout << "Enter material: ";
+                        std::string newMaterial;
+                        std::cin >> newMaterial;
+                        std::cout << "Enter count of objects: ";
+                        std::string cntstr;
+                        int cnt;
+                        std::cin >> cntstr;
+                        if (Digit(cntstr))
+                        {
+                            cnt = std::stoi(cntstr);
+                        }
+                        else
+                        {
+                            while (!Digit(cntstr))
+                            {
+                                std::cout << "Enter correct count: ";
+                                std::cin >> cntstr;
+                            }
+                            cnt = std::stoi(cntstr);
+                        }
+                        Table newTable(newHeight, newLen, newWidth, newWeight, newMaterial);
+                        newTable.addTable(inf<std::string, Table>["Table"], cnt);
+                        break;
+                    }
+                    case 7:
+                    {
+                        int ans = 0;
+                        for (int i = 0; i < inf<std::string, Table>["Table"].size(); ++i)
+                        {
+                            ans += inf<std::string, Table>["Table"][i].size();
+                        }
+                        std::cout << ans << std::endl;
+                        break;
+                    }
+                    case 8:
+                    {
+                        std::cout << inf<std::string, Table>["Table"].size() << std::endl;
+                        break;
+                    }
+                    case 9:
+                    {
+                        std::cout << std::endl;
+                        for (int i = 0; i < inf<std::string, Table>["Table"].size(); ++i)
+                        {
+                            std::cout << "Height: " << inf<std::string, Table>["Table"][i][0].GetHeight() << std::endl;
+                            std::cout << "Lenght: " << inf<std::string, Table>["Table"][i][0].GetLenght() << std::endl;
+                            std::cout << "Width: " << inf<std::string, Table>["Table"][i][0].GetWidth() << std::endl;
+                            std::cout << "Weight: " << inf<std::string, Table>["Table"][i][0].GetWeight() << std::endl;
+                            std::cout << "Material: " << inf<std::string, Table>["Table"][i][0].GetMaterial() << std::endl;
+                            std::cout << std::endl;
+                        }
+                        std::cout << std::endl;
+                        break;
+                    }
+                    case 10:
+                    {
+                        inf<std::string, Table>["Table"].clear();
+                        break;
+                    }
+                    case 11:
+                    {
+                        finish = true;
+                        flag = true;
+                        break;
+                    }
+                    default:
+                    {
+                        while (k < 1 || k > 11)
+                        {
+                            std::cout << "Enter correct number of command: ";
+                            std::cin >> k;
+                        }
+                        break;
+                    }
+                    }
+
+                    if (!flag)
+                    {
+                        std::cout << "If you want to continue to work with class Laptop press [y] else press [n]: ";
+                        char symbol;
+                        std::cin >> symbol;
+                        if (symbol == 'n')
+                        {
+                            finish = true;
+                        }
+                        else
+                        {
+                            if (symbol != 'y')
+                            {
+                                while (symbol != 'y' && symbol != 'n')
+                                {
+                                    std::cout << "Enter correct command: ";
+                                    std::cin >> symbol;
+                                }
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                }
                 break;
             }
             case 3:
@@ -732,30 +1153,216 @@ int main()
                 }
 
                 std::cout << std::endl;
-                std::cout << "Enter kol pages of notebook: ";
+                std::cout << "Enter kol pages of Book: ";
                 int kol;
                 std::cin >> kol;
-                std::cout << "Enter current page of notebook: ";
+                std::cout << "Enter current page of Book: ";
                 int curPage;
                 std::cin >> curPage;
-                Notebook notebook(kol, curPage);
+                Book book(kol, curPage);
                 if (curPage != 0)
                 {
-                    notebook.MakeUsed();
+                    book.MakeUsed();
                 }
-                break;
+                book.addBook(inf<std::string, Book>["Book"], count);
+                bool finish = false;
+                while (!finish)
+                {
+                    std::cout << "Availible operations\n1. Get quantity of pages, write 1 and print Get\n";
+                    std::cout << "2. Get/Set number of current page, write 2 and print Get or Set and value\n";
+                    std::cout << "3. Add element\n";
+                    std::cout << "4. Count of elements\n";
+                    std::cout << "5. Count of diffrent elements\n";
+                    std::cout << "6. Show diffrent elements\n";
+                    std::cout << "7. Delete all books\n";
+                    std::cout << "8. Return to main menu\n";
+                    std::cout << "Enter number of operation: ";
+                    bool flag = false;
+                    int k;
+                    std::cin >> k;
+                    std::string s;
+                    switch (k)
+                    {
+                    case 1:
+                    {
+                        std::cin >> s;
+                        if (s != "Get" || s != "get")
+                        {
+                            while (s != "Get" && s != "get")
+                            {
+                                std::cout << "Enter correct command: ";
+                                std::cin >> s;
+                            }
+                            std::cout << book.GetKol() << std::endl;
+                        }
+                        break;
+                    }
+                    case 2:
+                    {
+                        std::cin >> s;
+                        if (s != "Set" || s != "set" || s != "Get" || s != "get")
+                        {
+                            while (s != "Set" && s != "set" && s != "Get" && s != "get")
+                            {
+                                std::cout << "Enter correct command: ";
+                                std::cin >> s;
+                            }
+                        }
+                        if (s == "Get" || s == "get")
+                        {
+                            std::cout << book.GetPageNumber() << std::endl;
+                        }
+                        if (s == "Set" || s == "set")
+                        {
+                            std::string val;
+                            std::cin >> val;
+                            if (Digit(val))
+                            {
+                                book.SetPageNumber(std::stoi(val));
+                            }
+                            else
+                            {
+                                while (!Digit(val))
+                                {
+                                    std::cout << "Enter correct value: ";
+                                    std::cin >> val;
+                                }
+                                book.SetPageNumber(std::stoi(val));
+                            }
+                        }
+                        break;
+                    }
+                    case 3:
+                    {
+                        std::cout << "Enter parametrs of new book:\n";
+                        std::cout << std::endl;
+                        std::cout << "Enter kol pages of Book: ";
+                        int newKol;
+                        std::cin >> newKol;
+                        std::cout << "Enter current page of Book: ";
+                        int newCurPage;
+                        std::cin >> newCurPage;
+                        Book newBook(newKol, newCurPage);
+                        if (newCurPage != 0)
+                        {
+                            newBook.MakeUsed();
+                        }
+                        std::cout << "Enter count of objects: ";
+                        std::string cntstr;
+                        int cnt;
+                        std::cin >> cntstr;
+                        if (Digit(cntstr))
+                        {
+                            cnt = std::stoi(cntstr);
+                        }
+                        else
+                        {
+                            while (!Digit(cntstr))
+                            {
+                                std::cout << "Enter correct count: ";
+                                std::cin >> cntstr;
+                            }
+                            cnt = std::stoi(cntstr);
+                        }
+                        newBook.addBook(inf<std::string, Book>["Book"], cnt);
+                        break;
+                    }
+                    case 4:
+                    {
+                        int ans = 0;
+                        for (int i = 0; i < inf<std::string, Book>["Book"].size(); ++i)
+                        {
+                            ans += inf<std::string, Book>["Book"][i].size();
+                        }
+                        std::cout << ans << std::endl;
+                        break;
+                    }
+                    case 5:
+                    {
+                        std::cout << inf<std::string, Book>["Book"].size() << std::endl;
+                        break;
+                    }
+                    case 6:
+                    {
+                        std::cout << std::endl;
+                        for (int i = 0; i < inf<std::string, Book>["Book"].size(); ++i)
+                        {
+                            std::cout << "Quantity of pages: " << inf<std::string, Book>["Book"][i][0].GetKol() << std::endl;
+                            std::cout << "Current page: " << inf<std::string, Book>["Book"][i][0].GetPageNumber() << std::endl;
+                            if (inf<std::string, Book>["Book"][i][0].GetIsnew())
+                            {
+                                std::cout << "Book is new" << std::endl;
+                            }
+                            else
+                            {
+                                std::cout << "Book is used" << std::endl;
+                            }
+                            std::cout << std::endl;
+                        }
+                        std::cout << std::endl;
+                        break;
+                    }
+                    case 7:
+                    {
+                        inf<std::string, Book>["Book"].clear();
+                        break;
+                    }
+                    case 8:
+                    {
+                        finish = true;
+                        flag = true;
+                        break;
+                    }
+                    default:
+                    {
+                        while (k < 1 || k > 8)
+                        {
+                            std::cout << "Enter correct number of command: ";
+                            std::cin >> k;
+                        }
+                        break;
+                    }
+                    }
+
+                    if (!flag)
+                    {
+                        std::cout << "If you want to continue to work with class Laptop press [y] else press [n]: ";
+                        char symbol;
+                        std::cin >> symbol;
+                        if (symbol == 'n')
+                        {
+                            finish = true;
+                        }
+                        else
+                        {
+                            if (symbol != 'y')
+                            {
+                                while (symbol != 'y' && symbol != 'n')
+                                {
+                                    std::cout << "Enter correct command: ";
+                                    std::cin >> symbol;
+                                }
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                }
             }
             case 4:
             {
                 break;
             }
             default:
-                while (n < 1 || n > 3)
+                while (n < 1 || n > 4)
                 {
                     std::cout << "Enter correct number of object: ";
                     std::cin >> n;
                 }
             }
+            break;
         }
         case 2:
         {
@@ -770,13 +1377,14 @@ int main()
             std::cout << "Enter serial number of object: ";
             int serialNumber;
             std::cin >> serialNumber;
-            std::cout << std::endl;
-            std::cout << "What action would you like to do with object: ";
+            std::cout << "What action would you like to do with object:\n";
             std::string action;
+            std::getline(std::cin, action);
             std::getline(std::cin, action);
             std::cout << std::endl;
             Parameter parameter(className, serialNumber, action);
             parameter.addParam(inf<std::string, Parameter>[className], ocnt);
+            namesOfClasses.insert(className);
             bool finish = false;
             int countOfElements = ocnt;
             while (!finish)
@@ -789,7 +1397,7 @@ int main()
                 std::cout << "6. Count of diffrent elements\n";
                 std::cout << "7. Show diffrent elements\n";
                 std::cout << "8. Delete all elements\n";
-                std::cout << "9. Return to abstract object menu\n";
+                std::cout << "9. Return to main menu\n";
                 std::cout << "Enter number of operation: ";
                 bool flag = false;
                 int k;
@@ -807,6 +1415,7 @@ int main()
                             std::cout << "Enter correct command: ";
                             std::cin >> s;
                         }
+                        std::cout << parameter.getObjectName() << std::endl;
                     }
                     else
                     {
@@ -868,19 +1477,8 @@ int main()
                     {
                         std::string val;
                         std::getline(std::cin, val);
-                        if (Digit(val))
-                        {
-                            parameter.setWhatToDo(val);
-                        }
-                        else
-                        {
-                            while (!Digit(val))
-                            {
-                                std::cout << "Enter correct value: ";
-                                std::cin >> val;
-                            }
-                            parameter.setWhatToDo(val);
-                        }
+                        std::getline(std::cin, val);
+                        parameter.setWhatToDo(val);
                     }
                     break;
                 }
@@ -894,8 +1492,9 @@ int main()
                     int newSerialNumber;
                     std::cin >> newSerialNumber;
                     std::cout << "Enter what do you want to do: ";
-                    std::string action;
-                    std::getline(std::cin, action);
+                    std::string newAction;
+                    std::getline(std::cin, newAction);
+                    std::getline(std::cin, newAction);
                     std::cout << "Enter count of objects: ";
                     std::string cntstr;
                     int cnt;
@@ -908,12 +1507,12 @@ int main()
                     {
                         while (!Digit(cntstr))
                         {
-                            std::cout << "Enter correct efficienty: ";
+                            std::cout << "Enter correct count of objects: ";
                             std::cin >> cntstr;
                         }
                         cnt = std::stoi(cntstr);
                     }
-                    Parameter newParameter(newClassName, newSerialNumber, action);
+                    Parameter newParameter(newClassName, newSerialNumber, newAction);
                     newParameter.addParam(inf<std::string, Parameter>[newClassName], cnt);
                     countOfElements += cnt;
                     namesOfClasses.insert(newClassName);
@@ -936,7 +1535,7 @@ int main()
                     {
                         for (int j = 0; j < inf<std::string, Parameter>[*it].size(); j++)
                         {
-                            std::cout << "Name of class: " << inf<std::string, Parameter>[*it][j][0].getObjectName()<<std::endl;
+                            std::cout << "Name of class: " << inf<std::string, Parameter>[*it][j][0].getObjectName() << std::endl;
                             std::cout << "Serial number: " << inf<std::string, Parameter>[*it][j][0].getSerialNumber() << std::endl;
                             std::cout << "What you can do with this object: " << inf<std::string, Parameter>[*it][j][0].getWhatToDo() << std::endl;
                             std::cout << std::endl;
@@ -947,9 +1546,12 @@ int main()
                 }
                 case 8:
                 {
-                    for(auto it = namesOfClasses.begin(); it!= namesOfClasses.end(); ++it){
+                    for (auto it = namesOfClasses.begin(); it != namesOfClasses.end(); ++it)
+                    {
                         inf<std::string, Parameter>[*it].clear();
                     }
+                    namesOfClasses.clear();
+                    countOfElements = 0;
                     break;
                 }
                 case 9:
@@ -971,7 +1573,7 @@ int main()
 
                 if (!flag)
                 {
-                    std::cout << "If you want to continue to work with class Laptop press [y] else press [n]: ";
+                    std::cout << "If you want to continue to work with abstract class, press [y] else press [n]: ";
                     char symbol;
                     std::cin >> symbol;
                     if (symbol == 'n')
