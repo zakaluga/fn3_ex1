@@ -3,7 +3,8 @@
 
 #include <iostream>
 
-class Identification {
+
+class Identification {  //position, dimensions, idd
 private:
     double _positionX;
     double _positionY;
@@ -11,7 +12,7 @@ private:
     double _length; //x
     double _width;  //y
     double _height; //z
-    uint32_t _id;
+    uint32_t _id = 0;   //if item is not registered = 0
 public:
     Identification(double positionX, double positionY, double positionZ, double length, double width, double height, uint32_t id):
      _positionX(positionX), _positionY(positionY), _positionZ(positionZ), _length(length), _width(width), _height(height), _id(id) {       
@@ -79,7 +80,7 @@ public:
 };
 
 
-class Table {
+class Table {   //material, Identification
 private:
     std::string _material = "";
 public:
@@ -100,7 +101,7 @@ public:
     }
     ~Table() = default;
 };
-class Computer {
+class Computer {    //cpu speed, Identification
 private:
     double _cpuSpeed;
 public:
@@ -119,7 +120,7 @@ public:
     void printInfo(){}
     ~Computer() = default;
 };
-class Monitor {
+class Monitor { //resolution, Identification
 private:
     struct Resolution {
         uint32_t _x;
@@ -134,18 +135,12 @@ public:
 
     ~Monitor() = default;
 };
-class Laptop {
+class Unregistered {
 private:
-public: 
+
+public:
     Identification _ids;
-    Monitor _mon;
-    Laptop(Identification ids, Monitor mon, Computer comp): _ids(ids), _mon(mon) {} 
-
-    void printInfo() {
-
-    }
-
-    ~Laptop() = default;
+    Unregistered(Identification ids): _ids(ids) {}
 };
 
 #endif
