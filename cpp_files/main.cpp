@@ -3,7 +3,8 @@
 class Laptop
 {
 public:
-    Laptop(int EffVal, int ClockVal, int CapVal) : efficiency(EffVal), ProcessorClockFrequency(ClockVal), processor_capacity(CapVal) {}
+    Laptop(int EffVal, int ClockVal, int CapVal) : efficiency(EffVal), ProcessorClockFrequency(ClockVal), ProcessorCapacity(CapVal) {}
+    Laptop() = default;
     ~Laptop() = default;
 
     int GetEfficienty()
@@ -28,12 +29,12 @@ public:
 
     int GetProcessorCapacity()
     {
-        return this->processor_capacity;
+        return this->ProcessorCapacity;
     }
 
     void SetProcessorCapacity(int val)
     {
-        this->processor_capacity = val;
+        this->ProcessorCapacity = val;
     }
 
     template <class T>
@@ -44,7 +45,7 @@ public:
         {
             if (!std::empty(v[i]))
             {
-                ans = (v[i][0].processor_capacity == this->processor_capacity) &&
+                ans = (v[i][0].ProcessorCapacity == this->ProcessorCapacity) &&
                       (v[i][0].efficiency == this->efficiency) &&
                       (v[i][0].ProcessorClockFrequency == this->ProcessorClockFrequency);
             }
@@ -77,13 +78,14 @@ public:
 private:
     int efficiency = 0;
     int ProcessorClockFrequency = 0;
-    int processor_capacity = 0;
+    int ProcessorCapacity = 0;
 };
 
 class Parameter
 {
 public:
     Parameter(std::string on, int sn, std::string wtd) : objectName(on), serialNumber(sn), whatToDo(wtd){};
+    Parameter() = default;
     ~Parameter() = default;
     std::string getObjectName()
     {
@@ -159,6 +161,7 @@ class Table
 {
 public:
     Table(int h, int len, int wd, int w, std::string mat) : height(h), weight(w), lenght(len), width(wd), material(mat) {}
+    Table() = default;
     ~Table() = default;
 
     int GetHeight()
@@ -263,11 +266,17 @@ class Book
 {
 public:
     Book(int k, int pn) : kol(k), pageNumber(pn) {}
+    Book() = default;
     ~Book() = default;
 
     int GetKol()
     {
         return this->kol;
+    }
+
+    void SetKol(int val)
+    {
+        this->kol = val;
     }
 
     int GetPageNumber()
@@ -278,6 +287,14 @@ public:
     void SetPageNumber(int val)
     {
         this->pageNumber = val;
+        if (val > 0)
+        {
+            this->Isnew = false;
+        }
+        else
+        {
+            this->Isnew = true;
+        }
     }
 
     void MakeUsed()
@@ -343,17 +360,136 @@ bool Digit(const std::string s)
     return ans;
 }
 
+void intCheck(int &value)
+{
+    std::string valuestr;
+    std::cin >> valuestr;
+    if (Digit(valuestr))
+    {
+        value = std::stoi(valuestr);
+    }
+    else
+    {
+        while (!Digit(valuestr))
+        {
+            std::cout << "Enter value: ";
+            std::cin >> valuestr;
+        }
+        value = std::stoi(valuestr);
+    }
+}
+
 template <class T, class U>
 std::map<T, std::vector<std::vector<U>>> inf;
 
 int main()
 {
+    std::ifstream fin;
+    fin.open("classes_information.txt", std::ios::in);
+    std::string currentLine;
+    std::string keyName;
+    std::vector<int> spaces;
+    while (std::getline(fin, currentLine))
+    {
+        if (currentLine.find(" ") == currentLine.rfind(" "))
+        {
+            keyName = currentLine.substr(currentLine.find(" ") + 1, 50);
+        }
+        else
+        {
+            if (keyName == "Laptop")
+            {
+                Laptop *fileLaptop = new Laptop();
+                for (int i = 0; i < currentLine.length(); i++)
+                {
+                    if (currentLine[i] == ' ')
+                    {
+                        spaces.push_back(i);
+                    }
+                }
+                int fileef = std::stoi(currentLine.substr(0, spaces[0]));
+                int filecl = std::stoi(currentLine.substr(spaces[0] + 1, spaces[1] - spaces[0] - 1));
+                int filecap = std::stoi(currentLine.substr(spaces[1] + 1, spaces[2] - spaces[1] - 1));
+                int filecnt = std::stoi(currentLine.substr(spaces[2] + 1, currentLine.size() - 1));
+                fileLaptop->SetEfficienty(fileef);
+                fileLaptop->SetProcessorCapacity(filecap);
+                fileLaptop->SetProcessorClockFrequency(filecl);
+                fileLaptop->addLaptop(inf<std::string, Laptop>["Laptop"], filecnt);
+                spaces.clear();
+            }
+            if (keyName == "Table")
+            {
+                Table *fileTable = new Table();
+                for (int i = 0; i < currentLine.length(); i++)
+                {
+                    if (currentLine[i] == ' ')
+                    {
+                        spaces.push_back(i);
+                    }
+                }
+                int filehigh = std::stoi(currentLine.substr(0, spaces[0]));
+                int filelen = std::stoi(currentLine.substr(spaces[0] + 1, spaces[1] - spaces[0] - 1));
+                int filewid = std::stoi(currentLine.substr(spaces[1] + 1, spaces[2] - spaces[1] - 1));
+                int fileweight = std::stoi(currentLine.substr(spaces[2] + 1, spaces[3] - spaces[2] - 1));
+                std::string filemat = currentLine.substr(spaces[3] + 1, spaces[4] - spaces[3] - 1);
+                int filecnt = std::stoi(currentLine.substr(spaces[4] + 1, currentLine.size() - 1));
+                fileTable->SetHeight(filehigh);
+                fileTable->SetLenght(filelen);
+                fileTable->SetWidth(filewid);
+                fileTable->SetWeight(fileweight);
+                fileTable->SetMaterial(filemat);
+                fileTable->addTable(inf<std::string, Table>["Table"], filecnt);
+                spaces.clear();
+            }
+            if (keyName == "Book")
+            {
+                Book *fileBook = new Book();
+                for (int i = 0; i < currentLine.length(); i++)
+                {
+                    if (currentLine[i] == ' ')
+                    {
+                        spaces.push_back(i);
+                    }
+                }
+                int filekol = std::stoi(currentLine.substr(0, spaces[0]));
+                int filecurPage = std::stoi(currentLine.substr(spaces[0] + 1, spaces[1] - spaces[0] - 1));
+                int fileNew = std::stoi(currentLine.substr(spaces[1] + 1, spaces[2] - spaces[1] - 1));
+                int filecnt = std::stoi(currentLine.substr(spaces[2] + 1, currentLine.size() - 1));
+                fileBook->SetKol(filekol);
+                fileBook->SetPageNumber(filecurPage);
+                fileBook->addBook(inf<std::string, Book>["Book"], filecnt);
+                spaces.clear();
+            }
+            if (keyName == "Parameter")
+            {
+                Parameter *fileObject = new Parameter();
+                for (int i = 0; i < currentLine.length(); i++)
+                {
+                    if (currentLine[i] == ' ')
+                    {
+                        spaces.push_back(i);
+                    }
+                }
+                std::string fileName = currentLine.substr(0, spaces[0]);
+                int fileNumber = std::stoi(currentLine.substr(spaces[0] + 1, spaces[1] - spaces[0] - 1));
+                std::string fileTodo = currentLine.substr(spaces[1] + 1, currentLine.rfind(" ") - spaces[1] - 1);
+                int filecnt = std::stoi(currentLine.substr(currentLine.rfind(" ") + 1, currentLine.size() - 1));
+                fileObject->setObjectName(fileName);
+                fileObject->setSerialNumber(fileNumber);
+                fileObject->setWhatToDo(fileTodo);
+                fileObject->addParam(inf<std::string, Parameter>[fileName], filecnt);
+                spaces.clear();
+            }
+        }
+    }
+    fin.close();
+
     int classOfObject = 0;
+    std::set<std::string> namesOfClasses;
     while (classOfObject != 3)
     {
         std::cout << "You can choose:\n1. Academic object\n2. Abstract object\n3. Exit" << std::endl;
-        std::cin >> classOfObject;
-        std::set<std::string> namesOfClasses;
+        intCheck(classOfObject);
         switch (classOfObject)
         {
         case 1:
@@ -361,97 +497,26 @@ int main()
             std::cout << "You can choose:\n1. Laptop\n2. Table\n3. Book\n4. Exit to main menu" << std::endl;
             std::cout << "Enter number of object: ";
 
-            std::string nstr;
             int n;
-            std::cin >> nstr;
-            if (Digit(nstr))
-            {
-                n = std::stoi(nstr);
-            }
-            else
-            {
-                while (!Digit(nstr))
-                {
-                    std::cout << "Enter correct number of object: ";
-                    std::cin >> nstr;
-                }
-                n = std::stoi(nstr);
-            }
+            intCheck(n);
             switch (n)
             {
             case 1: // Full debag of class Laptop
             {
                 std::cout << "Enter count of objects: ";
 
-                std::string countstr;
                 int count;
-                std::cin >> countstr;
-                if (Digit(countstr))
-                {
-                    count = std::stoi(countstr);
-                }
-                else
-                {
-                    while (!Digit(countstr))
-                    {
-                        std::cout << "Enter correct count: ";
-                        std::cin >> countstr;
-                    }
-                    count = std::stoi(countstr);
-                }
-
+                intCheck(count);
                 std::cout << std::endl;
                 std::cout << "Enter efficiency: ";
-                std::string efstr;
                 int ef;
-                std::cin >> efstr;
-                if (Digit(efstr))
-                {
-                    ef = std::stoi(efstr);
-                }
-                else
-                {
-                    while (!Digit(efstr))
-                    {
-                        std::cout << "Enter correct efficienty: ";
-                        std::cin >> efstr;
-                    }
-                    ef = std::stoi(efstr);
-                }
+                intCheck(ef);
                 std::cout << "Enter processor clock frequency: ";
-                std::string freqstr;
                 int freq;
-                std::cin >> freqstr;
-                if (Digit(freqstr))
-                {
-                    freq = std::stoi(freqstr);
-                }
-                else
-                {
-                    while (!Digit(freqstr))
-                    {
-                        std::cout << "Enter correct frequency: ";
-                        std::cin >> freqstr;
-                    }
-                    freq = std::stoi(freqstr);
-                }
+                intCheck(freq);
                 std::cout << "Enter processor capacity: ";
-                std::string capstr;
                 int cap;
-                std::cin >> capstr;
-                if (Digit(capstr))
-                {
-                    cap = std::stoi(capstr);
-                }
-                else
-                {
-                    while (!Digit(capstr))
-                    {
-                        std::cout << "Enter correct capacity: ";
-                        std::cin >> capstr;
-                    }
-                    cap = std::stoi(capstr);
-                }
+                intCheck(cap);
                 std::cout << std::endl;
                 Laptop laptop(ef, freq, cap);
                 laptop.addLaptop(inf<std::string, Laptop>["Laptop"], count);
@@ -470,7 +535,7 @@ int main()
                     std::cout << "Enter number of operation: ";
                     bool flag = false;
                     int k;
-                    std::cin >> k;
+                    intCheck(k);
                     std::string s;
                     switch (k)
                     {
@@ -481,7 +546,7 @@ int main()
                         {
                             while (s != "Set" && s != "set" && s != "Get" && s != "get")
                             {
-                                std::cout << "Enter correct command: ";
+                                std::cout << "Enter correct command: \n";
                                 std::cin >> s;
                             }
                         }
@@ -491,21 +556,17 @@ int main()
                         }
                         if (s == "Set" || s == "set")
                         {
-                            std::string val;
-                            std::cin >> val;
-                            if (Digit(val))
+                            int val;
+                            intCheck(val);
+                            int exist = laptop.isExist(inf<std::string, Laptop>["Laptop"]);
+                            if (exist >= 0)
                             {
-                                laptop.SetEfficienty(std::stoi(val));
-                            }
-                            else
-                            {
-                                while (!Digit(val))
+                                for (int j = 0; j < inf<std::string, Laptop>["Laptop"][exist].size(); ++j)
                                 {
-                                    std::cout << "Enter correct value: ";
-                                    std::cin >> val;
+                                    inf<std::string, Laptop>["Laptop"][exist][j].SetEfficienty(val);
                                 }
-                                laptop.SetEfficienty(std::stoi(val));
                             }
+                            laptop.SetEfficienty(val);
                         }
                         break;
                     }
@@ -526,21 +587,17 @@ int main()
                         }
                         if (s == "Set" || s == "set")
                         {
-                            std::string val;
-                            std::cin >> val;
-                            if (Digit(val))
+                            int val;
+                            intCheck(val);
+                            int exist = laptop.isExist(inf<std::string, Laptop>["Laptop"]);
+                            if (exist >= 0)
                             {
-                                laptop.SetProcessorClockFrequency(std::stoi(val));
-                            }
-                            else
-                            {
-                                while (!Digit(val))
+                                for (int j = 0; j < inf<std::string, Laptop>["Laptop"][exist].size(); ++j)
                                 {
-                                    std::cout << "Enter correct value: ";
-                                    std::cin >> val;
+                                    inf<std::string, Laptop>["Laptop"][exist][j].SetProcessorClockFrequency(val);
                                 }
-                                laptop.SetProcessorClockFrequency(std::stoi(val));
                             }
+                            laptop.SetProcessorClockFrequency(val);
                         }
                         break;
                     }
@@ -561,21 +618,17 @@ int main()
                         }
                         if (s == "Set" || s == "set")
                         {
-                            std::string val;
-                            std::cin >> val;
-                            if (Digit(val))
+                            int val;
+                            intCheck(val);
+                            int exist = laptop.isExist(inf<std::string, Laptop>["Laptop"]);
+                            if (exist >= 0)
                             {
-                                laptop.SetProcessorCapacity(std::stoi(val));
-                            }
-                            else
-                            {
-                                while (!Digit(val))
+                                for (int j = 0; j < inf<std::string, Laptop>["Laptop"][exist].size(); ++j)
                                 {
-                                    std::cout << "Enter correct value: ";
-                                    std::cin >> val;
+                                    inf<std::string, Laptop>["Laptop"][exist][j].SetProcessorCapacity(val);
                                 }
-                                laptop.SetProcessorCapacity(std::stoi(val));
                             }
+                            laptop.SetProcessorCapacity(val);
                         }
                         break;
                     }
@@ -584,72 +637,16 @@ int main()
                         std::cout << "Enter parametrs of new Laptop:\n";
                         std::cout << "Enter efficiency: ";
                         int ef1;
-                        std::string ef1str;
-                        std::cin >> ef1str;
-                        if (Digit(ef1str))
-                        {
-                            ef1 = std::stoi(ef1str);
-                        }
-                        else
-                        {
-                            while (!Digit(ef1str))
-                            {
-                                std::cout << "Enter correct efficienty: ";
-                                std::cin >> efstr;
-                            }
-                            ef1 = std::stoi(ef1str);
-                        }
+                        intCheck(ef1);
                         std::cout << "Enter processor clock frequency: ";
-                        std::string freq1str;
                         int freq1;
-                        std::cin >> freq1str;
-                        if (Digit(freq1str))
-                        {
-                            freq1 = std::stoi(freq1str);
-                        }
-                        else
-                        {
-                            while (!Digit(freq1str))
-                            {
-                                std::cout << "Enter correct efficienty: ";
-                                std::cin >> freq1str;
-                            }
-                            freq1 = std::stoi(freq1str);
-                        }
+                        intCheck(freq1);
                         std::cout << "Enter processor capacity: ";
-                        std::string cap1str;
                         int cap1;
-                        std::cin >> cap1str;
-                        if (Digit(cap1str))
-                        {
-                            cap1 = std::stoi(cap1str);
-                        }
-                        else
-                        {
-                            while (!Digit(cap1str))
-                            {
-                                std::cout << "Enter correct efficienty: ";
-                                std::cin >> cap1str;
-                            }
-                            cap1 = std::stoi(cap1str);
-                        }
+                        intCheck(cap1);
                         std::cout << "Enter count of objects: ";
-                        std::string cntstr;
                         int cnt;
-                        std::cin >> cntstr;
-                        if (Digit(cntstr))
-                        {
-                            cnt = std::stoi(cntstr);
-                        }
-                        else
-                        {
-                            while (!Digit(cntstr))
-                            {
-                                std::cout << "Enter correct efficienty: ";
-                                std::cin >> cntstr;
-                            }
-                            cnt = std::stoi(cntstr);
-                        }
+                        intCheck(cnt);
                         Laptop newLaptop(ef1, freq1, cap1);
                         newLaptop.addLaptop(inf<std::string, Laptop>["Laptop"], cnt);
                         break;
@@ -697,8 +694,7 @@ int main()
                     {
                         while (k < 1 || k > 9)
                         {
-                            std::cout << "Enter correct number of command: ";
-                            std::cin >> k;
+                            intCheck(k);
                         }
                         break;
                     }
@@ -709,24 +705,18 @@ int main()
                         std::cout << "If you want to continue to work with class Laptop press [y] else press [n]: ";
                         char symbol;
                         std::cin >> symbol;
+                        while (symbol != 'y' && symbol != 'n')
+                        {
+                            std::cout << "Enter correct command: ";
+                            std::cin >> symbol;
+                        }
                         if (symbol == 'n')
                         {
                             finish = true;
                         }
                         else
                         {
-                            if (symbol != 'y')
-                            {
-                                while (symbol != 'y' && symbol != 'n')
-                                {
-                                    std::cout << "Enter correct command: ";
-                                    std::cin >> symbol;
-                                }
-                            }
-                            else
-                            {
-                                continue;
-                            }
+                            continue;
                         }
                     }
                 }
@@ -736,36 +726,21 @@ int main()
             {
                 std::cout << "Enter count of objects: ";
 
-                std::string countstr;
                 int count;
-                std::cin >> countstr;
-                if (Digit(countstr))
-                {
-                    count = std::stoi(countstr);
-                }
-                else
-                {
-                    while (!Digit(countstr))
-                    {
-                        std::cout << "Enter correct count: ";
-                        std::cin >> countstr;
-                    }
-                    count = std::stoi(countstr);
-                }
-
+                intCheck(count);
                 std::cout << std::endl;
                 std::cout << "Enter height of the table: ";
                 int height;
-                std::cin >> height;
+                intCheck(height);
                 std::cout << "Enter lenght of the table: ";
                 int len;
-                std::cin >> len;
+                intCheck(len);
                 std::cout << "Enter width of the table: ";
                 int width;
-                std::cin >> width;
+                intCheck(width);
                 std::cout << "Enter weight of the table: ";
                 int weight;
-                std::cin >> weight;
+                intCheck(weight);
                 std::cout << "Enter material of the table: ";
                 std::string material;
                 std::getline(std::cin, material);
@@ -789,11 +764,11 @@ int main()
                     std::cout << "Enter number of operation: ";
                     bool flag = false;
                     int k;
-                    std::cin >> k;
+                    intCheck(k);
                     std::string s;
                     switch (k)
                     {
-                    case 1: // Полностью протестирован
+                    case 1:
                     {
                         std::cin >> s;
                         if (s != "Set" || s != "set" || s != "Get" || s != "get")
@@ -810,21 +785,17 @@ int main()
                         }
                         if (s == "Set" || s == "set")
                         {
-                            std::string val;
-                            std::cin >> val;
-                            if (Digit(val))
+                            int val;
+                            intCheck(val);
+                            int exist = table.isExist(inf<std::string, Table>["Table"]);
+                            if (exist >= 0)
                             {
-                                table.SetHeight(std::stoi(val));
-                            }
-                            else
-                            {
-                                while (!Digit(val))
+                                for (int j = 0; j < inf<std::string, Table>["Table"][exist].size(); ++j)
                                 {
-                                    std::cout << "Enter correct value: ";
-                                    std::cin >> val;
+                                    inf<std::string, Table>["Table"][exist][j].SetHeight(val);
                                 }
-                                table.SetHeight(std::stoi(val));
                             }
+                            table.SetHeight(val);
                         }
                         break;
                     }
@@ -845,21 +816,17 @@ int main()
                         }
                         if (s == "Set" || s == "set")
                         {
-                            std::string val;
-                            std::cin >> val;
-                            if (Digit(val))
+                            int val;
+                            intCheck(val);
+                            int exist = table.isExist(inf<std::string, Table>["Table"]);
+                            if (exist >= 0)
                             {
-                                table.SetLenght(std::stoi(val));
-                            }
-                            else
-                            {
-                                while (!Digit(val))
+                                for (int j = 0; j < inf<std::string, Table>["Table"][exist].size(); ++j)
                                 {
-                                    std::cout << "Enter correct value: ";
-                                    std::cin >> val;
+                                    inf<std::string, Table>["Table"][exist][j].SetLenght(val);
                                 }
-                                table.SetLenght(std::stoi(val));
                             }
+                            table.SetLenght(val);
                         }
                         break;
                     }
@@ -880,21 +847,17 @@ int main()
                         }
                         if (s == "Set" || s == "set")
                         {
-                            std::string val;
-                            std::cin >> val;
-                            if (Digit(val))
+                            int val;
+                            intCheck(val);
+                            int exist = table.isExist(inf<std::string, Table>["Table"]);
+                            if (exist >= 0)
                             {
-                                table.SetWidth(std::stoi(val));
-                            }
-                            else
-                            {
-                                while (!Digit(val))
+                                for (int j = 0; j < inf<std::string, Table>["Table"][exist].size(); ++j)
                                 {
-                                    std::cout << "Enter correct value: ";
-                                    std::cin >> val;
+                                    inf<std::string, Table>["Table"][exist][j].SetWidth(val);
                                 }
-                                table.SetWidth(std::stoi(val));
                             }
+                            table.SetWidth(val);
                         }
                         break;
                     }
@@ -915,21 +878,17 @@ int main()
                         }
                         if (s == "Set" || s == "set")
                         {
-                            std::string val;
-                            std::cin >> val;
-                            if (Digit(val))
+                            int val;
+                            intCheck(val);
+                            int exist = table.isExist(inf<std::string, Table>["Table"]);
+                            if (exist >= 0)
                             {
-                                table.SetWeight(std::stoi(val));
-                            }
-                            else
-                            {
-                                while (!Digit(val))
+                                for (int j = 0; j < inf<std::string, Table>["Table"][exist].size(); ++j)
                                 {
-                                    std::cout << "Enter correct value: ";
-                                    std::cin >> val;
+                                    inf<std::string, Table>["Table"][exist][j].SetWeight(val);
                                 }
-                                table.SetWeight(std::stoi(val));
                             }
+                            table.SetWeight(val);
                         }
                         break;
                     }
@@ -951,7 +910,15 @@ int main()
                         if (s == "Set" || s == "set")
                         {
                             std::string val;
-                            std::cin >> val;
+                            std::getline(std::cin, val);
+                            int exist = table.isExist(inf<std::string, Table>["Table"]);
+                            if (exist >= 0)
+                            {
+                                for (int j = 0; j < inf<std::string, Table>["Table"][exist].size(); ++j)
+                                {
+                                    inf<std::string, Table>["Table"][exist][j].SetMaterial(val);
+                                }
+                            }
                             table.SetMaterial(val);
                         }
                         break;
@@ -961,92 +928,22 @@ int main()
                         std::cout << "Enter parametrs of new Table:\n";
                         std::cout << "Enter height: ";
                         int newHeight;
-                        std::string newHeightstr;
-                        std::cin >> newHeightstr;
-                        if (Digit(newHeightstr))
-                        {
-                            newHeight = std::stoi(newHeightstr);
-                        }
-                        else
-                        {
-                            while (!Digit(newHeightstr))
-                            {
-                                std::cout << "Enter correct height: ";
-                                std::cin >> newHeightstr;
-                            }
-                            newHeight = std::stoi(newHeightstr);
-                        }
+                        intCheck(newHeight);
                         std::cout << "Enter lenght: ";
-                        std::string newLenstr;
                         int newLen;
-                        std::cin >> newLenstr;
-                        if (Digit(newLenstr))
-                        {
-                            newLen = std::stoi(newLenstr);
-                        }
-                        else
-                        {
-                            while (!Digit(newLenstr))
-                            {
-                                std::cout << "Enter correct lenght: ";
-                                std::cin >> newLenstr;
-                            }
-                            newLen = std::stoi(newLenstr);
-                        }
+                        intCheck(newLen);
                         std::cout << "Enter width: ";
-                        std::string newWidthstr;
                         int newWidth;
-                        std::cin >> newWidthstr;
-                        if (Digit(newWidthstr))
-                        {
-                            newWidth = std::stoi(newWidthstr);
-                        }
-                        else
-                        {
-                            while (!Digit(newWidthstr))
-                            {
-                                std::cout << "Enter correct width: ";
-                                std::cin >> newWidthstr;
-                            }
-                            newWidth = std::stoi(newWidthstr);
-                        }
+                        intCheck(newWidth);
                         std::cout << "Enter weight: ";
-                        std::string newWeightstr;
                         int newWeight;
-                        std::cin >> newWeightstr;
-                        if (Digit(newWeightstr))
-                        {
-                            newWeight = std::stoi(newWeightstr);
-                        }
-                        else
-                        {
-                            while (!Digit(newWeightstr))
-                            {
-                                std::cout << "Enter correct width: ";
-                                std::cin >> newWeightstr;
-                            }
-                            newWeight = std::stoi(newWidthstr);
-                        }
+                        intCheck(newWeight);
                         std::cout << "Enter material: ";
                         std::string newMaterial;
                         std::cin >> newMaterial;
                         std::cout << "Enter count of objects: ";
-                        std::string cntstr;
                         int cnt;
-                        std::cin >> cntstr;
-                        if (Digit(cntstr))
-                        {
-                            cnt = std::stoi(cntstr);
-                        }
-                        else
-                        {
-                            while (!Digit(cntstr))
-                            {
-                                std::cout << "Enter correct count: ";
-                                std::cin >> cntstr;
-                            }
-                            cnt = std::stoi(cntstr);
-                        }
+                        intCheck(cnt);
                         Table newTable(newHeight, newLen, newWidth, newWeight, newMaterial);
                         newTable.addTable(inf<std::string, Table>["Table"], cnt);
                         break;
@@ -1134,31 +1031,15 @@ int main()
             case 3:
             {
                 std::cout << "Enter count of objects: ";
-
-                std::string countstr;
                 int count;
-                std::cin >> countstr;
-                if (Digit(countstr))
-                {
-                    count = std::stoi(countstr);
-                }
-                else
-                {
-                    while (!Digit(countstr))
-                    {
-                        std::cout << "Enter correct count: ";
-                        std::cin >> countstr;
-                    }
-                    count = std::stoi(countstr);
-                }
-
+                intCheck(count);
                 std::cout << std::endl;
                 std::cout << "Enter kol pages of Book: ";
                 int kol;
-                std::cin >> kol;
+                intCheck(kol);
                 std::cout << "Enter current page of Book: ";
                 int curPage;
-                std::cin >> curPage;
+                intCheck(curPage);
                 Book book(kol, curPage);
                 if (curPage != 0)
                 {
@@ -1179,7 +1060,7 @@ int main()
                     std::cout << "Enter number of operation: ";
                     bool flag = false;
                     int k;
-                    std::cin >> k;
+                    intCheck(k);
                     std::string s;
                     switch (k)
                     {
@@ -1214,21 +1095,17 @@ int main()
                         }
                         if (s == "Set" || s == "set")
                         {
-                            std::string val;
-                            std::cin >> val;
-                            if (Digit(val))
+                            int val;
+                            intCheck(val);
+                            int exist = book.isExist(inf<std::string, Book>["Book"]);
+                            if (exist >= 0)
                             {
-                                book.SetPageNumber(std::stoi(val));
-                            }
-                            else
-                            {
-                                while (!Digit(val))
+                                for (int j = 0; j < inf<std::string, Book>["Book"][exist].size(); ++j)
                                 {
-                                    std::cout << "Enter correct value: ";
-                                    std::cin >> val;
+                                    inf<std::string, Book>["Book"][exist][j].SetPageNumber(val);
                                 }
-                                book.SetPageNumber(std::stoi(val));
                             }
+                            book.SetPageNumber(val);
                         }
                         break;
                     }
@@ -1238,32 +1115,18 @@ int main()
                         std::cout << std::endl;
                         std::cout << "Enter kol pages of Book: ";
                         int newKol;
-                        std::cin >> newKol;
+                        intCheck(newKol);
                         std::cout << "Enter current page of Book: ";
                         int newCurPage;
-                        std::cin >> newCurPage;
+                        intCheck(newCurPage);
                         Book newBook(newKol, newCurPage);
                         if (newCurPage != 0)
                         {
                             newBook.MakeUsed();
                         }
                         std::cout << "Enter count of objects: ";
-                        std::string cntstr;
                         int cnt;
-                        std::cin >> cntstr;
-                        if (Digit(cntstr))
-                        {
-                            cnt = std::stoi(cntstr);
-                        }
-                        else
-                        {
-                            while (!Digit(cntstr))
-                            {
-                                std::cout << "Enter correct count: ";
-                                std::cin >> cntstr;
-                            }
-                            cnt = std::stoi(cntstr);
-                        }
+                        intCheck(cnt);
                         newBook.addBook(inf<std::string, Book>["Book"], cnt);
                         break;
                     }
@@ -1358,8 +1221,7 @@ int main()
             default:
                 while (n < 1 || n > 4)
                 {
-                    std::cout << "Enter correct number of object: ";
-                    std::cin >> n;
+                    intCheck(n);
                 }
             }
             break;
@@ -1369,14 +1231,13 @@ int main()
             std::cout << "Enter name of object: ";
             std::string className;
             std::cin >> className;
-
             std::cout << std::endl;
             std::cout << "Enter count of objects: ";
             int ocnt;
-            std::cin >> ocnt;
+            intCheck(ocnt);
             std::cout << "Enter serial number of object: ";
             int serialNumber;
-            std::cin >> serialNumber;
+            intCheck(serialNumber);
             std::cout << "What action would you like to do with object:\n";
             std::string action;
             std::getline(std::cin, action);
@@ -1401,7 +1262,7 @@ int main()
                 std::cout << "Enter number of operation: ";
                 bool flag = false;
                 int k;
-                std::cin >> k;
+                intCheck(k);
                 std::string s;
                 switch (k)
                 {
@@ -1440,20 +1301,15 @@ int main()
                     }
                     if (s == "Set" || s == "set")
                     {
-                        std::string val;
-                        std::cin >> val;
-                        if (Digit(val))
+                        int val;
+                        intCheck(val);
+                        int exist = parameter.isExist(inf<std::string, Parameter>[className]);
+                        if (exist >= 0)
                         {
-                            parameter.setSerialNumber(std::stoi(val));
-                        }
-                        else
-                        {
-                            while (!Digit(val))
+                            for (int j = 0; j < inf<std::string, Parameter>[className][exist].size(); ++j)
                             {
-                                std::cout << "Enter correct value: ";
-                                std::cin >> val;
+                                inf<std::string, Parameter>[className][exist][j].setSerialNumber(val);
                             }
-                            parameter.setSerialNumber(std::stoi(val));
                         }
                     }
                     break;
@@ -1475,43 +1331,36 @@ int main()
                     }
                     if (s == "Set" || s == "set")
                     {
+                        std::cout << std::endl;
                         std::string val;
                         std::getline(std::cin, val);
-                        std::getline(std::cin, val);
-                        parameter.setWhatToDo(val);
+                        int exist = parameter.isExist(inf<std::string, Parameter>[className]);
+                        if (exist >= 0)
+                        {
+                            for (int j = 0; j < inf<std::string, Parameter>[className][exist].size(); ++j)
+                            {
+                                inf<std::string, Parameter>[className][exist][j].setWhatToDo(val);
+                            }
+                        }
                     }
                     break;
                 }
                 case 4:
                 {
-                    std::cout << "Enter parametrs of new jbject:\n";
+                    std::cout << "Enter parametrs of new object:\n";
                     std::cout << "Enter name of new class: ";
                     std::string newClassName;
                     std::cin >> newClassName;
                     std::cout << "Enter serial number: ";
                     int newSerialNumber;
-                    std::cin >> newSerialNumber;
+                    intCheck(newSerialNumber);
                     std::cout << "Enter what do you want to do: ";
                     std::string newAction;
                     std::getline(std::cin, newAction);
                     std::getline(std::cin, newAction);
                     std::cout << "Enter count of objects: ";
-                    std::string cntstr;
                     int cnt;
-                    std::cin >> cntstr;
-                    if (Digit(cntstr))
-                    {
-                        cnt = std::stoi(cntstr);
-                    }
-                    else
-                    {
-                        while (!Digit(cntstr))
-                        {
-                            std::cout << "Enter correct count of objects: ";
-                            std::cin >> cntstr;
-                        }
-                        cnt = std::stoi(cntstr);
-                    }
+                    intCheck(cnt);
                     Parameter newParameter(newClassName, newSerialNumber, newAction);
                     newParameter.addParam(inf<std::string, Parameter>[newClassName], cnt);
                     countOfElements += cnt;
@@ -1543,6 +1392,7 @@ int main()
                     }
                     std::cout << std::endl;
                     break;
+                    break;
                 }
                 case 8:
                 {
@@ -1564,8 +1414,7 @@ int main()
                 {
                     while (k < 1 || k > 9)
                     {
-                        std::cout << "Enter correct number of command: ";
-                        std::cin >> k;
+                        intCheck(k);
                     }
                     break;
                 }
@@ -1601,14 +1450,56 @@ int main()
         }
         case 3:
         {
+            std::ofstream fout;
+            fout.open("classes_information.txt", std::ios::out | std::ofstream::trunc);
+            fout << "class Laptop" << std::endl;
+            for (int i = 0; i < inf<std::string, Laptop>["Laptop"].size(); ++i)
+            {
+                fout << inf<std::string, Laptop>["Laptop"][i][0].GetEfficienty() << " ";
+                fout << inf<std::string, Laptop>["Laptop"][i][0].GetProcessorClockFrequency() << " ";
+                fout << inf<std::string, Laptop>["Laptop"][i][0].GetProcessorCapacity() << " ";
+                fout << inf<std::string, Laptop>["Laptop"][i].size() << std::endl;
+            }
+
+            fout << "class Table" << std::endl;
+            for (int i = 0; i < inf<std::string, Table>["Table"].size(); ++i)
+            {
+                fout << inf<std::string, Table>["Table"][i][0].GetHeight() << " ";
+                fout << inf<std::string, Table>["Table"][i][0].GetLenght() << " ";
+                fout << inf<std::string, Table>["Table"][i][0].GetWidth() << " ";
+                fout << inf<std::string, Table>["Table"][i][0].GetWeight() << " ";
+                fout << inf<std::string, Table>["Table"][i][0].GetMaterial() << " ";
+                fout << inf<std::string, Table>["Table"][i].size() << std::endl;
+            }
+
+            fout << "class Book" << std::endl;
+            for (int i = 0; i < inf<std::string, Book>["Book"].size(); ++i)
+            {
+                fout << inf<std::string, Book>["Book"][i][0].GetKol() << " ";
+                fout << inf<std::string, Book>["Book"][i][0].GetPageNumber() << " ";
+                fout << inf<std::string, Book>["Book"][i][0].GetIsnew() << " ";
+                fout << inf<std::string, Book>["Book"][i].size() << std::endl;
+            }
+
+            fout << "class Parameter" << std::endl;
+            for (auto it = namesOfClasses.begin(); it != namesOfClasses.end(); ++it)
+            {
+                for (int i = 0; i < inf<std::string, Parameter>[*it].size(); ++i)
+                {
+                    fout << *it << " ";
+                    fout << inf<std::string, Parameter>[*it][i][0].getSerialNumber() << " ";
+                    fout << inf<std::string, Parameter>[*it][i][0].getWhatToDo() << " ";
+                    fout << inf<std::string, Parameter>[*it][i].size() << std::endl;
+                }
+            }
+            fout.close();
             return 0;
         }
 
         default:
             while (classOfObject < 1 || classOfObject > 3)
             {
-                std::cout << "Enter correct number of object: ";
-                std::cin >> classOfObject;
+                intCheck(classOfObject);
             }
             break;
         }

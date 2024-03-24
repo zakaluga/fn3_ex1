@@ -1,0 +1,14 @@
+class Laptop
+5 5 5 4
+9 9 9 7
+1 2 3 7
+7 8 9 8
+class Table
+4 4 4 4 metal 8
+class Book
+590 231 0 8
+900 456 0 7
+600 45 0 5
+890 456 0 2
+class Parameter
+Apple 89 Eat 6Banana 23 Grow and eat 9
