@@ -1,7 +1,7 @@
 #ifndef spec_h
 #define spec_h
 
-#include <iostream>
+#include "includes.h"
 
 
 class Identification {  //position, dimensions, idd
@@ -78,8 +78,6 @@ public:
 
 //Cout block end
 };
-
-
 class Table {   //material, Identification
 private:
     std::string _material = "";
@@ -129,7 +127,7 @@ private:
 public:  
     Identification _ids;
     Resolution _reso;
-    Monitor(Identification ids, Resolution xy) : _ids(ids), _reso(xy){}
+    Monitor(Identification ids, Resolution reso) : _ids(ids), _reso(reso){}
     
     void printInfo() {}
 
