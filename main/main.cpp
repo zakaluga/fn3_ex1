@@ -2,10 +2,12 @@
 
 int main()
 {
-    int n;
-    std::cin >> n;
-    Table *tables = new Table((0, 0, 0, 0, 0, 0, 0), 0)[n];
-
+    std::vector<Table> tables;
+    std::vector<Computer> computers;
+    std::vector<Monitor> monitors;
+    //std::vector<>;
+    std::vector<Unregistered> unreg;
+    Identification id;
 
 
     return 0;

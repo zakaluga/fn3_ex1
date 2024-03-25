@@ -14,9 +14,13 @@ private:
     double _height; //z
     uint32_t _id = 0;   //if item is not registered = 0
 public:
+    Identification() {
+
+    }
     Identification(double positionX, double positionY, double positionZ, double length, double width, double height, uint32_t id):
      _positionX(positionX), _positionY(positionY), _positionZ(positionZ), _length(length), _width(width), _height(height), _id(id) {       
     }
+    
 //Position block start
     void SetPositionX(double val) {
         _positionX = val;
@@ -81,8 +85,8 @@ public:
 class Table {   //material, Identification
 private:
     std::string _material = "";
-public:
     Identification _ids;
+public:
     Table(Identification ids, std::string material) : _ids(ids), _material(material){}
     
     //Material block start
@@ -102,8 +106,8 @@ public:
 class Computer {    //cpu speed, Identification
 private:
     double _cpuSpeed;
+   Identification _ids;
 public:
-    Identification _ids;
     Computer(Identification ids, double cpuSpeed) : _ids(ids), _cpuSpeed(cpuSpeed){}
     
     //CpuSpeed block start
@@ -121,17 +125,49 @@ public:
 class Monitor { //resolution, Identification
 private:
     struct Resolution {
-        uint32_t _x;
-        uint32_t _y;
+        uint32_t x;
+        uint32_t y;
     };
-public:  
     Identification _ids;
     Resolution _reso;
+public:  
+    void SetResolution(Resolution val) {
+        this->_reso.x = val.x;
+        this->_reso.y = val.y;
+    }
+    Resolution GetResolution() {
+        return this->_reso;
+    }
+    void SetId(Identification val) {
+        this->_ids = val;
+    }
+    Identification GetId() {
+        return this->_ids;
+    }
+
     Monitor(Identification ids, Resolution reso) : _ids(ids), _reso(reso){}
     
     void printInfo() {}
 
     ~Monitor() = default;
+};
+class Book {
+private:
+    std::string _name;
+    char _isbn[15];
+public:
+    void SetName(std::string val) {
+        _name = val;
+    }
+    std::string GetName() {
+        return this->_name;
+    }
+    void SetIsbn(char var[15]) {
+        memcpy(_isbn, var, 15);
+    }
+    char* GetIsbn() {
+        return this->_isbn;
+    }
 };
 class Unregistered {
 private:
