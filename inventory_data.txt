@@ -1,0 +1,38 @@
+[----------------------UNI ITEMS DATABASE----------------------]
+
+ 1.
+    NAME: 1
+    INDEX: 1
+    Date: 1
+    Amount: 1
+
+ 2.
+    NAME: 2
+    INDEX: 2
+    Date: 2
+    Amount: 2
+
+ 3.
+    NAME: 
+    INDEX: 
+    Date: -858993460
+    Amount: -858993460
+
+ 4.
+    NAME: 
+    INDEX: 
+    Date: -858993460
+    Amount: -858993460
+
+ 5.
+    NAME: 
+    INDEX: 
+    Date: -858993460
+    Amount: -858993460
+
+ 6.
+    NAME: 
+    INDEX: 
+    Date: -858993460
+    Amount: -858993460
+
