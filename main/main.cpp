@@ -16,11 +16,7 @@ int main(int argc, char* argv[])
     */
 //  endwin(); // завершение работы с ncurses
 
-    std::vector<Computer> PC;
-    std::cout << "Supply Computers\n";
-    while(std::cin) {
-        
-    }
+    
 
 
 
