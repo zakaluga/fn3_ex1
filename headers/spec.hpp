@@ -4,7 +4,7 @@
 #include "includes.h"
 
 
-class Identification {  //position, dimensions, idd
+class Dimensions {  //position, sizes
 private:
     double _positionX;
     double _positionY;
@@ -12,13 +12,9 @@ private:
     double _length; //x
     double _width;  //y
     double _height; //z
-    uint32_t _id = 0;   //if item is not registered = 0
 public:
-    Identification() {
-
-    }
-    Identification(double positionX, double positionY, double positionZ, double length, double width, double height, uint32_t id):
-     _positionX(positionX), _positionY(positionY), _positionZ(positionZ), _length(length), _width(width), _height(height), _id(id) {       
+    Dimensions(double positionX, double positionY, double positionZ, double length, double width, double height):
+     _positionX(positionX), _positionY(positionY), _positionZ(positionZ), _length(length), _width(width), _height(height) {       
     }
     
 //Position block start
@@ -67,28 +63,19 @@ public:
     }
 //Dimensions block end
 
-//Id block start
-    void SetId(uint32_t val) {
-        _id = val;
-    }
-    uint32_t GetId() {
-        return this->_id;
-    }
-//Id block end
-
 //Cout block start
 
 
 
 //Cout block end
 };
-class Table {   //material, Identification
+class Table {   //Dimensions, id, material
 private:
     std::string _material = "";
-    Identification _ids;
+    Dimensions _ids;
+    uint32_t _id;
 public:
-    Table(Identification ids, std::string material) : _ids(ids), _material(material){}
-    
+    Table(Dimensions ids, uint32_t id, std::string material) : _ids(ids), _id(id), _material(material){}
     //Material block start
     void SetMaterial(std::string val) {
         _material = val;
@@ -101,36 +88,46 @@ public:
     void printInfo(){
         std::cout << "\n Table: \n" << "id: ";
     }
+    //Id block start
+    void SetId(uint32_t val) {
+        _id = val;
+    }
+    uint32_t GetId() {
+        return this->_id;
+    }
+//Id block end
     ~Table() = default;
 };
-class Computer {    //cpu speed, Identification
+class Computer {    //Dimensions, id, cpu speed
 private:
-    double _cpuSpeed;
-   Identification _ids;
+    Dimensions _ids;
+    uint32_t _id;
 public:
-    Computer(Identification ids, double cpuSpeed) : _ids(ids), _cpuSpeed(cpuSpeed){}
+    Computer(Dimensions ids, uint32_t id) : _ids(ids), _id(id){} 
     
-    //CpuSpeed block start
-    void SetCpuCSpeed(double val) {
-        _cpuSpeed = val;
-    }
-    double GetCpuSpeed() {
-        return this->_cpuSpeed;
-    }
-    //CpuSpeed block end
 
+//Id block start
+    void SetId(uint32_t val) {
+        _id = val;
+    }
+    uint32_t GetId() {
+        return this->_id;
+    }
+//Id block end
     void printInfo(){}
     ~Computer() = default;
 };
-class Monitor { //resolution, Identification
+class Monitor { //Dimensions, id, resolution
 private:
     struct Resolution {
         uint32_t x;
         uint32_t y;
     };
-    Identification _ids;
+    Dimensions _ids;
+    uint32_t _id;
     Resolution _reso;
-public:  
+public:
+    Monitor(Dimensions ids, uint32_t id, Resolution reso) : _ids(ids), _id(id), _reso(reso){}  
     void SetResolution(Resolution val) {
         this->_reso.x = val.x;
         this->_reso.y = val.y;
@@ -138,43 +135,45 @@ public:
     Resolution GetResolution() {
         return this->_reso;
     }
-    void SetId(Identification val) {
+    void SetId(Dimensions val) {
         this->_ids = val;
     }
-    Identification GetId() {
+    Dimensions GetId() {
         return this->_ids;
     }
-
-    Monitor(Identification ids, Resolution reso) : _ids(ids), _reso(reso){}
     
     void printInfo() {}
 
     ~Monitor() = default;
 };
-class Book {
+class Book {    //Dimensions, id, name, isbn
 private:
     std::string _name;
-    char _isbn[15];
+    std::string _isbn;
+    Dimensions _ids;
+    uint32_t _id;
 public:
+    Book(Dimensions ids, uint32_t id, std::string name, std::string isbn): _ids(ids), _id(id), _name(name), _isbn(isbn) {}
     void SetName(std::string val) {
         _name = val;
     }
     std::string GetName() {
         return this->_name;
     }
-    void SetIsbn(char var[15]) {
-        memcpy(_isbn, var, 15);
+    void SetIsbn(std::string var) {
+        _isbn = var;
     }
-    char* GetIsbn() {
+    std::string GetIsbn() {
         return this->_isbn;
     }
 };
 class Unregistered {
 private:
-
+    Dimensions _ids;
+    
 public:
-    Identification _ids;
-    Unregistered(Identification ids): _ids(ids) {}
+    Unregistered(Dimensions ids): _ids(ids) {}
+    
 };
 
 #endif
