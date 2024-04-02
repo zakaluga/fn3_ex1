@@ -1,6 +1,7 @@
 #include <iostream>
 #include <variant>
 #include <map>
+#include <string>
 
 class Processor {
     private:
@@ -15,20 +16,33 @@ class Processor {
         Processor() = default;
         ~Processor() = default;
         
-        std::string getName()          {return this->name_;}
-        void setName(std::string name) {this->name_ = name;}
+        std::string getName()              {return this->name_;}
+        void setName(std::string name)     {this->name_ = name;}
 
-        int getCoresCount()            {return this->coresCount_;}
-        void setCoresCount(int cores)  {this->coresCount_ = cores;}
+        int getCoresCount()                {return this->coresCount_;}
+        void setCoresCount(int coresCount) {this->coresCount_ = coresCount;}
 
-        int getFlowCount()             {return this->flowCount_;}
-        void setFlowCount(int flows)   {this->flowCount_ = flows;}
+        int getFlowCount()                 {return this->flowCount_;}
+        void setFlowCount(int flowsCount)  {this->flowCount_ = flowsCount;}
 
-        int getHeatOut()               {return this->heatOut_;}
-        void setHeatOut(int heat)      {this->heatOut_ = heat;}
+        int getHeatOut()                   {return this->heatOut_;}
+        void setHeatOut(int heatOut)       {this->heatOut_ = heatOut;}
 
-        int getIsWork()                {return this->isWork_;}
-        void setIsWork(bool work)      {this->isWork_ = work;}
+        int getIsWork()                    {return this->isWork_;}
+        void setIsWork(bool isWork)        {this->isWork_ = isWork;}
+
+        static Processor create() {
+            Processor processor = Processor();
+            std::cout << "Add processor name: ";
+            std::cin  >> processor.name_;
+            std::cout << "Add processor cores count: ";
+            std::cin  >> processor.coresCount_;
+            std::cout << "Add processor flows count: ";
+            std::cin  >> processor.flowCount_;
+            std::cout << "Add processor heat out: ";
+            std::cin  >> processor.heatOut_;
+            processor.isWork_ = true;
+        }
 
         void getInfo() {
             std::cout << "PROCESSOR\n\n";
@@ -98,30 +112,42 @@ class Processor {
 
 class GraphCard {
     private:
-        std::string cardName_;
+        std::string name_;
         int         videoMemory_;
         int         heatOut_;
         bool        isWork_;
     public:
-        GraphCard(std::string &name, int &memory, int &heat, bool &work): cardName_(name), videoMemory_(memory), heatOut_(heat), isWork_(work) {}
+        GraphCard(std::string &name, int &videoMemory, int &heatOut, bool &isWork): 
+                  name_(name), videoMemory_(videoMemory), heatOut_(heatOut), isWork_(isWork) {}
         GraphCard() = default;
         ~GraphCard() = default;
         
-        std::string getName()           {return this->cardName_;}
-        void setName(std::string name)  {this->cardName_ = name;}
+        std::string getName()                {return this->name_;}
+        void setName(std::string name)   {this->name_ = name;}
 
-        int getVideoMemory()            {return this->videoMemory_;}
-        void setVideoMemory(int memory) {this->videoMemory_= memory;}
+        int  getVideoMemory()                {return this->videoMemory_;}
+        void setVideoMemory(int videoMemory) {this->videoMemory_= videoMemory;}
 
-        int getHeatOut()                {return this->heatOut_;}
-        void setHeatOut(int heat)       {this->heatOut_ = heat;}
+        int  getHeatOut()                    {return this->heatOut_;}
+        void setHeatOut(int heatOut)         {this->heatOut_ = heatOut;}
 
-        bool getIsWork()                {return this->isWork_;}
-        void setIsWork(bool work)       {this->isWork_ = work;}
+        bool getIsWork()                     {return this->isWork_;}
+        void setIsWork(bool isWork)          {this->isWork_ = isWork;}
+
+        static GraphCard create() {
+            GraphCard graphcard = GraphCard();
+            std::cout << "Add graph card name: ";
+            std::cin  >> graphcard.name_;
+            std::cout << "Add graph card video memory: ";
+            std::cin  >> graphcard.videoMemory_;
+            std::cout << "Add graph card heat out: ";
+            std::cin  >> graphcard.heatOut_;
+            graphcard.isWork_ = true;
+        }
 
         void getInfo() {
             std::cout << "VIDEOCARD\n\n";
-            std::cout << "Card name: "        << this->cardName_    << "\n" 
+            std::cout << "Card name: "        << this->name_        << "\n" 
                       << "Card vide memory: " << this->videoMemory_ << " GB\n" 
                       << "Card heat out: "    << this->heatOut_     << " Vt\n";
             if (this->isWork_) {std::cout << "Videocard is OK\n";} else {std::cout << "Videocard is NOT OK\n";}
@@ -142,8 +168,8 @@ class GraphCard {
             {
             case 1:
                 std::cout << "Enter new graphcard name: ";
-                std::cin  >> this->cardName_;
-                std::cout << "New name: '" << this->cardName_ << "'\n";
+                std::cin  >> this->name_;
+                std::cout << "New name: '" << this->name_ << "'\n";
                 this->edit();
                 break;
             case 2:
@@ -174,30 +200,43 @@ class GraphCard {
 
 class Monitor {
     private: 
-        std::string monitorName_;
+        std::string name_;
         int         resolution_;
         bool        isWork_;
         bool        onOff_;
     public:
-        Monitor(std::string &name, int &gerz, bool &work, bool &onoff): monitorName_(name), resolution_(gerz),  isWork_(work), onOff_(onoff) {}
-        Monitor() = default;
+        Monitor(std::string &name, int &gerz, bool &work, bool &onoff): name_(name), resolution_(gerz),  isWork_(work), onOff_(onoff) {}
+        Monitor() {
+            std::cout << "Add name of new monitor: ";
+            std::cin  >> this->name_;
+        };
         ~Monitor() = default;
         
-        std::string getName()          {return this->monitorName_;}
-        void setName(std::string name) {this->monitorName_ = name;}
+        std::string getName()             {return this->name_;}
+        void setName(std::string name)    {this->name_ = name;}
 
-        int getResolution()            {return this->resolution_;}
-        void setReslution(int gerz)    {this->resolution_ = gerz;}
+        int  getResolution()              {return this->resolution_;}
+        void setReslution(int resolution) {this->resolution_ = resolution;}
 
-        bool getIsWork()               {return this->isWork_;}
-        void setIsWork(bool work)      {this->isWork_ = work;}
+        bool getIsWork()                  {return this->isWork_;}
+        void setIsWork(bool isWork)       {this->isWork_ = isWork;}
 
-        bool getOnOff()                {return this->onOff_;}
-        void setOnOff(bool onoff)      {this->onOff_ = onoff;}
+        bool getOnOff()                   {return this->onOff_;}
+        void setOnOff(bool onOff)         {this->onOff_ = onOff;}
+
+        static Monitor create() {
+            Monitor monitor = Monitor();
+            std::cout << "Add monitor name: ";
+            std::cin  >> monitor.name_;
+            std::cout << "Add monitor resolution: ";
+            std::cin  >> monitor.resolution_;
+            monitor.isWork_ = true;
+            monitor.onOff_ = false;
+        }
         
         void getInfo() {
             std::cout << "MONITOR\n\n";
-            std::cout << "Monitor name: "       << this->monitorName_ << "\n"
+            std::cout << "Monitor name: "       << this->name_ << "\n"
                       << "Monitor resolution: " << this->resolution_  << "\n";
             if (this->onOff_)  {std::cout << "Monitor is ON";} else {std::cout << "Monitor is OFF";}
             if (this->isWork_) {std::cout << "Monitor is OK";} else {std::cout << "Monitor is NOT OK";}
@@ -219,8 +258,8 @@ class Monitor {
             {
             case 1:
                 std::cout << "Enter new monitor name: ";
-                std::cin  >> this->monitorName_;
-                std::cout << "New name: '" << this->monitorName_ << "'\n";
+                std::cin  >> this->name_;
+                std::cout << "New name: '" << this->name_ << "'\n";
                 this->edit();
                 break;
             case 2:
@@ -285,6 +324,16 @@ class Computer {
 
         bool getIsWork()                        {return this->isWork_;}
         void setIsWork(bool isWork)             {this->isWork_ = isWork;}
+
+        static Computer create() {
+            Computer computer = Computer();
+            std::cout << "Add monitor for new computer: ";
+            computer.monitor_ = Monitor::create();
+            std::cout << "Add new graph card for new computer: ";
+            computer.graphCard_ = GraphCard::create();
+            std::cout << "Add new processor for new computer: ";
+            computer.processor_= Processor::create();
+        }
 
         void getInfo() {
             std::cout << "COMPUTER\n\n";
@@ -363,6 +412,17 @@ struct Sizes {
                       << "Size c: " << this->c_;
         }
 
+        static Sizes create() {
+            Sizes sizes = Sizes();
+            std::cout << "Add size a: ";
+            std::cin  >> sizes.a_;
+            std::cout << "Add size b: ";
+            std::cin  >> sizes.b_;
+            std::cout << "Add size c: ";
+            std::cin  >> sizes.c_;
+            return sizes;
+        }
+
         void edit() {
             int commandNumber;
             std::cout << "---SIZES MENU---\n\n";
@@ -423,6 +483,15 @@ struct Position {
                       << "y: " << this->y_;
         }
 
+        static Position create(){
+            Position position = Position();
+            std::cout << "Add coordinate x: ";
+            std::cin  >> position.x_;
+            std::cout << "Add coordinate y: ";
+            std::cin  >> position.y_;
+            return position;
+        }
+
         void edit() {
             int commandNumber;
             std::cout << "What you want to change?\n";
@@ -457,20 +526,21 @@ struct Position {
         
 };
 
-class FurnetureProperties {
+class Furneture {
     enum Material {
         MATERIAL_WOOD, 
         MATERIAL_STEEL, 
         MATERIAL_PLASTIC, 
         MATERIAL_MIXED
     };
+    std::string name_;
     Sizes       sizes_;
     Material    material_;
     Position    position_;
 public:
-    FurnetureProperties(Material& material, const Sizes& sizes, Position& position) :sizes_(sizes), material_(material), position_(position) {};
-    FurnetureProperties() = default;
-    ~FurnetureProperties() = default;
+    Furneture(Material& material, const Sizes& sizes, Position& position) :sizes_(sizes), material_(material), position_(position) {};
+    Furneture() = default;
+    ~Furneture() = default;
 
     Sizes getsizes()                     {return this->sizes_;}
     void setSizes(Sizes& sizes)          {this->sizes_ = sizes;}
@@ -480,6 +550,109 @@ public:
  
     Position getPosition()               {return this->position_;}
     void setPosition(Position& position) {this->position_ = position;}
+
+    void createMaterial() {
+        std::cout << "What is the furniture made of?";
+        std::cout << "1) wood\n\t"
+                  << "2) steel\n\t"
+                  << "3) plastic\n\t"
+                  << "4) mixed\n"
+                  << "Press any key(1-4)";
+        int materialNumber;
+        std::cin  >> materialNumber;
+        switch (materialNumber)
+        {
+        case 1:
+            this->material_ = MATERIAL_WOOD;
+            break;
+        case 2:
+            this->material_ = MATERIAL_STEEL;
+            break;
+        case 3:
+            this->material_ = MATERIAL_PLASTIC;
+            break;
+        case 4:
+            this->material_ = MATERIAL_MIXED;
+            break;
+        default:
+            createMaterial();
+            break;
+        }
+    }
+
+    static Furneture create() {
+        Furneture furneture = Furneture();
+        std::cout << "Add name of new furneture: ";
+        std::cin  >> furneture.name_;
+        std::cout << "Add sizes of new furneture: ";
+        furneture.sizes_ = Sizes::create();
+        furneture.createMaterial();
+        std::cout << "Add position of new furneture: ";
+        furneture.position_ = Position::create();
+        return furneture;
+    }
+
+    void getInfo() {
+        std::cout << "FURNETIRE\n\t";
+        std::cout << "Material: ";
+        switch (this->material_)
+        {
+        case 0:
+            std::cout << "wood\n\t";
+            break;
+        case 1:
+            std::cout << "steel\n\t";
+            break;
+        case 2:
+            std::cout << "plastic\n\t";
+            break;
+        case 3:
+            std::cout << "mixed\n\t"; 
+            break;
+        }
+        this->sizes_.getInfo();
+        this->position_.getInfo();
+    }
+
+    void editMaterial() {
+        int materialNumber;
+        std::cout << "What material you want to choose?\n\t"
+                  << "1) Wood\n\t"
+                  << "2) Steel\n\t"
+                  << "3) Plastic\n\t"
+                  << "4) Mixed\n\t"
+                  << "5) Exit\n\t"
+                  << "Press any key(1-5): ";
+        std::cin  >> materialNumber;
+        switch (materialNumber)
+        {
+        case 1:
+            std::cout << "New material: wood";
+            this->material_ = MATERIAL_WOOD;
+            this->edit();
+            break;
+        case 2:
+            std::cout << "New material: steel";
+            this->material_ = MATERIAL_STEEL;
+            this->edit();
+            break;
+        case 3:
+            std::cout << "New material: plastic";
+            this->material_ = MATERIAL_PLASTIC;
+            this->edit();
+            break;
+        case 4:
+            std::cout << "New material: mixed";
+            this->material_ = MATERIAL_MIXED;
+            this->edit();
+            break;
+        case 5:
+            break;
+        default:
+            this->edit();
+            break;
+        }
+    }
 
     void edit() {
         int comandNumber;
@@ -494,49 +667,18 @@ public:
         switch (comandNumber)
         {
         case 1:
-            int materialNumber;
-            std::cout << "What material you want to choose?\n\t"
-                      << "1) Wood\n\t"
-                      << "2) Steel\n\t"
-                      << "3) Plastic\n\t"
-                      << "4) Mixed\n\t"
-                      << "5) Exit\n\t"
-                      << "Press any key(1-5): ";
-            std::cin  >> materialNumber;
-            switch (materialNumber)
-            {
-            case 1:
-                std::cout << "New material: wood";
-                this->material_ = MATERIAL_WOOD;
-                this->edit();
-                break;
-            case 2:
-                std::cout << "New material: steel";
-                this->material_ = MATERIAL_STEEL;
-                this->edit();
-                break;
-            case 3:
-                std::cout << "New material: plastic";
-                this->material_ = MATERIAL_PLASTIC;
-                this->edit();
-                break;
-            case 4:
-                std::cout << "New material: mixed";
-                this->material_ = MATERIAL_MIXED;
-                this->edit();
-                break;
-            case 5:
-                break;
-            default:
-                this->edit();
-                break;
-            }
+            this->editMaterial();
             break;
         case 2:
+            this->sizes_.edit();
+            this->edit();
             break;
         case 3:
+            this->position_.edit();
+            this->edit();
             break;
         case 4:
+            this->getInfo();
             break;
         default:
             break;
@@ -544,38 +686,73 @@ public:
     }
 };
 
-class Chair {
-public:
-    FurnetureProperties furnetureProperties_;
+std::map<std::string, std::variant<Computer, Processor, GraphCard, Monitor, Furneture>> inventory{};
+auto getInfo = [](auto obj) {obj.edit();};
 
-    Chair(const FurnetureProperties& furnetureProperties) :furnetureProperties_(furnetureProperties) {};
-    Chair() = default;
-    ~Chair() = default;
-};
 
-class Locker {
-public:
-    FurnetureProperties furnetureProperties_;
+Monitor createNewMonitor() {
+    Monitor monitor = Monitor();
+    monitor.edit();
+    return monitor;
+}
 
-    Locker(const FurnetureProperties& furnetureProperties) :furnetureProperties_(furnetureProperties) {};
-    Locker() = default;
-    ~Locker() = default;
-};
+Furneture createNewFurneture() {
+    Furneture furneture = Furneture();
+    furneture.edit();
+    return furneture; 
+}
 
-class Table {
-public:
-    FurnetureProperties furnetureProperties_;
-
-    Table(const FurnetureProperties& furnetureProperties) :furnetureProperties_(furnetureProperties) {};
-    Table() = default;
-    ~Table() = default;
-};
-
-std::map<std::string, std::variant<Computer, Monitor, FurnetureProperties>> inventory;
-
-struct autoObjectMenu {
-    void operator()(Computer& object) {object.edit();}
-};
+void addObjectMenu() {
+    int commandNumber;
+    std::string inventoryNumber;
+    std::cout << "What you want to add?\n\t";
+    std::cout << "1) Processor\n\t" 
+              << "2) Graph card\n\t"
+              << "3) Monitor\n\t"
+              << "4) Computer\n\t"
+              << "5) Some furneture\n\t"
+              << "6) Exit\n"
+              << "Press any key (1-6): ";
+    std::cin >> commandNumber;
+    switch (commandNumber)
+    {
+    case 1:
+        std::cout << "Enter inventory number of new processor: ";
+        std::cin  >> inventoryNumber;
+        inventory.insert({inventoryNumber, Processor::create()});
+        addObjectMenu();
+        break;
+    case 2:
+        std::cout << "Enter inventory number of new graph card: ";
+        std::cin  >> inventoryNumber;
+        inventory.insert({inventoryNumber, GraphCard::create()});
+        addObjectMenu();
+        break;
+    case 3:
+        std::cout << "Enter inventory number of new monitor: ";
+        std::cin  >> inventoryNumber;
+        inventory.insert({inventoryNumber, Monitor::create()});
+        addObjectMenu();
+        break;
+    case 4:
+        std::cout << "Enter inventory number of new computer: ";
+        std::cin  >> inventoryNumber;
+        inventory.insert({inventoryNumber, Computer::create()});
+        addObjectMenu();
+        break;
+    case 5:
+        std::cout << "Enter inventory number of new furneture: ";
+        std::cin  >> inventoryNumber;
+        inventory.insert({inventoryNumber, Furneture::create()});
+        addObjectMenu();
+        break;
+    case 6:
+        break;
+    default:
+        addObjectMenu();
+        break;
+    }
+}
 
 void Menu() {
     int commandNumber;
@@ -592,8 +769,10 @@ void Menu() {
     switch (commandNumber)
     {
     case 1:
+        for (auto [key, value]: inventory){std::visit(getInfo, value);}
         break;
     case 2:
+        addObjectMenu();
         break;
     case 3:
         break;
@@ -611,7 +790,6 @@ void Menu() {
 
 int main()
 {
-    Computer *computer = new Computer();
-    inventory["a228"] = std::variant<Computer, Monitor, FurnetureProperties>(*computer);
+    inventory.insert({"a228", Furneture::create()});
     return 0;
 }
