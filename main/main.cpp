@@ -15,9 +15,7 @@ int main(int argc, char* argv[])
     getch(); // ждём нажатия символа
     */
 //  endwin(); // завершение работы с ncurses
-
-    
-
+    std::vector<Book> arrayBooks;
 
 
 
