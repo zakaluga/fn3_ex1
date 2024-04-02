@@ -16,9 +16,21 @@ int main(int argc, char* argv[])
     */
 //  endwin(); // завершение работы с ncurses
     std::vector<Book> arrayBooks;
-
-
-
+    double x, y, z;
+    std::string isbn, name;
+    std::cout << "Supply coordinates\n";
+    std::cout << "X = ";
+    std::cin >> x;
+    std::cout << "\nY = ";
+    std::cin >> y;
+    std::cout << "\nZ = ";
+    std::cin >> z;
+    std::cout << "\nSupply isbn: ";
+    std::cin >> isbn;
+    std::cout << "\nSupply book name: ";
+    std::cin >> name;
+    arrayBooks.push_back(Book(x, y, z, isbn, name));
+    
 
   return 0;
 }

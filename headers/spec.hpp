@@ -3,7 +3,7 @@
 #include "includes.h"
 struct ID {
 private:
-    uint16_t _id;
+    uint16_t _id;   //identification number
 public:
     void SetId(uint16_t valId) {
         this->_id = valId;
@@ -13,35 +13,35 @@ public:
     }
     ID(): _id(0){};
 };
-class Move {
+class Move {    //movable object
 private:
     double _x;  //x coordinate. point located in the center of an object
     double _y;  //y coordinate. point located in the center of an object
     double _z;  //z coordinate. point located in the center of an object
 public:
-    void SetX(double valX) { //getters and setters block
+    void SetX(double valX) {    //setter X
         this->_x = valX;
     }
-    void SetY(double valY) {
+    void SetY(double valY) {    //setter Y
         this->_y = valY;
     }
-    void SetZ(double valZ) {
+    void SetZ(double valZ) {    //setter Z
         this->_z = valZ;
     }
-    double GetX() {
+    double GetX() {             //getter X
         return this->_x;
     }
-    double GetY() {
+    double GetY() {             //getter Y
         return this->_y;
     }
-    double GetZ() {
+    double GetZ() {             //getter Z
         return this->_z;
     }
     
     Move(): _x(0), _y(0), _z(0) {}
     ~Move() = default;
 };
-class Sizes {
+class Sizes {   //defines in constructor
 private:
     double _sizeX;  //length
     double _sizeY;  //width
@@ -56,35 +56,58 @@ public:
     double GetSizeZ() {
         return this->_sizeZ;
     }
-    /*void SetSizeX(double varX){
-        this->_sizeX = varX;
-    }
-    void SetSizeY(double varY) {
-        this->_sizeY = varY;
-    }
-    void SetSizeZ(double varZ) {
-        this->_sizeZ = varZ;
-    }*/
-    Sizes(double sizeX, double sizeY, double sizeZ): _sizeX(sizeX), _sizeY(sizeY), _sizeZ(sizeZ) {}
+    Sizes(double sizeX, double sizeY, double sizeZ): 
+        _sizeX(sizeX), _sizeY(sizeY), _sizeZ(sizeZ) {}
     ~Sizes() = default;
 };
 class Book: public Move, Sizes, ID {
 private:
-    std::string _isbn;
-    std::string _name;
-public:
-    
-    Book(double sizeX, double sizeY, double sizeZ, std::string isbn, std::string name): Sizes(sizeX, sizeY, sizeZ), _isbn(isbn), _name(name) {}
+    std::string _isbn;  //defines in constructor
+    std::string _name;  //defines in constructor
+public:  
+    Book(double sizeX, double sizeY, double sizeZ, std::string isbn, std::string name): 
+        Sizes(sizeX, sizeY, sizeZ), _isbn(isbn), _name(name) {}
     ~Book() = default;
 };
-class Table: public Move, Sizes, ID {
+class Furniture: public Move, Sizes, ID {
+private:
+    std::string _materials;
+    std::string _name;
 public:
-    
-    Table(double sizeX, double sizeY, double sizeZ): Sizes(sizeX, sizeY, sizeZ) {}
-    ~Table() = default;
+    Furniture(double sizeX, double sizeY, double sizeZ, std::string materials, std::string name): 
+        Sizes(sizeX, sizeY, sizeZ), _materials(materials), _name(name) {}
+    ~Furniture() = default;
 };
 
+struct working {
+private:
+    bool power;
+    bool packed;
+public:
+    bool GetPower() { return this->power; }
+    bool GetPacked() { return this->packed; }
+    void SetPower(bool valPow) { power = valPow; }
+    void SetPacked(bool valpacked) { packed = valpacked; }
+    bool isWorking() { if (power && packed) return true; }
+};
+class Computer: public Move, Sizes, ID, working {
+public:
+    Computer(double sizeX, double sizeY, double sizeZ): Sizes(sizeX, sizeY, sizeZ){}
+    ~Computer() = default;
+};
+class Monitor: public Move, Sizes, ID {
+public:
+    Monitor(double sizeX, double sizeY, double sizeZ): Sizes(sizeX, sizeY, sizeZ){}
+    ~Monitor() = default;
 
-
-
+};
+class Unregistered: public Move, Sizes, ID {
+private:
+    std::string _materials;
+    std::string _name;
+public:
+    Unregistered(double sizeX, double sizeY, double sizeZ, std::string materials, std::string name): 
+        Sizes(sizeX, sizeY, sizeZ), _materials(materials), _name(name) {}
+    ~Unregistered() = default;
+};
 #endif
