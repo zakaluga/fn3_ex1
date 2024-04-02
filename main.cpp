@@ -5,7 +5,7 @@
 #include <vector>
 
 //all classes block start
-  struct ID {
+    struct ID {
   private:
       uint16_t _id;   //identification number
   public:
@@ -83,7 +83,7 @@
       ~Furniture() = default;
   };
 
-  struct working {
+    struct working {
   private:
       bool power;
       bool packed;
@@ -116,8 +116,6 @@
   };
 //all classes block end
 
-
-
 //general block ncurses windows start
   int maxY = 0;
   int maxX = 0;
@@ -136,23 +134,18 @@
 //general block ncurses windows end
 
 
-
-
-//first window block start
-  void window1() {
+  void window2() {
     WINDOW *w;
     init();
-    std::vector<std::string> list = {"Create object", "Read object info", "Delete object", "Exit"};
+    std::vector<std::string> list = {"Add new furniture", "Add new book", "Add new computer", "Add new monitor", "Add unregistered object"};
     char item[30];
-    int ch, i = 0;
+    int ch;
+    int i = 0;
     
     w = newwin(10, 20, 1, 1 ); // create a new window
     box(w, 0, 0); // sets default borders for the window
     // now print all the menu items and highlight the first one
     for(i = 0; i < 4; ++i) {
-      if(i == 0) 
-      wattron(w, A_STANDOUT); // highlights the first item.
-      else
       wattroff(w, A_STANDOUT);
       sprintf(item, "%s",  list[i].c_str());
       mvwprintw( w, i+1, 2, "%s", item );
@@ -160,15 +153,19 @@
     wrefresh(w); // update the terminal screen
     i = 0;
     noecho(); // disable echoing of characters on the screen
-    keypad( w, TRUE ); // enable keyboard input for the window.
+    keypad(w, TRUE ); // enable keyboard input for the window.
     curs_set( 0 ); // hide the default screen cursor.
     // get the input
-    while(( ch = wgetch(w)) != 'q'){ 
+    while((ch = wgetch(w)) != 'q') { 
       // right pad with spaces to make the items appear with even width.
       sprintf(item, "%s",  list[i].c_str()); 
       mvwprintw( w, i+1, 2, "%s", item ); 
       // use a variable to increment or decrement the value based on the input.
-      switch( ch ) {
+      switch(ch) {
+        case (int)'\n':
+          delwin(w);
+          clear();
+          endwin();
         case KEY_UP:
           --i;
           i = (i < 0) ? 4 : i;
@@ -185,6 +182,64 @@
       wattroff(w, A_STANDOUT);
     }
     delwin(w);
+    clear();
+    endwin();
+  }
+//first window block start
+  void window1() {
+    WINDOW *w;
+    init();
+    std::vector<std::string> list = {"Create object", "Read object info", "Delete object", "Exit"};
+    char item[30];
+    int ch;
+    int i = 0;
+    
+    w = newwin(10, 20, 1, 1 ); // create a new window
+    box(w, 0, 0); // sets default borders for the window
+    // now print all the menu items and highlight the first one
+    for(i = 0; i < 3; ++i) {
+      wattroff(w, A_STANDOUT);
+      sprintf(item, "%s",  list[i].c_str());
+      mvwprintw( w, i+1, 2, "%s", item );
+    }
+    wrefresh(w); // update the terminal screen
+    i = 0;
+    noecho(); // disable echoing of characters on the screen
+    keypad(w, TRUE ); // enable keyboard input for the window.
+    curs_set( 0 ); // hide the default screen cursor.
+    // get the input
+    while((ch = wgetch(w)) != 'q') { 
+      // right pad with spaces to make the items appear with even width.
+      sprintf(item, "%s",  list[i].c_str()); 
+      mvwprintw( w, i+1, 2, "%s", item ); 
+      // use a variable to increment or decrement the value based on the input.
+      switch(ch) {
+        case (int)'\n':
+          delwin(w);
+          clear();
+          switch(i) {
+            case 0:
+                window2();
+            case 1: 
+                
+          }
+        case KEY_UP:
+          --i;
+          i = (i < 0) ? 3 : i;
+          break;
+        case KEY_DOWN:
+          ++i;
+          i = (i > 3) ? 0 : i;
+          break;
+      }
+      // now highlight the next item in the list.
+      wattron(w, A_STANDOUT);
+      sprintf(item, "%s",  list[i].c_str());
+      mvwprintw( w, i+1, 2, "%s", item);
+      wattroff(w, A_STANDOUT);
+    }
+    delwin(w);
+    clear();
     endwin();
   }
 //first window block end
