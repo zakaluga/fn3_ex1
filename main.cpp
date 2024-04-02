@@ -2,18 +2,16 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <locale>
-#include <windows.h>
 #include <map>
 class AggregatedSettings
 {
 public:
-    std::string size;
     int count;
+    std::string size;
     std::string name;
     std::string material;
-    std::string number;
     std::string extraInf;
+    std::map<std::string, std::string> func;
     void display()
     {
         std::cout << "Item name: " << name << " | Number: " << count << " | Size: "
@@ -21,7 +19,7 @@ public:
                   << " | Extra information: " << extraInf;
         std::cout << "\n";
     }
-    void getInf()
+    void getinf()
     {
         std::cout << "Enter item name: ";
         std::cin >> name;
@@ -35,7 +33,6 @@ public:
             std::cin.ignore();
             std::getline(std::cin, size);
             std::cout << "Extra information extraInf item: ";
-            std::cin.ignore();
             std::getline(std::cin, extraInf);
         }
     }
@@ -46,130 +43,159 @@ public:
              << " | Extra information: " << extraInf;
         File << "\n";
     }
+    void addInToTempfile(std::fstream &File)
+    {
+        File << name << "\n";
+        File << count << "\n";
+        File << size << "\n";
+        File << material << "\n";
+        File << extraInf << "\n";
+    }
 };
 class ClassroomInventory
 {
-private:
-    int tempCount;
-    std::vector<AggregatedSettings> registeredItems;
-    std::vector<AggregatedSettings> unregisteredItems;
-
 public:
-    void addRegisteredItem(const AggregatedSettings &item)
+    int tempCount;
+    std::vector<AggregatedSettings> items;
+    void addItems(const AggregatedSettings &item)
     {
-        registeredItems.push_back(item);
-    }
-    void addUnregisteredItem(const AggregatedSettings &item)
-    {
-        unregisteredItems.push_back(item);
+        items.push_back(item);
     }
     void deleteItems()
     {
-        registeredItems.clear();
-        unregisteredItems.clear();
+        items.clear();
     }
-    void addInToFile(std::ofstream &file)
+    void addInToFile(std::ofstream &file, std::fstream &tempfile)
     {
-        file << "Common items:\n";
-        for (int i = 0; i < registeredItems.size(); ++i)
+        for (int i = 0; i < items.size(); ++i)
         {
-            registeredItems[i].addInToFile(file);
+            items[i].addInToFile(file);
+            items[i].addInToTempfile(tempfile);
         };
-        file << "Unusuall items:\n";
-        for (int i = 0; i < unregisteredItems.size(); ++i)
-        {
-            unregisteredItems[i].addInToFile(file);
-        }
     }
 };
-void Menu(int &choice, std::map<std::string, AggregatedSettings> &item, std::ofstream &file, ClassroomInventory &inventory)
+void scanfile(std::fstream &file, std::map<std::string, AggregatedSettings> &map, std::vector<std::string> &gg)
 {
-    static int i = 0;
+    AggregatedSettings temp;
+    std::string line;
+    if (file.is_open())
+    {
+        file.seekg(0);
+        while (getline(file, line))
+        {
+            temp.name = line;
+            file >> temp.count;
+            file.ignore();
+            getline(file, temp.size);
+            getline(file, temp.material);
+            getline(file, temp.extraInf);
+            map[temp.name] = temp;
+            if (!temp.name.empty())
+            {
+                gg.push_back(temp.name);
+                map[temp.name].display();
+            }
+        }
+    }
+}
+
+void Menu(ClassroomInventory &inventory)
+{
+    int choice;
+    int i = 0;
+    std::vector<std::string> gg;
+    std::map<std::string, AggregatedSettings> items;
+    std::ofstream file("Result.txt");
+    std::fstream tempfile("DON'T_CLICK_HERE", std::ios::out | std::ios::in);
     AggregatedSettings temp;
     std::string choosenName;
-    int choiseForCase3;
-    std::cout << "Menu:\n";
-    std::cout << "1) Add standart item.\n";
-    std::cout << "2) Add unusual item.\n";
-    std::cout << "3) Change setting of item.\n";
-    std::cout << "4) Clean file.\n";
-    std::cout << "5) Exit.\n";
-    std::cin >> choice;
-    switch (choice)
+    scanfile(tempfile, items, gg);
+    tempfile.close();
+    tempfile.open("DON'T_CLICK_HERE", std::ios::out | std::ios::in | std::ios::trunc);
+    while (choice != 5)
     {
-    case 1:
-        temp.getInf();
-        item[temp.name] = temp;
-        inventory.addRegisteredItem(temp);
-        i++;
-        break;
-    case 2:
-        temp.getInf();
-        item[temp.name] = temp;
-        inventory.addUnregisteredItem(temp);
-        i++;
-        break;
-    case 3:
-        std::cout << "Which item will be changed: ";
-        std::cin >> choosenName;
-        std::cout << "Which setting you want to change?\n";
-        std::cout << "1) Number of items\n";
-        std::cout << "2) Size\n";
-        std::cout << "3) Material\n";
-        std::cout << "4) Extra information\n";
-        std::cout << "5) Exit\n";
-        std::cin >> choiseForCase3;
-        switch (choiseForCase3)
+        int choiseForCase3;
+        std::cout << "Menu:\n";
+        std::cout << "1) Add standart item.\n";
+        std::cout << "2) Add unusual item.\n";
+        std::cout << "3) Change setting of reg item.\n";
+        std::cout << "4) Clean file.\n";
+        std::cout << "5) Exit.\n";
+        std::cin >> choice;
+        switch (choice)
         {
         case 1:
-            std::cout << "Enter new count: ";
-            std::cin >> item[choosenName].count;
+            temp.getinf();
+            items[temp.name] = temp;
+            gg.push_back(temp.name);
+            i++;
             break;
         case 2:
-            std::cout << "Enter new size: ";
-            std::cin >> item[choosenName].size;
+            temp.getinf();
+            items[temp.name] = temp;
+            gg.push_back(temp.name);
+            i++;
             break;
         case 3:
-            std::cout << "Enter new material: ";
-            std::cin >> item[choosenName].material;
+            std::cout << "Which item will be changed: ";
+            std::cin >> choosenName;
+            std::cout << "Which setting you want to change?\n";
+            std::cout << "1) Number of items\n";
+            std::cout << "2) Size\n";
+            std::cout << "3) Material\n";
+            std::cout << "4) Extra information\n";
+            std::cout << "5) Exit\n";
+            std::cin >> choiseForCase3;
+            switch (choiseForCase3)
+            {
+            case 1:
+                std::cout << "Enter new count: ";
+                std::cin >> items[choosenName].count;
+                break;
+            case 2:
+                std::cout << "Enter new size: ";
+                std::cin >> items[choosenName].size;
+                break;
+            case 3:
+                std::cout << "Enter new material: ";
+                std::cin >> items[choosenName].material;
+                break;
+            case 4:
+                std::cout << "Enter new extra information: ";
+                std::cin.ignore();
+                std::getline(std::cin, items[choosenName].extraInf);
+                break;
+            case 5:
+                break;
+
+            default:
+                std::cout << "No match!";
+                break;
+            }
             break;
+
         case 4:
-            std::cout << "Enter new extra information: ";
-            std::cin.ignore();
-            std::getline(std::cin, item[choosenName].extraInf);
+            file.clear();
             break;
         case 5:
+            for (int i = 0; i < gg.size(); i++)
+            {
+                inventory.addItems(items[gg[i]]);
+            }
+            inventory.addInToFile(file, tempfile);
+            file.close();
+            tempfile.close();
             break;
 
         default:
             std::cout << "No match!";
             break;
         }
-
-        break;
-    case 4:
-        file.clear();
-        break;
-
-    case 5:
-        inventory.addInToFile(file);
-        break;
-
-    default:
-        std::cout << "No match!";
-        break;
     }
 };
 int main()
 {
     ClassroomInventory inventory;
-    std::map<std::string, AggregatedSettings> Items;
-    int choise;
-    std::ofstream File("Result.txt");
-    while (choise != 5)
-    {
-        Menu(choise, Items, File, inventory);
-    }
-    File.close();
+    Menu(inventory);
     return 0;
 }
