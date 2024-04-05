@@ -11,61 +11,44 @@
   int maxX = 0;
   
   void init() {
-    initscr(); // создание окна
+    initscr();
     clear();
+    cbreak();
     noecho();
     keypad(stdscr, TRUE);
-    cbreak();
     getmaxyx(stdscr, maxY, maxX);
-    clear(); // очищает экран
+    clear();
   }
 
-  void interface(std::string ch[], ITEM **items, ITEM* c_item, int c, int n) {
-
-  }
 
 //general block ncurses windows end
   
-  int main() {	
-    std::string choices[] = {
-    "Choice 1",
-    "Choice 2",
-    "Choice 3",
-    "Choice 4",
-    "Exit",
-  };
+  int main() {
+    init();
+    curs_set(0);
+    const char *main_menu_choices[] = {"Append item", "Get info", "Delete item", "Exit"}, 
+      *append_menu_choices[] = {}, 
+      *ginfo_menu_choices[] = {}, 
+      *del_menu_choices[] = {};
+    MENU 
+      *main_menu, *append_menu, *ginfo_menu, *del_menu;
+    ITEM 
+      **main_menu_items, **append_menu_items, **ginfo_menu_items, **del_menu_items;
+
+    WINDOW *w;
+    int key_input;
+    /*
     ITEM **items;
-    int c;				
     MENU *my_menu;
-    int n_choices;
     ITEM *cur_item;
     init();
-    n_choices = sizeof(choices)/sizeof(choices[0]);
-    items = (ITEM **)calloc(n_choices + 1, sizeof(ITEM *));
-
-    for(int i = 0; i < n_choices; ++i) {
-      items[i] = new_item(" ", choices[i].c_str());
-    }
-    items[n_choices] = (ITEM *)NULL;
-    my_menu = new_menu((ITEM **)items);
     mvprintw(LINES - 2, 0, "Program by Davydov Vladimir");
     post_menu(my_menu);
     refresh();
-
-    while((c = getch()) != '\n')
-    {   switch(c){	
-          case KEY_DOWN:
-            menu_driver(my_menu, REQ_DOWN_ITEM);
-            break;
-          case KEY_UP:
-            menu_driver(my_menu, REQ_UP_ITEM);
-            break;
-      }
-    }	
 
     free_item(*items);
     free_menu(my_menu);
     clear();
     refresh();
-    endwin();
+    endwin(); */
 }
