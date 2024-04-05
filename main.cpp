@@ -2,6 +2,7 @@
 #include <variant>
 #include <map>
 #include <string>
+#include <fstream>
 
 class Processor {
     private:
@@ -154,6 +155,7 @@ class GraphCard {
                       << "Card heat out: "    << this->heatOut_     << " Vt\n\t";
             if (this->isWork_) {std::cout << "Videocard is OK\n";} else {std::cout << "Videocard is NOT OK\n";}
         }
+
         void edit() {
             int comandNumber;
             char yesOrNo;
@@ -748,8 +750,22 @@ namespace Inventory {
         }
     }
 
+    void writeInFile() {
+        std::ofstream fout;
+        fout.open("inventory.txt");
+        
+    }
+
     void veiwInventory() {
-        for (auto [key, value]: inventory) {std::visit(getInfo, value);}
+        for (auto [key, value]: inventory) {std::cout << key; std::visit(getInfo, value);}
+    }
+
+    void deleteElement() {
+        std:: string elementNumber;
+        Inventory::veiwInventory();
+        std::cout << "Enter inventory number of element, you want delete";
+        std::cin  >> elementNumber;
+        inventory.erase(elementNumber);
     }
 }
 
@@ -780,10 +796,12 @@ void menu() {
         Inventory::veiwInventory();
         std::cout << "Enter inventory number of object you want to change: ";
         std::cin  >> inventoryNumber;
-        std::visit(Inventory::edit, Inventory::inventory[inventoryNumber]);
+        // std::visit(Inventory::edit, Inventory::inventory[inventoryNumber]);
         menu();
         break;
     case 4:
+        Inventory::deleteElement();
+        menu();
         break;
     case 5:
         break;
@@ -798,7 +816,5 @@ void menu() {
 int main()
 {
     menu();
-    Inventory::addObject();
-    Inventory::veiwInventory();
     return 0;
 }
