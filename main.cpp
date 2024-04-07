@@ -103,7 +103,6 @@
           **main_menu_items, **append_menu_items, **ginfo_menu_items, **del_menu_items;
         WINDOW *main_window;
     
-    /* Create Items */
     int arrlength = 4;
     int ch;
     int sizeX = 25;
