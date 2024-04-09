@@ -525,14 +525,6 @@ int main()
                     std::cout << *it << ", ";
                     std::cout << inf<std::string, Parameter>[*it][i].getWhatToDo() << ", ";
                     std::cout << inf<std::string, Parameter>[*it][i].getSubscription();
-                    if (it != --namesOfClasses.end())
-                    {
-                        std::cout << "}, ";
-                    }
-                    else
-                    {
-                        std::cout << "}";
-                    }
                 }
             }
             std::cout << "}\n";
