@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <cstdio>
 class AggregatedSettings
 {
 public:
@@ -11,9 +12,16 @@ public:
     std::string size;
     std::string material;
     std::string extraInf;
-    std::string location;
+    std::string location = "Classroom";
     std::vector<std::string> numbers;
     std::map<std::string, std::string> func;
+    void displayfile()
+    {
+        for (int i = 0; i < std::stoi(count); i++)
+        {
+            std::cout << "Number: " << numbers[i] << " | Location: " << location << "\n";
+        }
+    }
     bool findItem(std::vector<std::string> vect)
     {
         for (int i = 0; i < vect.size(); i++)
@@ -110,7 +118,7 @@ public:
         std::string temp;
         for (int i = 0; i < std::stoi(count); i++)
         {
-            temp = takepartofstring(name, 2) + std::to_string(i);
+            temp = takepartofstring(name, 2) + std::to_string(i + 1);
             numbers.push_back(temp);
         }
     }
@@ -171,9 +179,28 @@ bool findItem(std::vector<std::string> vect, std::string name)
     }
     return false;
 }
-
+bool correct(std::string x)
+{
+    std::vector<std::string> right;
+    for (int i = 0; i < 7; i++)
+    {
+        right.push_back(std::to_string(i + 1));
+    }
+    for (int i = 0; i < 7; i++)
+    {
+        if (x == right[i])
+        {
+            return true;
+            break;
+        }
+    }
+    return false;
+}
 void Menu(ClassroomInventory &inventory)
 {
+    int choiseForCase3;
+    std::vector<std::ofstream> files;
+    std::string tempchoice;
     int choice;
     std::vector<std::string> names;
     std::map<std::string, AggregatedSettings> items;
@@ -187,7 +214,6 @@ void Menu(ClassroomInventory &inventory)
     tempfile.open("DON'T_CLICK_HERE.txt", std::ios::out | std::ios::in | std::ios::trunc);
     while (choice != 7)
     {
-        int choiseForCase3;
         std::cout << "\n";
         std::cout << "Menu:\n";
         std::cout << "1) Add educational item.\n";
@@ -197,7 +223,13 @@ void Menu(ClassroomInventory &inventory)
         std::cout << "5) Delete choosen item\n";
         std::cout << "6) Display all items\n";
         std::cout << "7) Exit.\n";
-        std::cin >> choice;
+        std::getline(std::cin, tempchoice);
+        while (!correct(tempchoice))
+        {
+            std::cout << "Wrong point, try again\n";
+            std::getline(std::cin, tempchoice);
+        }
+        choice = std::stoi(tempchoice);
         switch (choice)
         {
         case 1:
@@ -220,7 +252,7 @@ void Menu(ClassroomInventory &inventory)
             break;
         case 3:
             std::cout << "Which item will be changed: ";
-            std::cin >> choosenName;
+            std::getline(std::cin, choosenName);
             if (findItem(names, choosenName))
             {
                 std::cout << "Which setting you want to change?\n";
@@ -229,7 +261,13 @@ void Menu(ClassroomInventory &inventory)
                 std::cout << "3) Material\n";
                 std::cout << "4) Extra information\n";
                 std::cout << "5) Exit\n";
-                std::cin >> choiseForCase3;
+                std::getline(std::cin, tempchoice);
+                while (!correct(tempchoice))
+                {
+                    std::cout << "Wrong point, try again\n";
+                    std::getline(std::cin, tempchoice);
+                }
+                choiseForCase3 = std::stoi(tempchoice);
                 switch (choiseForCase3)
                 {
                 case 1:
@@ -238,24 +276,17 @@ void Menu(ClassroomInventory &inventory)
                     break;
                 case 2:
                     std::cout << "Enter new size: ";
-                    std::cin.ignore();
                     std::getline(std::cin, items[choosenName].size);
                     break;
                 case 3:
                     std::cout << "Enter new material: ";
-                    std::cin.ignore();
                     std::getline(std::cin, items[choosenName].material);
                     break;
                 case 4:
                     std::cout << "Enter new extra information: ";
-                    std::cin.ignore();
                     std::getline(std::cin, items[choosenName].extraInf);
                     break;
                 case 5:
-                    break;
-
-                default:
-                    std::cout << "No match!\n";
                     break;
                 }
                 break;
@@ -263,9 +294,15 @@ void Menu(ClassroomInventory &inventory)
             else
             {
                 std::cout << "Wrong name\n";
+                break;
             }
+            break;
 
         case 4:
+            for (int i = 0; i < names.size(); i++)
+            {
+                std::remove((names[i] + ".txt").c_str());
+            }
             file.clear();
             tempfile.clear();
             items.clear();
@@ -273,10 +310,11 @@ void Menu(ClassroomInventory &inventory)
             break;
         case 5:
             std::cout << "Which item will be deleted?: ";
-            std::cin >> deletename;
+            std::getline(std::cin, deletename);
             if (findItem(names, deletename))
             {
                 items[deletename].clear();
+                std::remove((deletename + ".txt").c_str());
                 for (auto it = names.begin(); it != names.end(); ++it)
                 {
                     if (*it == deletename)
@@ -286,6 +324,11 @@ void Menu(ClassroomInventory &inventory)
                     }
                 }
             }
+            else
+            {
+                std::cout << "Wrong name\n";
+                break;
+            }
             break;
         case 6:
             for (int i = 0; i < names.size(); i++)
@@ -293,19 +336,21 @@ void Menu(ClassroomInventory &inventory)
                 items[names[i]].display();
             }
             break;
-
         case 7:
             for (int i = 0; i < names.size(); i++)
             {
                 inventory.addItems(items[names[i]]);
-            }
+                files.push_back(std::ofstream(names[i] + ".txt"));
+                items[names[i]].makenumber();
+                for (int j = 0; j < std::stoi(items[names[i]].count); j++)
+                {
+                    files[i] << "Number: " << items[names[i]].numbers[j] << " | Location: "
+                             << items[names[i]].location << "\n";
+                }
+            };
             inventory.addInToFile(file, tempfile);
             file.close();
             tempfile.close();
-            break;
-
-        default:
-            std::cout << "No match!\n";
             break;
         }
     }
