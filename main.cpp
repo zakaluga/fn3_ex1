@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <fstream>
+// #include <clocale>
 
 class Processor {
     private:
@@ -692,23 +693,127 @@ public:
     }
 };
 
+class CustomObject {
+    private:
+        std::map<std::string, std::string> properties_{};
+    public:
+
+        CustomObject(std::map<std::string, std::string> properties): properties_(properties) {}
+        CustomObject() = default;
+        ~CustomObject() = default;
+
+        void createProperty() {
+            std::string property;
+            std::string value;
+            std::cout << "What you want to do\n\t";
+            std::cout << "1) Enter new property with value\n\t"
+                      << "2) Exit\n"
+                      << "Press any key (1-2): ";
+            int commandNumber;
+            std::cin  >> commandNumber;
+            switch (commandNumber)
+            {
+            case 1:
+                std::cout << "Enter new property name: ";
+                std::cin  >> property;
+                std::cout << "Enter valur for new property: ";
+                std::cin  >> value;
+                this->properties_.insert({property, value});
+                createProperty();
+                break;
+            case 2:
+                break;
+            default:
+                createProperty();
+                break;
+            }
+        }
+
+        static CustomObject create() {
+            CustomObject customObject = CustomObject();
+            customObject.createProperty();
+            return customObject; 
+        }
+
+        void addProperty() {
+            std::cout << "Enter new name of property: ";
+            std::string property;
+            std::cin  >> property;
+            std::cout << "Enter new value for new property: ";
+            std::string value;
+            std::cin  >> value;
+            this->properties_.insert({property, value});
+        }
+
+        void deleteProperty() {
+            this->getInfo();
+            std::cout << "Enter name of property, you want delete: ";
+            std::string property;
+            std::cin  >> property;
+            this->properties_.erase(property);
+        }
+
+        void editProperty() {
+            this->getInfo();
+            std::cout << "Enter property, you want to change: ";
+            std::string property;
+            std::cin  >> property;
+            std::cout << "Enter new value for property " << property << ": ";
+            std::cin  >> this->properties_[property];
+        }
+
+        void getInfo() {for (auto [key, value]:properties_) {std::cout << key << ": " << value << "\n";}}
+
+        void edit() {
+            std::cout << "---CUSTOM OBJECT MENU---\n\t";
+            std::cout << "1) Add new property\n\t"
+                      << "2) Delete property\n\t"
+                      << "3) Edit some property\n\t"
+                      << "4) Exit\n"
+                      << "Press key (1-4): ";
+            int commandNumber;
+            std::cin >> commandNumber;
+            switch (commandNumber)
+            {
+            case 1:
+                this->addProperty();
+                this->edit();
+                break;
+            case 2:
+                this->deleteProperty();
+                this->edit();
+                break;
+            case 3:
+                this->editProperty();
+                this->edit();
+                break;
+            case 4:
+                break;
+            default:
+                this->edit();
+                break;
+            }
+        }
+};
+
 namespace Inventory {
-    std::map<std::string, std::variant<Computer, Processor, GraphCard, Monitor, Furneture>> inventory{};
+    std::map<std::string, std::variant<Computer, Processor, GraphCard, Monitor, Furneture, CustomObject>> inventory{};
     
-    auto getInfo = [](auto obj) {obj.getInfo();};
-    auto edit    = [](auto obj) {obj.edit();};
+    auto getInfo = [](auto obj)  {obj.getInfo();};
+    auto edit    = [](auto &obj) {obj.edit();};
 
     void addObject() {
         int commandNumber;
         std::string inventoryNumber;
         std::cout << "What you want to add?\n\t";
         std::cout << "1) Processor\n\t" 
-                << "2) Graph card\n\t"
-                << "3) Monitor\n\t"
-                << "4) Computer\n\t"
-                << "5) Some furneture\n\t"
-                << "6) Exit\n"
-                << "Press any key (1-6): ";
+                  << "2) Graph card\n\t"
+                  << "3) Monitor\n\t"
+                  << "4) Computer\n\t"
+                  << "5) Some furneture\n\t"
+                  << "6) Custom object\n\t"
+                  << "7) Exit\n"
+                  << "Press any key (1-6): ";
         std::cin >> commandNumber;
         switch (commandNumber)
         {
@@ -743,6 +848,12 @@ namespace Inventory {
             addObject();
             break;
         case 6:
+            std::cout << "Enter inventory naumber of new custom object: ";
+            std::cin  >> inventoryNumber;
+            inventory.insert({inventoryNumber, CustomObject::create()});
+            addObject();
+            break;
+        case 7:
             break;
         default:
             addObject();
@@ -750,14 +861,8 @@ namespace Inventory {
         }
     }
 
-    void writeInFile() {
-        std::ofstream fout;
-        fout.open("inventory.txt");
-        
-    }
-
     void veiwInventory() {
-        for (auto [key, value]: inventory) {std::cout << key; std::visit(getInfo, value);}
+        for (auto [key, value]: inventory) {std::cout << key << " "; std::visit(getInfo, value);}
     }
 
     void deleteElement() {
@@ -796,7 +901,7 @@ void menu() {
         Inventory::veiwInventory();
         std::cout << "Enter inventory number of object you want to change: ";
         std::cin  >> inventoryNumber;
-        // std::visit(Inventory::edit, Inventory::inventory[inventoryNumber]);
+        std::visit(Inventory::edit, Inventory::inventory[inventoryNumber]);
         menu();
         break;
     case 4:
@@ -815,6 +920,7 @@ void menu() {
 
 int main()
 {
+    // setlocale(LC_ALL, "Russian");
     menu();
     return 0;
 }
