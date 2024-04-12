@@ -14,16 +14,6 @@ struct Base
     std::string color;
 };
 
-void Print_string(std::string name)
-{
-    std::cout << "" << name << std::endl;
-};
-
-void Print_digit(int digit)
-{
-    std::cout << "tjdtyj" << digit << std::endl;
-};
-
 class Computers
 {
     std::string serial_number;
@@ -63,7 +53,7 @@ public:
 
 std::ostream &operator<<(std::ostream &out, const Computers &computer)
 {
-    return out << "computer's number: " << computer.Get_number() << std::endl
+    return out << "computer's registration number: " << computer.Get_number() << std::endl
                << "computer's graphic card: " << computer.Get_card() << std::endl
                << "computer's CPU: " << computer.Get_cpu() << std::endl;
 }
@@ -99,7 +89,7 @@ bool IsDigit(std::string str)
 
 void Empty_Print()
 {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 2; i++)
     {
         std::cout << std::endl;
     }
@@ -117,6 +107,23 @@ void Menu_Print()
     cout << "5. Show all lists" << endl;
     cout << "6. Exit" << endl;
 }
+
+/*void Computer_List_Print(){
+    using namespace std;
+
+    for (auto i = List_computer.begin(); i != List_computer.end(); i++)
+                {
+                    int n = distance(List_computer.begin(), i);
+                    if (n == 0){
+                        cout<<"There's nothing in this list yet"<<endl;
+                    }
+                    else{
+                    cout << "computer №" << (n + 1) << endl;
+                    cout << *i << endl;
+                    cout << endl;
+                    }
+                }
+}*/
 
 int main()
 {
@@ -148,20 +155,24 @@ int main()
         switch (first_choise)
         {
         case 1:
-        { // список компьютеров
-            // list<Computers>::iterator i = List_computer.begin();
+        {
             for (auto i = List_computer.begin(); i != List_computer.end(); i++)
-            { // т.к. итератор - это по сути ссылка на эл-т кон-та, то чтоб получить значение эл-та, нужно разыменовать итератор
+            {
+                int n = distance(List_computer.begin(), i);
+
+                cout << "computer №" << (n + 1) << endl;
                 cout << *i << endl;
+                cout << endl;
             }
 
             cout << "1.1 Emplace new element" << endl;
             cout << "1.2 Delete element" << endl;
             cout << "1.3 Change some element's characteristic" << endl;
-
+            cout << "1.4 Get back to main menu" << endl;
+            Empty_Print();
             string choisestr2;
             cin >> choisestr2;
-            Empty_Print();
+
             while (!IsDigit(choisestr2))
             {
                 cout << "Wrong number. Enter value again:\n";
@@ -193,28 +204,45 @@ int main()
                 for (auto i = List_computer.begin(); i != List_computer.end(); i++)
                 {
                     int n = distance(List_computer.begin(), i);
+
                     cout << "computer №" << (n + 1) << endl;
                     cout << *i << endl;
                     cout << endl;
                 }
             }
             break;
+
+                break;
             case 2:
             {
                 auto p = List_computer.begin();
                 cout << "Which one element you want to remove?" << endl;
+                Empty_Print();
                 int k;
                 cin >> k;
                 advance(p, k - 1);
                 List_computer.erase(p);
+                Empty_Print();
+                cout << "Updated computer's list: ";
+                for (auto i = List_computer.begin(); i != List_computer.end(); i++)
+                {
+                    int n = distance(List_computer.begin(), i);
+                    cout << "computer №" << (n + 1) << endl;
+                    cout << *i << endl;
+                    cout << endl;
+                }
+                break;
             }
             break;
-            };
-        }
-        case 2:
-        {
+
+            case 3:
+            {
+            }
             break;
-        }
-        };
-    };
-};
+            } // скобка на свитч с компами
+
+        } // скобка на кейс работы с компами
+
+        }; // скобка внешнего свитча
+    };     // скобка закольцовки
+};         // скобка мэйна
