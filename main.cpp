@@ -101,7 +101,7 @@
           *main_menu, *append_menu, *ginfo_menu, *del_menu;
         ITEM 
           **main_menu_items, **append_menu_items, **ginfo_menu_items, **del_menu_items;
-        WINDOW *main_window;
+        WINDOW *main_window;  //сделать отдельноявно выделить память
     
     int arrlength = 4;
     int ch;
@@ -112,20 +112,14 @@
       main_menu_items[i] = new_item(main_menu_choices[i], "");
     }
     main_menu_items[arrlength] = (ITEM*)NULL;
-    /* Create Menu */
     main_menu = new_menu(main_menu_items);
-    /* Create Window for the menu */
     main_window = newwin(sizeY, sizeX, (maxY-sizeY)/3, (maxX-sizeX)/3);
     box( main_window, 0, 0 );
     keypad(main_window, TRUE);
-    /* set menu window */
     set_menu_win(main_menu, main_window);
-    /*set menu sub window */
     set_menu_sub(main_menu, derwin(main_window, sizeY-(sizeY/5), sizeX-(sizeX/5), sizeY/5, sizeX/5));
-    set_menu_mark(main_menu, " "); /* string used as menu marker */
-    /* set menu format - no of items to be displayed */
+    set_menu_mark(main_menu, " ");
     set_menu_format(main_menu, 5, 1);
-    /*post the menu */
     post_menu(main_menu);
     wrefresh(main_window);
     int i = 0;
