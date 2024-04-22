@@ -2,177 +2,152 @@
 #include <menu.h>
 #include <iostream>
 #include <string>
-#include <cstring>
 #include <vector>
 
+// Definitions for menu options
+const std::vector<std::string> main_choices = {"Append item", "Get info", 
+  "Delete item", "Exit"};
+const std::vector<std::string> append_choices = 
+  {"Add Book", "Add Furniture", "Add Computer",  "Add Other", "Back"};
+const std::vector<std::string> ginfo_choices = {"Get all info", "Get books info", "Get furniture info", 
+  "Get computers info", "Get other info", "Back"};
+const std::vector<std::string> del_choices = {"Delete all", "Delete book", "Delete furniture", "Delete computer", 
+  "Delete other", "Back"};
 
-//general block ncurses windows start
-  int maxY = 0;
-  int maxX = 0;
-  
-  void init() {
-    initscr();
-    clear();
-    cbreak();
-    noecho();
-    keypad(stdscr, TRUE);
-    getmaxyx(stdscr, maxY, maxX);
-    clear();
+// Window and Menu Management
+WINDOW* win;
+MENU* menus[4];
+int maxY, maxX;
+const int sizeX = 20, sizeY = 15;
+
+void init_ncurses() { //general initialization
+  initscr();
+  cbreak();
+  noecho();
+  getmaxyx(stdscr, maxY, maxX);
+  win = newwin(sizeY, sizeX, (maxY-sizeY)/2, (maxX-sizeX)/2);
+  keypad(win, TRUE);
+  box(win, 0, 0);
+  refresh();
+}
+ITEM** create_items(const std::vector<std::string>& choices) {  //creating items (temporarily, for each menu)
+  ITEM** items = new ITEM*[choices.size() + 1];
+  for (size_t i = 0; i < choices.size(); i++) {
+    items[i] = new_item(choices[i].c_str(), "");
   }
-  void menu_item_delete(MENU* selected_menu, ITEM** selected_items, int arrlength, WINDOW* selected_window) {
-    unpost_menu(selected_menu);
-    free_menu(selected_menu);
-    for(int i=0; i <= arrlength; ++i) {
-      free_item(selected_items[i]);
-    }
-    delwin(selected_window);
-    wrefresh(selected_window);
+  items[choices.size()] = nullptr;
+  return items;
+}
+void free_items(ITEM** items) { //freeing items, haven't been used, but I've written it anyways
+  for (int i = 0; items[i] != nullptr; i++) {
+    free_item(items[i]);
   }
-  int menu_window(const char* arr[], int arrlength, MENU* selected_menu, ITEM** selected_items) { 
-    WINDOW *selected_window;
-    int ch;
-    int sizeX = 25;
-    int sizeY = 15;
-    selected_items = (ITEM**) malloc(arrlength+1);
-    for(int i=0; i<arrlength; i++ ) {
-      selected_items[i] = new_item(arr[i], "");
+  delete[] items;
+}
+void setup_menus() {  //allocating menus and setting them up
+  menus[0] = new_menu(create_items(main_choices));
+  menus[1] = new_menu(create_items(append_choices));
+  menus[2] = new_menu(create_items(ginfo_choices));
+  menus[3] = new_menu(create_items(del_choices));
+  for (auto& menu : menus) {
+    set_menu_win(menu, win);
+    set_menu_sub(menu, derwin(win, sizeY - 4, sizeX - 4, 2, 2));
+    set_menu_mark(menu, "> ");
+  }
+}
+void free_menus() {
+  for (auto& menu : menus) {
+    unpost_menu(menu);  // Unpost menus before freeing them
+    free_menu(menu);    // Free the menu
+    ITEM** items = menu_items(menu);
+    if (items) {
+        int count = item_count(menu);
+        for (int i = 0; i < count; i++) {
+            free_item(items[i]);  // Free each item
+        }
     }
-    selected_items[arrlength] = (ITEM*)NULL;
-    /* Create Menu */
-    selected_menu = new_menu(selected_items);
-    /* Create Window for the menu */
-    selected_window = newwin(sizeY, sizeX, (maxY-sizeY)/3, (maxX-sizeX)/3);
-    box( selected_window, 0, 0 );
-    keypad(selected_window, TRUE);
-    /* set menu window */
-    set_menu_win(selected_menu, selected_window);
-    /*set menu sub window */
-    set_menu_sub(selected_menu, derwin(selected_window, sizeY-(sizeY/5), sizeX-(sizeX/5), sizeY/5, sizeX/5));
-    set_menu_mark(selected_menu, " "); /* string used as menu marker */
-    /* set menu format - no of items to be displayed */
-    set_menu_format(selected_menu, 5, 1);
-    /*post the menu */
-    post_menu(selected_menu);
-    wrefresh(selected_window);
-    int i = 0;
-    while((ch = wgetch(selected_window))!= 23)
-    {
-      switch(ch) {
-        case KEY_DOWN:
-          menu_driver(selected_menu, REQ_DOWN_ITEM);          
-          break;
-        case KEY_UP:
-          menu_driver(selected_menu, REQ_UP_ITEM);
-          break;
-        case KEY_NPAGE:
-          menu_driver(selected_menu, REQ_SCR_DPAGE);
-          break;
-        case KEY_PPAGE:
-          menu_driver(selected_menu, REQ_SCR_UPAGE);
-          break;
-        case '\n':
-            if (current_item(selected_menu) == selected_items[0]) {
-              
-              break;
-            }
-            else if (current_item(selected_menu) == selected_items[1]) {
-              break;
-            }
-            else if (current_item(selected_menu) == selected_items[2]) {
-              break;
-            }
-            else if (current_item(selected_menu) == selected_items[3]) {
-              break;
-            }
+  }
+}
+void show_menu(MENU* menu) {
+  post_menu(menu);
+  wrefresh(win);
+}
+int navigate_menu(MENU* menu) {
+  int ch, selection = -1;
+  while ((ch = wgetch(win)) != KEY_F(1)) {
+    switch (ch) {
+      case KEY_DOWN:
+        menu_driver(menu, REQ_DOWN_ITEM);
+        break;
+      case KEY_UP:
+        menu_driver(menu, REQ_UP_ITEM);
+        break;
+    case KEY_NPAGE:
+        menu_driver(menu, REQ_SCR_DPAGE);
+        break;
+    case KEY_PPAGE:
+        menu_driver(menu, REQ_SCR_UPAGE);
+        break;
+      case '\n':
+        selection = item_index(current_item(menu));
+        unpost_menu(menu);
+        return selection;
+    }
+    wrefresh(win);
+  }
+  return -1; // Exit on F1
+}
+void navigate() {
+  init_ncurses();
+  setup_menus();
+  bool running = true;
+  MENU* current_menu = menus[0];
+  int idx;
+  while (running) {
+    show_menu(current_menu);
+    idx = navigate_menu(current_menu);
+    // Main menu actions
+    if (current_menu == menus[0]) {
+      switch (idx) {
+        case 0: current_menu = menus[1]; break; // Append item
+        case 1: current_menu = menus[2]; break; // Get info
+        case 2: current_menu = menus[3]; break; // Delete item
+        case 3: running = false; break; // Exit
+        default: break;
       }
-      wrefresh(selected_window);
-    }
-    return 0;
-  }
-
-
-
-  int menu_window() {      
-        const char *main_menu_choices[] = {"Append item", "Get info", "Delete item", "Exit"}, 
-          *append_menu_choices[] = {"Add Book", "Add Furniture", "Add Computer", "Add Monitor", "Add Other"}, 
-          *ginfo_menu_choices[] = {"Get all info", "Get books info", "Get furniture info", "Get computers info", "Get monitors info", "Get other info"}, 
-          *del_menu_choices[] = {"Delete all", "Delete book", "Delete furniture", "Delete computer", "Delete monitor", "Delete other"};
-        MENU 
-          *main_menu, *append_menu, *ginfo_menu, *del_menu;
-        ITEM 
-          **main_menu_items, **append_menu_items, **ginfo_menu_items, **del_menu_items;
-        WINDOW *main_window;  //сделать отдельноявно выделить память
-    
-    int arrlength = 4;
-    int ch;
-    int sizeX = 25;
-    int sizeY = 10;
-    main_menu_items = (ITEM**) malloc(arrlength+1);
-    for(int i=0; i<arrlength; i++ ) {
-      main_menu_items[i] = new_item(main_menu_choices[i], "");
-    }
-    main_menu_items[arrlength] = (ITEM*)NULL;
-    main_menu = new_menu(main_menu_items);
-    main_window = newwin(sizeY, sizeX, (maxY-sizeY)/3, (maxX-sizeX)/3);
-    box( main_window, 0, 0 );
-    keypad(main_window, TRUE);
-    set_menu_win(main_menu, main_window);
-    set_menu_sub(main_menu, derwin(main_window, sizeY-(sizeY/5), sizeX-(sizeX/5), sizeY/5, sizeX/5));
-    set_menu_mark(main_menu, " ");
-    set_menu_format(main_menu, 5, 1);
-    post_menu(main_menu);
-    wrefresh(main_window);
-    int i = 0;
-    while((ch = wgetch(main_window))!= 23)
-    {
-      switch(ch) {
-        case KEY_DOWN:
-          menu_driver(main_menu, REQ_DOWN_ITEM);          
-          break;
-        case KEY_UP:
-          menu_driver(main_menu, REQ_UP_ITEM);
-          break;
-        case KEY_NPAGE:
-          menu_driver(main_menu, REQ_SCR_DPAGE);
-          break;
-        case KEY_PPAGE:
-          menu_driver(main_menu, REQ_SCR_UPAGE);
-          break;
-        case '\n':
-            if (current_item(main_menu) == main_menu_items[0]) {
-              menu_item_delete(main_menu, main_menu_items, 4, main_window);            
-              menu_window(append_menu_choices, 5, append_menu, append_menu_items);
-              break;
-            }
-            else if (current_item(main_menu) == main_menu_items[1]) {
-              menu_item_delete(main_menu, main_menu_items, 4, main_window);
-              
-              menu_window(ginfo_menu_choices, 6, ginfo_menu, ginfo_menu_items);
-              break;
-            }
-            else if (current_item(main_menu) == main_menu_items[2]) {
-              menu_item_delete(main_menu, main_menu_items, 4, main_window);
-              
-              menu_window(del_menu_choices, 6, del_menu, del_menu_items);
-              break;
-            }
-            else if (current_item(main_menu) == main_menu_items[3]) {
-              menu_item_delete(main_menu, main_menu_items, 4, main_window);
-              return 0;
-            }
+    } 
+   else if (current_menu == menus[1]) {  //Append menu actions
+      switch(idx) {
+        //case 0: addBook(); break;
+        //case 1: addFurniture(); break;
+        //case 2: addComputer(); break;
+        //case 3: addOther(); break;
+        case 4: current_menu = menus[0]; break;
       }
-      wrefresh(main_window);
     }
-    return 0;
+    else if(current_menu == menus[2]) {
+      switch(idx) {
+        //case 0: getInfoAll(); break;
+        //case 1: getInfoBooks(); break;
+        //case 2: getInfoFurniture(); break;
+        //case 3: getComputersInfo(); break;
+        //case 4: getOtherInfo(); break;
+        case 5: current_menu = menus[0]; break;
+      }
+    }
+    else if(current_menu == menus[3]) {
+      switch(idx) {
+        case 5: current_menu = menus[0]; break;
+      }
+    }
   }
-//general block ncurses windows end
-  
-  int main() {
-    init();
-    curs_set(0);
-    int key_input;
-    mvprintw(LINES - 2, 0, "Program by Davydov Vladimir");
-    menu_window();
-    endwin();
-    exit;
+  // Before exiting, ensure all menus are unposted and freed
+  delwin(win);
+  win = nullptr;
+  endwin();
+}
+
+int main() {
+  navigate();
+  return 0;
 }
