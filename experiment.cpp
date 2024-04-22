@@ -1,119 +1,129 @@
+/*
+int append_menu_func(WINDOW*& win, MENU*& menu, ITEM**& items, const std::vector<std::string> choices, const int sizeX, const int sizeY) {
+}
+int find_menu_func(WINDOW*& win, MENU*& menu, ITEM**& items, const std::vector<std::string> choices, const int sizeX, const int sizeY) {
+}
+int delete_menu_func(WINDOW*& win, MENU*& menu, ITEM**& items, const std::vector<std::string> choices, const int sizeX, const int sizeY) {
+  
+}
+*/
 #include <ncurses.h>
 #include <menu.h>
 #include <iostream>
 #include <string>
 #include <vector>
 
-
-//MENU* m;
-//ITEM** m_items;
-//int amount;
-//int ch;
-//WINDOW* w;  //сделать отдельно основное окно. явно выделить память
-
-    
-void init(WINDOW*& w) {
+//allocate memory for window, initialize it for use
+WINDOW* init_win (const int& sizeX, const int& sizeY, int& maxX, int& maxY) {
+  WINDOW* win;
   initscr();
   clear();
   cbreak();
   noecho();
-  keypad(w, TRUE);
-  clear();
-}
-WINDOW* create_window() {
-  int maxY = 0;
-  int maxX = 0;
   getmaxyx(stdscr, maxY, maxX);
-  WINDOW* win = newwin(10, 25, (maxY-10)/3, (maxX-25)/3);
-  return win;
+  curs_set(0);
+  win = newwin(sizeY, sizeX, (maxY - sizeY) / 3, (maxX - sizeX) / 3);
+  box(win, 0, 0);
+  keypad(win, TRUE);
+  clear;
+  return win; 
 }
-inline void free_everything(ITEM**& menu_items, MENU*& menu, int n) {
+//allocate memory and fill item**
+ITEM** init_items(std::vector<std::string> choices) {
+  ITEM** items = (ITEM**) malloc(choices.size()+1);
+  for (int i = 0; i <= choices.size(); ++i) {
+    items[i] = new_item(choices[i].c_str(), " ");
+  }
+  items[choices.size()] = (ITEM*)NULL;
+  return items;
+}
+//allocate memory and fill menu* with item**
+MENU* init_menu(ITEM** items) {
+  return new_menu(items);
+}
+//free memory from menu*
+void destroy_menu(MENU*& menu) {
   unpost_menu(menu);
   free_menu(menu);
-  for (int i = 0; menu_items[i] != (ITEM*)NULL; ++i) {
+}
+//free memory from item**
+void destroy_items(ITEM**& menu_items) {
+  for(int i=0; i <= (sizeof(menu_items)/sizeof(menu_items[0])); ++i) {
     free_item(menu_items[i]);
   }
-  free_item(*menu_items);
 }
-MENU* create_menu(WINDOW*& w, ITEM**& menu_items, std::vector<std::string>&choices) {
-  int n = choices.size();
-  menu_items = (ITEM**)calloc(n+1, sizeof(ITEM*));
-  for (int i = 0; i < n; ++i) {
-    menu_items[i] = new_item(choices[i].c_str(), "");
-  }
-  menu_items[n] = (ITEM*)NULL;
-  return new_menu(menu_items);
-//  return menu;
-}
-inline void show_menu(WINDOW*& w, ITEM**& menu_items, MENU*& menu, std::vector<std::string>&choices) {
-  set_menu_win(menu, w);
-  set_menu_sub(menu, derwin(w, 8, 20, 2, 5)); //8 + 2 = 10 - Y; 20 + 5 = 25 - X
+//post menu, refresh window
+void display_menu(WINDOW*& win, MENU* menu, const int sizeX, const int sizeY) {
+  set_menu_win(menu, win);
+  set_menu_sub(menu, derwin(win, sizeY-(sizeY/5), sizeX-(sizeX/5), sizeY/5, sizeX/5));
   set_menu_mark(menu, " ");
   set_menu_format(menu, 5, 1);
   post_menu(menu);
-  wrefresh(w);
+  wrefresh(win);
 }
-
-
-void main_window_func(WINDOW*& w, ITEM**& menu_items, MENU*& menu, std::vector<std::string>&choices) {
-  
-  init(w);
-  box(w, 0, 0);
-  
-  menu = create_menu(w, menu_items, choices);
-  set_menu_win(menu, w);
-  set_menu_sub(menu, derwin(w, 8, 20, 2, 5)); //8 + 2 = 10 - Y; 20 + 5 = 25 - X
-  set_menu_mark(menu, " ");
-  set_menu_format(menu, 5, 1);
-  post_menu(menu);
-  wrefresh(w);
-  //show_menu(w, menu_items, menu, choices);
-  wrefresh(w);
-  int ch;
-  while(ch = wgetch(w)) {
-    switch(ch) {
-      case KEY_DOWN:
+//selector
+int cycle(WINDOW*& win, MENU*& menu, ITEM**& items) { //at the end of the cycle, 
+  int a;
+  while (a = wgetch(win)) {
+    switch(a) {
+      case KEY_DOWN: {
         menu_driver(menu, REQ_DOWN_ITEM);
         break;
-      case KEY_UP:
+      }
+      case KEY_UP: {
         menu_driver(menu, REQ_UP_ITEM);
         break;
-      case KEY_NPAGE:
+      }
+      case KEY_NPAGE: {
         menu_driver(menu, REQ_SCR_DPAGE);
         break;
-      case KEY_PPAGE:
+      }
+      case KEY_PPAGE: {
         menu_driver(menu, REQ_SCR_UPAGE);
         break;
-      case '\n':
-        if (current_item(menu) == menu_items[0]) {
-          free_everything(menu_items, menu, 4);
-          break;//return 0;
-        }
-        else if (current_item(menu) == menu_items[1]) {
-          free_everything(menu_items, menu, 4);
-          break;//return 1;
-        }
-        else if (current_item(menu) == menu_items[2]) {
-          free_everything(menu_items, menu, 4);
-          break;//return 2;
-        }
-        else if (current_item(menu) == menu_items[3]) {
-          free_everything(menu_items, menu, 4);
-          break;//return 3;
-        }
+      }
+      case '\n': {
+        int b = item_index(current_item(menu));
+        destroy_menu(menu);
+        destroy_items(items);
+        delwin(win);
+        wrefresh(win);
+        return b;
+      }
     }
   }
-  //return 0;
+  return -1;
 }
 
-int main() {
-  std::vector<std::string> main_choices = {"Append item", "Get info", "Delete item", "Exit"}; 
-  std::vector<std::string> append_choices = {"Add Book", "Add Furniture", "Add Computer", "Add Monitor", "Add Other", "Back"};
-  std::vector<std::string> ginfo_choices = {"Get all info", "Get books info", "Get furniture info", "Get computers info", "Get monitors info", "Get other info", "Back"}; 
-  std::vector<std::string> del_choices = {"Delete all", "Delete book", "Delete furniture", "Delete computer", "Delete monitor", "Delete other", "Back"};
-  WINDOW* win = create_window();
-  ITEM** main_items;
-  MENU* main_menu;
-  main_window_func(win, main_items, main_menu, main_choices);
 
+
+int main() {
+  const std::vector<std::string> main_choices = {"Append item", "Get info", 
+  "Delete item", "Exit"}; 
+  const std::vector<std::string> append_choices = 
+  {"Add Book", "Add Furniture", "Add Computer", "Add Monitor", "Add Other", "Back"};
+  const std::vector<std::string> ginfo_choices = 
+  {"Get all info", "Get books info", "Get furniture info", "Get computers info", 
+  "Get monitors info", "Get other info", "Back"}; 
+  const std::vector<std::string> del_choices = 
+  {"Delete all", "Delete book", "Delete furniture", "Delete computer", 
+  "Delete monitor", "Delete other", "Back"};
+  WINDOW* win;
+  ITEM** menu_items;
+  MENU* menu;
+  int maxY;
+  int maxX;
+  const int sizeX = 25;
+  const int sizeY = 20;
+
+  int ch;
+  int b;
+  init_win(sizeX, sizeY, maxX, maxY);
+  while(ch=wgetch(win)) {
+    menu_items = init_items(main_choices);
+    menu = init_menu(menu_items);
+    b = cycle(win, menu, menu_items);
+  }
+  delwin(win);
+  wrefresh(win);
 }
