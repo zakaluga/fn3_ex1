@@ -111,6 +111,15 @@ class Processor {
                 break;
             }
         }
+
+        void writeToFile(std::ofstream file) {
+            file << "Processor " 
+                 << this->name_ << " " 
+                 << this->coresCount_ << " " 
+                 << this->flowCount_ << " "
+                 << this->heatOut_ << " "
+                 << this->isWork_ << "/n";
+        }
 };
 
 class GraphCard {
@@ -126,7 +135,7 @@ class GraphCard {
         ~GraphCard() = default;
         
         std::string getName()                {return this->name_;}
-        void setName(std::string name)   {this->name_ = name;}
+        void setName(std::string name)       {this->name_ = name;}
 
         int  getVideoMemory()                {return this->videoMemory_;}
         void setVideoMemory(int videoMemory) {this->videoMemory_= videoMemory;}
@@ -200,6 +209,14 @@ class GraphCard {
                 this->getInfo();
                 break;
             }
+        }
+
+        void writeToFile(std::ofstream& file) {
+            file << "Graph card " 
+                 << this->name_ << " " 
+                 << this->videoMemory_ << " " 
+                 << this->heatOut_ << " "
+                 << this->isWork_ << "/n";
         }
 };
 
@@ -294,6 +311,14 @@ class Monitor {
                 break;
             }
         }
+
+        void writeToFile(std::ofstream& file) {
+            file << "Monitor " 
+                 << this->name_ << " " 
+                 << this->resolution_ << " " 
+                 << this->isWork_ << " "
+                 << this->onOff_ << "/n";
+        }
 };
 
 class Computer {
@@ -304,15 +329,8 @@ class Computer {
         bool      isWork_;
         bool      onOff_;
     public:
-        Computer(Monitor& screen, GraphCard& card, Processor& procc) :
-            monitor_(screen), graphCard_(card), processor_(procc) {
-                if (monitor_.getIsWork() && processor_.getIsWork() && graphCard_.getIsWork()) {
-                    this->setIsWork(true);
-                } else {
-                    this->setIsWork(false);
-                }
-                this->onOff_ = false;
-            }
+        Computer(Monitor& monitor, GraphCard& graphCard, Processor& processor, bool& isWork, bool& onOff) :
+            monitor_(monitor), graphCard_(graphCard), processor_(processor), isWork_(isWork), onOff_(onOff) {}
         Computer() = default;
         ~Computer() = default;
 
@@ -393,6 +411,15 @@ class Computer {
                 break;
             }
         };
+
+        void writeToFile(std::ofstream& file) {
+            file << "Computer "; 
+            this->monitor_.writeToFile(file);
+            this->graphCard_.writeToFile(file);
+            // this->processor_.writeToFile(file);
+            file << this->isWork_ << " "
+                 << this->onOff_ << "/n";
+        }
 };
 
 struct Sizes {
@@ -468,6 +495,13 @@ struct Sizes {
                 break;
             }
         }
+
+        void writeToFile(std::fstream& file) {
+            file << "Sizes " 
+                 << this->a_ << " " 
+                 << this->b_ << " " 
+                 << this->c_ << "/n";
+        }
 };
 
 struct Position {
@@ -530,167 +564,180 @@ struct Position {
                 break;
             }
         }
-        
+
+        void writeToFile(std::fstream& file) {
+            file << "Position " 
+                 << this->x_ << " " 
+                 << this->y_ << "/n";
+        }
 };
 
 class Furneture {
-    enum Material {
-        MATERIAL_WOOD, 
-        MATERIAL_STEEL, 
-        MATERIAL_PLASTIC, 
-        MATERIAL_MIXED
-    };
-    std::string name_;
-    Sizes       sizes_;
-    Material    material_;
-    Position    position_;
-public:
-    Furneture(Material& material, const Sizes& sizes, Position& position) :sizes_(sizes), material_(material), position_(position) {};
-    Furneture() = default;
-    ~Furneture() = default;
+    private:
+        enum Material {
+            MATERIAL_WOOD, 
+            MATERIAL_STEEL, 
+            MATERIAL_PLASTIC, 
+            MATERIAL_MIXED
+        };
+        std::string name_;
+        Sizes       sizes_;
+        Material    material_;
+        Position    position_;
+    public:
+        Furneture(Material& material, const Sizes& sizes, Position& position) :sizes_(sizes), material_(material), position_(position) {};
+        Furneture() = default;
+        ~Furneture() = default;
 
-    Sizes getsizes()                     {return this->sizes_;}
-    void setSizes(Sizes& sizes)          {this->sizes_ = sizes;}
+        Sizes getsizes()                     {return this->sizes_;}
+        void setSizes(Sizes& sizes)          {this->sizes_ = sizes;}
 
-    Material getMaterial()               {return this->material_;}
-    void setMaterial(Material& material) {this->material_ = material;}
- 
-    Position getPosition()               {return this->position_;}
-    void setPosition(Position& position) {this->position_ = position;}
+        Material getMaterial()               {return this->material_;}
+        void setMaterial(Material& material) {this->material_ = material;}
+    
+        Position getPosition()               {return this->position_;}
+        void setPosition(Position& position) {this->position_ = position;}
 
-    void createMaterial() {
-        std::cout << "What is the furniture made of?\n\t";
-        std::cout << "1) wood\n\t"
-                  << "2) steel\n\t"
-                  << "3) plastic\n\t"
-                  << "4) mixed\n"
-                  << "Press any key(1-4): ";
-        int materialNumber;
-        std::cin  >> materialNumber;
-        switch (materialNumber)
-        {
-        case 1:
-            this->material_ = MATERIAL_WOOD;
-            break;
-        case 2:
-            this->material_ = MATERIAL_STEEL;
-            break;
-        case 3:
-            this->material_ = MATERIAL_PLASTIC;
-            break;
-        case 4:
-            this->material_ = MATERIAL_MIXED;
-            break;
-        default:
-            createMaterial();
-            break;
+        void createMaterial() {
+            std::cout << "What is the furniture made of?\n\t";
+            std::cout << "1) wood\n\t"
+                    << "2) steel\n\t"
+                    << "3) plastic\n\t"
+                    << "4) mixed\n"
+                    << "Press any key(1-4): ";
+            int materialNumber;
+            std::cin  >> materialNumber;
+            switch (materialNumber)
+            {
+            case 1:
+                this->material_ = MATERIAL_WOOD;
+                break;
+            case 2:
+                this->material_ = MATERIAL_STEEL;
+                break;
+            case 3:
+                this->material_ = MATERIAL_PLASTIC;
+                break;
+            case 4:
+                this->material_ = MATERIAL_MIXED;
+                break;
+            default:
+                createMaterial();
+                break;
+            }
         }
-    }
 
-    static Furneture create() {
-        Furneture furneture = Furneture();
-        std::cout << "Add name of new furneture: ";
-        std::cin  >> furneture.name_;
-        std::cout << "Add SIZES of new furneture\n";
-        furneture.sizes_ = Sizes::create();
-        furneture.createMaterial();
-        std::cout << "Add POSITION of new furneture\n";
-        furneture.position_ = Position::create();
-        return furneture;
-    }
-
-    void getInfo() {
-        std::cout << "FURNETIRE\n\t";
-        std::cout << "Material: ";
-        switch (this->material_)
-        {
-        case 0:
-            std::cout << "wood\n";
-            break;
-        case 1:
-            std::cout << "steel\n";
-            break;
-        case 2:
-            std::cout << "plastic\n";
-            break;
-        case 3:
-            std::cout << "mixed\n"; 
-            break;
+        static Furneture create() {
+            Furneture furneture = Furneture();
+            std::cout << "Add name of new furneture: ";
+            std::cin  >> furneture.name_;
+            std::cout << "Add SIZES of new furneture\n";
+            furneture.sizes_ = Sizes::create();
+            furneture.createMaterial();
+            std::cout << "Add POSITION of new furneture\n";
+            furneture.position_ = Position::create();
+            return furneture;
         }
-        this->sizes_.getInfo();
-        this->position_.getInfo();
-    }
 
-    void editMaterial() {
-        int materialNumber;
-        std::cout << "What material you want to choose?\n\t"
-                  << "1) Wood\n\t"
-                  << "2) Steel\n\t"
-                  << "3) Plastic\n\t"
-                  << "4) Mixed\n\t"
-                  << "5) Exit\n\t"
-                  << "Press any key(1-5): ";
-        std::cin  >> materialNumber;
-        switch (materialNumber)
-        {
-        case 1:
-            std::cout << "New material: wood";
-            this->material_ = MATERIAL_WOOD;
-            this->edit();
-            break;
-        case 2:
-            std::cout << "New material: steel";
-            this->material_ = MATERIAL_STEEL;
-            this->edit();
-            break;
-        case 3:
-            std::cout << "New material: plastic";
-            this->material_ = MATERIAL_PLASTIC;
-            this->edit();
-            break;
-        case 4:
-            std::cout << "New material: mixed";
-            this->material_ = MATERIAL_MIXED;
-            this->edit();
-            break;
-        case 5:
-            break;
-        default:
-            this->edit();
-            break;
+        void getInfo() {
+            std::cout << "FURNETIRE\n\t";
+            std::cout << "Material: ";
+            switch (this->material_)
+            {
+            case 0:
+                std::cout << "wood\n";
+                break;
+            case 1:
+                std::cout << "steel\n";
+                break;
+            case 2:
+                std::cout << "plastic\n";
+                break;
+            case 3:
+                std::cout << "mixed\n"; 
+                break;
+            }
+            this->sizes_.getInfo();
+            this->position_.getInfo();
         }
-    }
 
-    void edit() {
-        int comandNumber;
-        std::cout << "---FURNETURE MENU---";
-        std::cout << "What you want to change?\n\t"
-                  << "1) Material\n\t"
-                  << "2) Sizes\n\t"
-                  << "3) Position\n\t"
-                  << "4) Exit\n"
-                  << "Press any key(1-4): ";
-        std::cin  >> comandNumber;
-        switch (comandNumber)
-        {
-        case 1:
-            this->editMaterial();
-            break;
-        case 2:
-            this->sizes_.edit();
-            this->edit();
-            break;
-        case 3:
-            this->position_.edit();
-            this->edit();
-            break;
-        case 4:
-            this->getInfo();
-            break;
-        default:
-            break;
+        void editMaterial() {
+            int materialNumber;
+            std::cout << "What material you want to choose?\n\t"
+                    << "1) Wood\n\t"
+                    << "2) Steel\n\t"
+                    << "3) Plastic\n\t"
+                    << "4) Mixed\n\t"
+                    << "5) Exit\n\t"
+                    << "Press any key(1-5): ";
+            std::cin  >> materialNumber;
+            switch (materialNumber)
+            {
+            case 1:
+                std::cout << "New material: wood";
+                this->material_ = MATERIAL_WOOD;
+                this->edit();
+                break;
+            case 2:
+                std::cout << "New material: steel";
+                this->material_ = MATERIAL_STEEL;
+                this->edit();
+                break;
+            case 3:
+                std::cout << "New material: plastic";
+                this->material_ = MATERIAL_PLASTIC;
+                this->edit();
+                break;
+            case 4:
+                std::cout << "New material: mixed";
+                this->material_ = MATERIAL_MIXED;
+                this->edit();
+                break;
+            case 5:
+                break;
+            default:
+                this->edit();
+                break;
+            }
         }
-    }
+
+        void edit() {
+            int comandNumber;
+            std::cout << "---FURNETURE MENU---";
+            std::cout << "What you want to change?\n\t"
+                    << "1) Material\n\t"
+                    << "2) Sizes\n\t"
+                    << "3) Position\n\t"
+                    << "4) Exit\n"
+                    << "Press any key(1-4): ";
+            std::cin  >> comandNumber;
+            switch (comandNumber)
+            {
+            case 1:
+                this->editMaterial();
+                break;
+            case 2:
+                this->sizes_.edit();
+                this->edit();
+                break;
+            case 3:
+                this->position_.edit();
+                this->edit();
+                break;
+            case 4:
+                this->getInfo();
+                break;
+            default:
+                break;
+            }
+        }
+
+        void writeToFile(std::fstream& file) {
+            file << "Furneture ";
+            this->sizes_.writeToFile(file);
+            this->position_.writeToFile(file);
+            file << this->material_ << "\n";
+        }
 };
 
 class CustomObject {
@@ -797,10 +844,23 @@ class CustomObject {
 };
 
 namespace Inventory {
+    std::string fileName = "inventory.txt";
     std::map<std::string, std::variant<Computer, Processor, GraphCard, Monitor, Furneture, CustomObject>> inventory{};
     
     auto getInfo = [](auto obj)  {obj.getInfo();};
     auto edit    = [](auto &obj) {obj.edit();};
+
+    void readFromFile() {
+
+    }
+
+    void writeInFile() {
+
+    }
+
+    void workWithFile() {
+
+    }
 
     void addObject() {
         int commandNumber;
@@ -875,6 +935,7 @@ namespace Inventory {
 }
 
 void menu() {
+    std::fstream file("bigPenis.txt");
     int commandNumber;
     std::string inventoryNumber;
     std::cout << "---MAIN MENU---\n";
