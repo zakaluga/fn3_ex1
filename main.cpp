@@ -1,6 +1,5 @@
 #include <ncurses.h>
 #include <menu.h>
-#include <form.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -19,14 +18,31 @@ const std::vector<std::string> del_choices = {"Delete all", "Delete book", "Dele
 WINDOW* win;
 MENU* menus[4];
 int maxY, maxX;
-const int sizeX = 20, sizeY = 15;
+//declaration of functions block
+//append
+void addBook();
+void addFurniture();
+void addComputer();
+void addOther();
+//get info
+void getInfoAll();
+void getInfoBook();
+void getInfoFurniture();
+void getInfoComputers();
+void getInfoOther();
+//delete
+void deleteAll();
+void deleteBook();
+void deleteFurniture();
+void deleteComputer();
+void deleteOther();
 
 void init_ncurses() { //general initialization
   initscr();
   cbreak();
   noecho();
   getmaxyx(stdscr, maxY, maxX);
-  win = newwin(sizeY, sizeX, (maxY-sizeY)/2, (maxX-sizeX)/2);
+  win = newwin(maxY, maxX, 0, 0);
   keypad(win, TRUE);
   box(win, 0, 0);
   refresh();
@@ -52,7 +68,7 @@ void setup_menus() {  //allocating menus and setting them up
   menus[3] = new_menu(create_items(del_choices));
   for (auto& menu : menus) {
     set_menu_win(menu, win);
-    set_menu_sub(menu, derwin(win, sizeY - 4, sizeX - 4, 2, 2));
+    set_menu_sub(menu, derwin(win, maxY - 4, maxX - 4, 2, 2));
     set_menu_mark(menu, "> ");
   }
 }
@@ -75,7 +91,7 @@ void show_menu(MENU* menu) {
 }
 int navigate_menu(MENU* menu) {
   int ch, selection = -1;
-  while ((ch = wgetch(win)) != KEY_F(1)) {
+  while ((ch = wgetch(win)) != KEY_F(2)) {
     switch (ch) {
       case KEY_DOWN:
         menu_driver(menu, REQ_DOWN_ITEM);
@@ -96,7 +112,7 @@ int navigate_menu(MENU* menu) {
     }
     wrefresh(win);
   }
-  return -1; // Exit on F1
+  return -1; // Exit on F2
 }
 void navigate() {
   init_ncurses();
@@ -119,33 +135,222 @@ void navigate() {
     } 
    else if (current_menu == menus[1]) {  //Append menu actions
       switch(idx) {
-        //case 0: addBook(); break;
-        //case 1: addFurniture(); break;
-        //case 2: addComputer(); break;
-        //case 3: addOther(); break;
-        case 4: current_menu = menus[0]; break;
+        case 0: { 
+          unpost_menu(current_menu);
+          wrefresh(win);
+          addBook(); 
+          post_menu(current_menu);
+          break;
+        }
+    //    case 1: {
+    //      unpost_menu(current_menu);
+    //      wrefresh(win);
+    //      addFurniture(); 
+    //      post_menu(current_menu);
+    //      break;
+    //    }
+    //    case 2: {
+    //      unpost_menu(current_menu);
+    //      wrefresh(win);
+    //      addComputer(); 
+    //      post_menu(current_menu);
+    //      break;
+    //    }
+    //    case 3: {
+    //      unpost_menu(current_menu);
+    //      wrefresh(win);
+    //      addOther(); 
+    //      post_menu(current_menu);
+    //      break;
+    //    }
+        case 4: {
+          current_menu = menus[0]; 
+          break;
+        }
       }
     }
-    else if(current_menu == menus[2]) {
+    else if(current_menu == menus[2]) { //Get info menu actions
       switch(idx) {
-        //case 0: getInfoAll(); break;
-        //case 1: getInfoBooks(); break;
-        //case 2: getInfoFurniture(); break;
-        //case 3: getComputersInfo(); break;
-        //case 4: getOtherInfo(); break;
-        case 5: current_menu = menus[0]; break;
+     //   case 0: {
+     //     unpost_menu(current_menu);
+     //     wrefresh(win);
+     //     getInfoAll(); 
+     //     post_menu(current_menu);
+     //     break;
+     //   }
+        case 1: {
+          unpost_menu(current_menu);
+          wrefresh(win);
+          getInfoBook(); 
+          post_menu(current_menu);
+          break;
+        }
+    //    case 2: {
+    //      unpost_menu(current_menu);
+    //      wrefresh(win);
+    //      getInfoFurniture(); 
+    //      post_menu(current_menu);
+    //      break;
+    //      }
+    //    case 3: {
+    //      unpost_menu(current_menu);
+    //      wrefresh(win);
+    //      getInfoComputers(); 
+    //      post_menu(current_menu);
+    //      break;
+    //      }
+    //    case 4: {
+    //      unpost_menu(current_menu);
+    //      wrefresh(win);
+    //      getInfoOther(); 
+    //      post_menu(current_menu);
+    //      break;
+    //      }
+        case 5: {
+          current_menu = menus[0]; 
+          break;
+          }
       }
     }
     else if(current_menu == menus[3]) {
       switch(idx) {
-        case 5: current_menu = menus[0]; break;
+       // case 0: {
+       //   unpost_menu(current_menu);
+       //   wrefresh(win);
+       //   deleteAll(); 
+       //   post_menu(current_menu);
+       //   break;
+       // }
+        case 1: {
+          unpost_menu(current_menu);
+          wrefresh(win);
+          deleteBook(); 
+          post_menu(current_menu);
+          break;
+        }
+      //  case 2: {
+      //    unpost_menu(current_menu);
+      //    wrefresh(win);
+      //    deleteFurniture(); 
+      //    post_menu(current_menu);
+      //    break;
+      //  }
+      //  case 3: {
+      //    unpost_menu(current_menu);
+      //    wrefresh(win);
+      //    deleteComputer(); 
+      //    post_menu(current_menu);
+      //    break;
+      //  }
+      //  case 4: {
+      //    unpost_menu(current_menu);
+      //    wrefresh(win);
+      //    deleteOther(); 
+      //    break;
+      //  }
+        case 5: {
+          current_menu = menus[0]; 
+          break;
+        }
       }
     }
   }
-  // Before exiting, ensure all menus are unposted and freed
   delwin(win);
   win = nullptr;
   endwin();
+}
+void addBook() {
+  echo();
+  std::ofstream file("books.txt", std::ios_base::app);
+  if (!file.is_open()) {
+      mvprintw(0, 0, "Error: Unable to open file for writing.");
+      return;
+  }
+  mvprintw(2, 2, "Enter book details:");
+  mvprintw(4, 2, "Title: ");
+  char title[100];
+  getstr(title);
+  mvprintw(5, 2, "Author: ");
+  char author[100];
+  getstr(author);
+  mvprintw(6, 2, "ISBN: ");
+  char isbn[20];
+  getstr(isbn);
+  file << title << "," << author << "," << isbn << std::endl;
+  mvprintw(8, 2, "Book added successfully.");
+  file.close();
+  clear();
+  werase(win);
+  wrefresh(win);
+  noecho();
+}
+
+void getInfoBook() {
+  echo();
+  std::ifstream file("books.txt");
+  if (!file.is_open()) {
+      mvprintw(0, 0, "Error: Unable to open file for reading.");
+      return;
+  }
+  clear();
+  mvprintw(0, 0, "Books Information:");
+  std::string line;
+  int row = 2; 
+  while (std::getline(file, line)) {
+      mvprintw(row++, 0, line.c_str()); 
+  }
+  file.close();
+  mvprintw(row + 1, 0, "Press any key to return to the main menu."); 
+  getch(); 
+  clear();
+  werase(win);
+  wrefresh(win);
+  noecho(); 
+}
+
+void deleteBook() {
+  clear();
+  echo();
+  std::ifstream inFile("books.txt");
+  if (!inFile.is_open()) {
+      mvprintw(0, 0, "Error: Unable to open file for reading.");
+      return;
+  }
+
+  std::ofstream outFile("temp.txt");
+  if (!outFile.is_open()) {
+      mvprintw(0, 0, "Error: Unable to open temporary file.");
+      inFile.close();
+      return;
+  }
+  mvprintw(2, 2, "Enter the title of the book to delete: ");
+  char title[100];
+  getstr(title);
+
+  std::string line;
+  bool deleted = false;
+  while (std::getline(inFile, line)) {
+      if (line.find(title) == std::string::npos) {
+          outFile << line << std::endl;
+      } else {
+          deleted = true;
+      }
+  }
+
+  inFile.close();
+  outFile.close();
+  remove("books.txt");
+  rename("temp.txt", "books.txt");
+
+  if (deleted) {
+      mvprintw(4, 2, "Book deleted successfully.");
+  } else {
+      mvprintw(4, 2, "Book not found.");
+  }
+  clear();
+  werase(win);
+  wrefresh(win);
+  noecho();
 }
 
 int main() {
