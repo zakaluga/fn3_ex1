@@ -1,9 +1,11 @@
 #include <ncurses.h>
 #include <menu.h>
+#include <form.h>
 #include <iostream>
 #include <string>
 #include <vector>
-
+#include <fstream>
+#include <cstring>
 // Definitions for menu options
 const std::vector<std::string> main_choices = {"Append item", "Get info", 
   "Delete item", "Exit"};
@@ -13,7 +15,6 @@ const std::vector<std::string> ginfo_choices = {"Get all info", "Get books info"
   "Get computers info", "Get other info", "Back"};
 const std::vector<std::string> del_choices = {"Delete all", "Delete book", "Delete furniture", "Delete computer", 
   "Delete other", "Back"};
-
 // Window and Menu Management
 WINDOW* win;
 MENU* menus[4];
