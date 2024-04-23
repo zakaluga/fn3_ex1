@@ -99,12 +99,6 @@
       Computer(double sizeX, double sizeY, double sizeZ): Sizes(sizeX, sizeY, sizeZ){}
       ~Computer() = default;
   };
-  class Monitor: public Move, Sizes, ID {
-  public:
-      Monitor(double sizeX, double sizeY, double sizeZ): Sizes(sizeX, sizeY, sizeZ){}
-      ~Monitor() = default;
-
-  };
   class Unregistered: public Move, Sizes, ID {
   private:
       std::string _materials;
