@@ -880,38 +880,62 @@ namespace Inventory {
         case 1:
             std::cout << "Enter inventory number of new processor: ";
             std::cin  >> inventoryNumber;
-            inventory.insert({inventoryNumber, Processor::create()});
-            addObject();
+            if (inventory.contains(inventoryNumber)) {
+                std::cout << "Element with this inventory number is already contains\n";    
+            } else {
+                inventory.insert({inventoryNumber, Processor::create()});
+                addObject();
+            }
             break;
         case 2:
             std::cout << "Enter inventory number of new graph card: ";
             std::cin  >> inventoryNumber;
-            inventory.insert({inventoryNumber, GraphCard::create()});
-            addObject();
+            if (inventory.contains(inventoryNumber)) {
+                std::cout << "Element with this inventory number is already contains\n";    
+            } else {  
+                inventory.insert({inventoryNumber, GraphCard::create()});
+                addObject();
+            }
             break;
         case 3:
             std::cout << "Enter inventory number of new monitor: ";
             std::cin  >> inventoryNumber;
-            inventory.insert({inventoryNumber, Monitor::create()});
-            addObject();
+            if (inventory.contains(inventoryNumber)) {
+                std::cout << "Element with this inventory number is already contains\n";    
+            } else {
+                inventory.insert({inventoryNumber, Monitor::create()});
+                addObject();
+            }
             break;
         case 4:
             std::cout << "Enter inventory number of new computer: ";
             std::cin  >> inventoryNumber;
-            inventory.insert({inventoryNumber, Computer::create()});
-            addObject();
+            if (inventory.contains(inventoryNumber)) {
+                std::cout << "Element with this inventory number is already contains\n";    
+            } else {
+                inventory.insert({inventoryNumber, Computer::create()});
+                addObject();
+            }
             break;
         case 5:
             std::cout << "Enter inventory number of new furneture: ";
             std::cin  >> inventoryNumber;
-            inventory.insert({inventoryNumber, Furneture::create()});
-            addObject();
+            if (inventory.contains(inventoryNumber)) {
+                std::cout << "Element with this inventory number is already contains\n";    
+            } else {
+                inventory.insert({inventoryNumber, Furneture::create()});
+                addObject();
+            }
             break;
         case 6:
             std::cout << "Enter inventory naumber of new custom object: ";
             std::cin  >> inventoryNumber;
-            inventory.insert({inventoryNumber, CustomObject::create()});
-            addObject();
+            if (inventory.contains(inventoryNumber)) {
+                std::cout << "Element with this inventory number is already contains\n";    
+            } else {
+                inventory.insert({inventoryNumber, CustomObject::create()});
+                addObject();
+            }
             break;
         case 7:
             break;
