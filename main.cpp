@@ -110,9 +110,6 @@ int a2i(const char *s)
     void SetMB() {
       getstr(this->_compMB);
     }
-    void SetPower(bool valPow) { 
-      _power = valPow; 
-    }
     char* GetCPU() {
       return this->_compCPU;
     }
@@ -574,7 +571,7 @@ void deleteInfo(std::string item_name) {
       inFile.close();
       return;
   }
-  mvprintw(2, 2, "Enter ID or title of the items to delete: ");
+  mvprintw(2, 2, "Enter ID or title of the item(s) to delete: ");
   char id[100];
   getstr(id);
   std::string line;
@@ -593,7 +590,7 @@ void deleteInfo(std::string item_name) {
   if (deleted) {
       mvprintw(4, 2, ("Item deleted successfully."));
   } else {
-      mvprintw(4, 2, (file_name.c_str(), " not found."));
+      mvprintw(4, 2, ("Item not found."));
   }
   getch();
   clear();
