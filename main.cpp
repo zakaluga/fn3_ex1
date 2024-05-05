@@ -96,7 +96,6 @@ int a2i(const char *s)
   };
   class Computer: public ID, public Name {
   private:
-    bool _power;
     char _compCPU[256], _compGPU[256], _compRAM[256],_compMB[256];
   public:
     void SetCPU() {
@@ -126,25 +125,8 @@ int a2i(const char *s)
     char* GetMB() {
       return this->_compMB;
     }
-    bool GetPower() { 
-      return this -> _power; 
-    }
-    bool GetPacked() { 
-      if (_compCPU && _compGPU && _compRAM && _compMB) {
-        return true;
-      } 
-      else {
-        return false;
-      }
-    }
-    bool isWorking() { 
-      if (_power && GetPacked()) {
-        return true;
-      } 
-      else {
-        return false;
-      }  
-    }
+    
+    
     ~Computer() = default;
   };
   class Unregistered: public ID, public Material, public Name {
