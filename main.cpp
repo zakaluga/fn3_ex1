@@ -91,9 +91,6 @@ int a2i(const char *s)
   };
   
   class Furniture: public ID, public Material, public Name {
-  private:
-    Material _mat;
-    Name _nam;
   public:
     ~Furniture() = default;
   };
@@ -151,9 +148,6 @@ int a2i(const char *s)
     ~Computer() = default;
   };
   class Unregistered: public ID, public Material, public Name {
-  private:
-    Material _mat;
-    Name _nam;
   public:
     ~Unregistered() = default;
   };
