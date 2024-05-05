@@ -209,12 +209,6 @@ int a2i(const char *s)
     items[choices.size()] = nullptr;
     return items;
   }
-  void free_items(ITEM** items) { //freeing items, haven't been used, but I've written it anyways
-    for (int i = 0; items[i] != nullptr; i++) {
-      free_item(items[i]);
-    }
-    delete[] items;
-  }
   void setup_menus() {  //allocating menus and setting them up
     menus[0] = new_menu(create_items(main_choices));
     menus[1] = new_menu(create_items(append_choices));
@@ -569,7 +563,7 @@ void getInfo(std::string item_name) {
     content.push_back(line);
   }
   content.push_back("Press enter to close this window");
-  content.push_back("You may navigate with arrows");
+  //content.push_back("You may navigate with arrows");
   file.close();
   printContent(startLine, endLine, content);
   int sw;

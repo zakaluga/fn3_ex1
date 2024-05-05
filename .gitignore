@@ -1,6 +1,8 @@
 .idea
+.vscode
+books.txt
 main.exe
 a.out
 main.out
 main
-experiment
+experiment.cpp

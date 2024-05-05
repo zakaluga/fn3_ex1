@@ -1,0 +1,9 @@
+Model: Monstr CPU: Ryzen 5 3600 GPU: rx 580 RAM: 16 GB ddr4 Motheboard: b450M ID: cm-0
+Model: Monstr CPU: Ryzen 5 3600 GPU: rx 580 RAM: 16 GB ddr4 Motheboard: b450M ID: cm-1
+Model: Monstr CPU: Ryzen 5 3600 GPU: rx 580 RAM: 16 GB ddr4 Motheboard: b450M ID: cm-2
+Model: Monstr CPU: Ryzen 5 3600 GPU: rx 580 RAM: 16 GB ddr4 Motheboard: b450M ID: cm-3
+Model: Monstr CPU: Ryzen 5 3600 GPU: rx 580 RAM: 16 GB ddr4 Motheboard: b450M ID: cm-4
+Model: Monstr CPU: Ryzen 5 3600 GPU: rx 580 RAM: 16 GB ddr4 Motheboard: b450M ID: cm-5
+Model: Monstr CPU: Ryzen 5 3600 GPU: rx 580 RAM: 16 GB ddr4 Motheboard: b450M ID: cm-6
+Model: Monstr CPU: Ryzen 5 3600 GPU: rx 580 RAM: 16 GB ddr4 Motheboard: b450M ID: cm-7
+Model: Monstr CPU: Ryzen 5 3600 GPU: rx 580 RAM: 16 GB ddr4 Motheboard: b450M ID: cm-8
