@@ -48,32 +48,6 @@ int a2i(const char *s)
       }
       ~ID() = default;
   };
-  class Book: public ID {
-  private:
-      char _isbn[256];  
-      char _name[256];  
-      char _author[256];
-  public:  
-    void SetIsbn() { 
-      getstr(this->_isbn);
-    }
-    char* GetIsbn() { 
-      return (this->_isbn); 
-    }
-    void SetName() { 
-      getstr(_name);
-    }
-    char* GetName () { 
-      return (this->_name); 
-    }
-    void SetAuthor() { 
-      getstr(this->_author);
-    }
-    char* GetAuthor () { 
-      return (this->_author); 
-    }
-    ~Book() = default;
-  };
   struct Material {
   private:
     char _materials[256];
@@ -96,7 +70,26 @@ int a2i(const char *s)
       return (this->_name);
     }
   };
-
+  class Book: public ID, public Name {
+  private:
+      char _isbn[256];  
+      char _author[256];
+  public:  
+    void SetIsbn() { 
+      getstr(this->_isbn);
+    }
+    char* GetIsbn() { 
+      return (this->_isbn); 
+    }
+    void SetAuthor() { 
+      getstr(this->_author);
+    }
+    char* GetAuthor () { 
+      return (this->_author); 
+    }
+    ~Book() = default;
+  };
+  
   class Furniture: public ID, public Material, public Name {
   private:
     Material _mat;
