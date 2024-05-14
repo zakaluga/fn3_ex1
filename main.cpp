@@ -7,122 +7,64 @@
 class AggregatedSettings
 {
 public:
-    std::string count;
     std::string name;
     std::string size;
     std::string material;
     std::string extraInf;
     std::string location = "Classroom";
-    std::vector<std::string> numbers;
-    std::map<std::string, std::string> func;
-    void displayfile()
-    {
-        for (int i = 0; i < std::stoi(count); i++)
-        {
-            std::cout << "Number: " << numbers[i] << " | Location: " << location << "\n";
-        }
-    }
-    bool findItem(std::vector<std::string> vect)
-    {
-        for (int i = 0; i < vect.size(); i++)
-        {
-            if (name == vect[i])
-            {
-                return true;
-                break;
-            }
-        }
-        return false;
-    }
     void display()
     {
-        std::cout << "Item name: " << name << " | Number: " << count << " | Size: "
-                  << size << " | Material: " << material
-                  << " | Extra information: " << extraInf << "\n\n";
+        std::cout << "Item name: " << name << " | Size: "
+                  << size << " | Material: " << material << " | Location: " << location
+                  << " | Extra information: " << extraInf << "\n";
     }
-    void getedinf(std::vector<std::string> gg)
+    void getedinf()
     {
-        std::cout << "Enter item name: ";
-        std::cin >> name;
-        while (findItem(gg))
-        {
-            std::cout << "Such a name already exists. Come up with a new one!\n";
-            std::cout << "Enter item name: ";
-            std::cin >> name;
-        }
-        std::cout << "Number of items: ";
-        std::cin >> count;
-        if (count != "")
-        {
-            std::cout << "Material of item: ";
-            std::cin.ignore();
-            std::getline(std::cin, material);
-            std::cout << "Size: ";
-            std::getline(std::cin, size);
-            std::cout << "Extra information extraInf item: ";
-            std::getline(std::cin, extraInf);
-        }
-    }
-    void getnotedinf(std::vector<std::string> gg)
-    {
-        std::cout << "Enter item name: ";
-        std::cin >> name;
-        while (findItem(gg))
-        {
-            std::cout << "Such a name already exists. Come up with a new one!\n";
-            std::cout << "Enter item name: ";
-            std::cin >> name;
-        }
-        std::cout << "Number of items: ";
-        std::cin >> count;
-        std::cout << "Enter information: ";
         std::cin.ignore();
+        std::cout << "Material of item: ";
+        std::getline(std::cin, material);
+        std::cout << "Size: ";
+        std::getline(std::cin, size);
+        std::cout << "Extra information extraInf item: ";
+        std::getline(std::cin, extraInf);
+    }
+    void getnotedinf()
+    {
+        std::cout << "Enter information: ";
         std::getline(std::cin, extraInf);
     }
     void addInToFile(std::ofstream &File)
     {
-        File << "Item name: " << name << " | Number: " << count << " | Size: "
+        File << "Item name: " << name << " | Size: "
              << size << " | Material: " << material
-             << " | Extra information: " << extraInf << "\n\n";
+             << " | Extra information: " << extraInf << "\n";
     }
     void addInToTempfile(std::fstream &File)
     {
         File << name << "\n";
-        File << count << "\n";
         File << size << "\n";
         File << material << "\n";
         File << extraInf << "\n";
+        File << location << "\n";
     }
     void clear()
     {
-        count = "";
         name = "";
         size = "";
         material = "";
         extraInf = "";
-    }
-    void getfuncs()
-    {
-        std::cout << "How many functions do u want to add";
-    }
-    std::string takepartofstring(std::string str, int n)
-    {
-        if (str.length() < n)
-        {
-            return str;
-        }
-        return str.substr(0, n);
-    }
-    void makenumber()
-    {
-        std::string temp;
-        for (int i = 0; i < std::stoi(count); i++)
-        {
-            temp = takepartofstring(name, 2) + std::to_string(i + 1);
-            numbers.push_back(temp);
-        }
+        location = "Classroom";
     }
 };
+std::vector<std::string> makenumber(std::string name, int count)
+{
+    std::vector<std::string> temp;
+    for (int i = 0; i < count; i++)
+    {
+        temp.push_back(name + std::to_string(i + 1));
+    }
+    return temp;
+}
 class ClassroomInventory
 {
 private:
@@ -152,11 +94,11 @@ void scanfile(std::fstream &file, std::map<std::string, AggregatedSettings> &map
         while (getline(file, line))
         {
             temp.name = line;
-            file >> temp.count;
             file.ignore();
             getline(file, temp.size);
             getline(file, temp.material);
             getline(file, temp.extraInf);
+            getline(file, temp.location);
             map[temp.name] = temp;
             if (!temp.name.empty())
             {
@@ -198,6 +140,9 @@ bool correct(std::string x)
 }
 void Menu(ClassroomInventory &inventory)
 {
+    std::vector<std::string> numbers;
+    int tempcount;
+    std::string tempname;
     int choiseForCase3;
     std::vector<std::ofstream> files;
     std::string tempchoice;
@@ -233,22 +178,46 @@ void Menu(ClassroomInventory &inventory)
         switch (choice)
         {
         case 1:
-            temp.getedinf(names);
-            if (temp.count != "")
+            std::cout << "Enter name of item: ";
+            std::cin >> tempname;
+            std::cout << "Enter number of items: ";
+            std::cin >> tempcount;
+            numbers = makenumber(tempname, tempcount);
+            while (findItem(names, numbers[0]))
             {
+                std::cout << "Such a name has already been found, come up with a new one\n";
+                std::cin >> tempname;
+                numbers = makenumber(tempname, tempcount);
+            }
+            temp.getedinf();
+            for (int i = 0; i < tempcount; i++)
+            {
+                temp.name = numbers[i];
                 items[temp.name] = temp;
                 names.push_back(temp.name);
-                temp.clear();
             }
+            temp.clear();
             break;
         case 2:
-            temp.getnotedinf(names);
-            if (temp.count != "")
+            std::cout << "Enter name of item: ";
+            std::cin >> tempname;
+            std::cout << "Enter number of items: ";
+            std::cin >> tempcount;
+            numbers = makenumber(tempname, tempcount);
+            while (findItem(names, numbers[0]))
             {
+                std::cout << "Such a name has already been found, come up with a new one\n";
+                std::cin >> tempname;
+                numbers = makenumber(tempname, tempcount);
+            }
+            temp.getnotedinf();
+            for (int i; i < tempcount; i++)
+            {
+                temp.name = numbers[i];
                 items[temp.name] = temp;
                 names.push_back(temp.name);
-                temp.clear();
             }
+            temp.clear();
             break;
         case 3:
             std::cout << "Which item will be changed: ";
@@ -256,11 +225,10 @@ void Menu(ClassroomInventory &inventory)
             if (findItem(names, choosenName))
             {
                 std::cout << "Which setting you want to change?\n";
-                std::cout << "1) Number of items\n";
-                std::cout << "2) Size\n";
-                std::cout << "3) Material\n";
-                std::cout << "4) Extra information\n";
-                std::cout << "5) Exit\n";
+                std::cout << "1) Size\n";
+                std::cout << "2) Material\n";
+                std::cout << "3) Extra information\n";
+                std::cout << "4) Exit\n";
                 std::getline(std::cin, tempchoice);
                 while (!correct(tempchoice))
                 {
@@ -271,22 +239,18 @@ void Menu(ClassroomInventory &inventory)
                 switch (choiseForCase3)
                 {
                 case 1:
-                    std::cout << "Enter new count: ";
-                    std::cin >> items[choosenName].count;
-                    break;
-                case 2:
                     std::cout << "Enter new size: ";
                     std::getline(std::cin, items[choosenName].size);
                     break;
-                case 3:
+                case 2:
                     std::cout << "Enter new material: ";
                     std::getline(std::cin, items[choosenName].material);
                     break;
-                case 4:
+                case 3:
                     std::cout << "Enter new extra information: ";
                     std::getline(std::cin, items[choosenName].extraInf);
                     break;
-                case 5:
+                case 4:
                     break;
                 }
                 break;
@@ -314,7 +278,6 @@ void Menu(ClassroomInventory &inventory)
             if (findItem(names, deletename))
             {
                 items[deletename].clear();
-                std::remove((deletename + ".txt").c_str());
                 for (auto it = names.begin(); it != names.end(); ++it)
                 {
                     if (*it == deletename)
@@ -340,14 +303,7 @@ void Menu(ClassroomInventory &inventory)
             for (int i = 0; i < names.size(); i++)
             {
                 inventory.addItems(items[names[i]]);
-                files.push_back(std::ofstream(names[i] + ".txt"));
-                items[names[i]].makenumber();
-                for (int j = 0; j < std::stoi(items[names[i]].count); j++)
-                {
-                    files[i] << "Number: " << items[names[i]].numbers[j] << " | Location: "
-                             << items[names[i]].location << "\n";
-                }
-            };
+            }
             inventory.addInToFile(file, tempfile);
             file.close();
             tempfile.close();
