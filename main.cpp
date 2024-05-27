@@ -14,7 +14,7 @@ protected:
 public:
     MATRIX(int rows, int columns);
     MATRIX(std::initializer_list<std::initializer_list<double>> matr_);
-    MATRIX(const MATRIX &MATRIX);
+    MATRIX(const MATRIX &);
     ~MATRIX(){};
 
     int    rowLen() const;
@@ -86,6 +86,10 @@ MATRIX::MATRIX(std::initializer_list<std::initializer_list<double>> matr_)
         matr.push_back(VECTOR(row));
     }
 }
+MATRIX::MATRIX(const MATRIX& Matr) 
+{
+    
+}
 int MATRIX::rowLen() const 
 {
     size_t count = 0;
@@ -114,6 +118,28 @@ VECTOR MATRIX::col(int ind) const
 VECTOR MATRIX::row(int ind) const
 {
     return VECTOR(matr[ind]);
+}
+void MATRIX::setRow(int indx, VECTOR data_)
+{
+    if (data_ == VECTOR()) 
+    {
+        std::cout << "vector is Empty" << std::endl;
+    }
+    for(std::size_t row = 0; row < rowLen(); ++row) 
+    {
+        matr[indx][row] = data_[row];
+    }
+}
+void MATRIX::setCol(int indx, VECTOR data_)
+{
+    if (data_ == VECTOR()) 
+    {
+        std::cout << "vector is Empty" << std::endl;
+    }
+    for(std::size_t row = 0; row < rowLen(); ++row) 
+    {
+        matr[row][indx] = data_[row];
+    }
 }
 void MATRIX::setItem(int row, int col, double value)
 {
@@ -146,6 +172,21 @@ MATRIX operator*(const MATRIX& Matr1, const MATRIX& Matr2)
         value = 1.0f;
     }
     return ResultMatrix;
+}
+MATRIX operator*(const double num, MATRIX& Matr)
+{
+    std::size_t count_row = Matr.rowLen();
+    std::size_t count_col = Matr.colLen();
+    for(std::size_t row = 0; row < count_row; ++row)
+    {
+        VECTOR row_ = Matr.row(row);
+        for(std::size_t i = 0; i < row_.size(); ++i)
+        {
+            row_[i] *= num;
+        }
+        Matr.setRow(row, row_);
+    }
+    return Matr;
 }
 MATRIX MATRIX::T() 
 {
