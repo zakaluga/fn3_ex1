@@ -13,7 +13,7 @@ protected:
     MASSIVE matr;
 public:
     MATRIX(int rows, int columns);
-    MATRIX(std::initializer_list<std::initializer_list<double>> matr);
+    MATRIX(std::initializer_list<std::initializer_list<double>> matr_);
     MATRIX(const MATRIX &MATRIX);
     ~MATRIX(){};
 
@@ -70,6 +70,22 @@ public:
     friend std::istream & operator>>(std::istream &, MATRIX &);
     friend std::ostream & operator<<(std::ostream &, const MATRIX &);
 };
+MATRIX::MATRIX(int rows, int columns) 
+{
+    TODO: // INPUT : 2, 3 -> Empty matrix 2 x 3, consisting of zeros
+    matr = MASSIVE(rows);
+    for(int row = 0; row < matr.size(); ++row)
+    {
+        matr[row] = VECTOR(columns);
+    }
+}
+MATRIX::MATRIX(std::initializer_list<std::initializer_list<double>> matr_)
+{
+    TODO: example: //{{0,0}, {11,5}} -> matrix 2x2
+    for(const auto& row : matr_) {
+        matr.push_back(VECTOR(row));
+    }
+}
 int MATRIX::rowLen() const 
 {
     size_t count = 0;
@@ -194,6 +210,7 @@ std::ostream & operator<<(std::ostream & os, const MATRIX& Matr)
     os << MatrixToStr;
     return os;
 }
+
 
 int main(){
     MATRIX M1(10, 2), M2(2,2);
