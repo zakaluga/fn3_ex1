@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 
-
 using MASSIVE = std::vector<std::vector<double>>;
 using VECTOR = std::vector<double>;
 
@@ -173,6 +172,27 @@ bool operator==(const MATRIX& Matr1, const MATRIX Matr2)
         return false;
     }
     return true;
+}
+std::string MATRIX::toString() const
+{
+    std::string matrixToString = std::string();
+    for(int row  = 0; row < rowLen(); ++row)
+    {
+        for(int col = 0; col < colLen(); ++col)
+        {
+            matrixToString += matr[row][col];
+            matrixToString += std::string(" ");
+        }
+        matrixToString += "\n";
+    }
+    return matrixToString;
+}
+std::ostream & operator<<(std::ostream & os, const MATRIX& Matr)
+{
+    std::string MatrixToStr = Matr.toString();
+    if (MatrixToStr.empty())  throw std::string("matrix is empty");
+    os << MatrixToStr;
+    return os;
 }
 
 int main(){
