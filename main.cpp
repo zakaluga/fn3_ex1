@@ -25,9 +25,9 @@ public:
     std::string toString() const;
     void   print();
 
-    void   setItem(int row, int columns, double value);
-    void   setRow (int rNum, VECTOR row);
-    void   setCol (int cNum, VECTOR col);
+    void   __fastcall setItem(int row, int columns, double value);
+    void   __fastcall setRow (int rNum, VECTOR row);
+    void   __fastcall setCol (int cNum, VECTOR col);
     double it(int row, int columns) const;
 
     VECTOR row(int indx) const;
@@ -85,9 +85,13 @@ MATRIX::MATRIX(std::initializer_list<std::initializer_list<double>> matr_)
         matr.push_back(VECTOR(row));
     }
 }
-MATRIX::MATRIX(const MATRIX& Matr) 
+MATRIX::MATRIX(const MATRIX& Matr) : matr(MASSIVE(Matr.rowLen()))
 {
-    
+    std::size_t rows = Matr.rowLen();
+    for(std::size_t row = 0; row < rows; ++row)
+    {
+        matr[row] = Matr.row(row);
+    }
 }
 int MATRIX::rowLen() const 
 {
@@ -118,7 +122,7 @@ VECTOR MATRIX::row(int ind) const
 {
     return VECTOR(matr[ind]);
 }
-void MATRIX::setRow(int indx, VECTOR data_)
+void __fastcall MATRIX::setRow(int indx, VECTOR data_)
 {
     if (data_ == VECTOR()) 
     {
@@ -129,7 +133,7 @@ void MATRIX::setRow(int indx, VECTOR data_)
         matr[indx][row] = data_[row];
     }
 }
-void MATRIX::setCol(int indx, VECTOR data_)
+void __fastcall MATRIX::setCol(int indx, VECTOR data_)
 {
     if (data_ == VECTOR()) 
     {
@@ -140,7 +144,7 @@ void MATRIX::setCol(int indx, VECTOR data_)
         matr[row][indx] = data_[row];
     }
 }
-void MATRIX::setItem(int row, int col, double value)
+void __fastcall MATRIX::setItem(int row, int col, double value)
 {
     if (row < 0 || col < 0)
     {
@@ -259,5 +263,8 @@ std::ostream & operator<<(std::ostream & os, const MATRIX& Matr)
 
 int main(){
     MATRIX M1(10, 2), M2(2,2);
+    TODO: // test
+    VECTOR vec = {1,4};
+    M1.setCol(1, vec);
     return 0;
 }
