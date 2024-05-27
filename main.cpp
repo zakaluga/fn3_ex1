@@ -143,7 +143,12 @@ void MATRIX::setCol(int indx, VECTOR data_)
 }
 void MATRIX::setItem(int row, int col, double value)
 {
-    matr[row][col] = value;
+    if (row < 0 || col < 0)
+    {
+        throw std::string("Negative index");
+    }
+    VECTOR::iterator iter = matr[row].begin();
+    matr[row].insert(iter + col, value);
 }
 int MATRIX::dim() const
 {
