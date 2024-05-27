@@ -144,7 +144,36 @@ MATRIX MATRIX::T()
     }
     return ResultMatrix;
 }
-
+bool operator==(const MATRIX& Matr1, const MATRIX Matr2)
+{
+    auto check_r = [&](int i) 
+    {
+        VECTOR rowM1 = Matr1.row(i);
+        VECTOR rowM2 = Matr2.row(i);
+        for(int row = 0; row < rowM1.size(); ++row) {
+            if (rowM1[row] == rowM2[row]) continue;
+            return false;
+        }
+        return true;
+    };
+    if (Matr1.colLen() == Matr2.colLen() && Matr1.rowLen() == Matr2.rowLen())
+    {
+        for(int row = 0; row < Matr1.rowLen(); ++row) 
+        {
+            if (check_r(row) == true) 
+            {
+                continue;
+            }
+            else 
+            {
+                return false;
+            }
+        }
+    } else {
+        return false;
+    }
+    return true;
+}
 
 int main(){
     MATRIX M1(10, 2), M2(2,2);
