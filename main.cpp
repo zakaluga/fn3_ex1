@@ -31,8 +31,8 @@ public:
     void   setCol (int cNum, VECTOR col);
     double it(int row, int columns) const;
 
-    VECTOR row(int indx);
-    VECTOR col(int indx);
+    VECTOR row(int indx) const;
+    VECTOR col(int indx) const;
 
     //const MASSIVE& matr() const{return data;} // для константных объектов
 
@@ -71,24 +71,23 @@ public:
     friend std::istream & operator>>(std::istream &, MATRIX &);
     friend std::ostream & operator<<(std::ostream &, const MATRIX &);
 };
-
-MATRIX operator*(const MATRIX& Matr1, const MATRIX& Matr2)
+int MATRIX::rowLen() const 
 {
-    if ((Matr1.colLen() & Matr2.rowLen()) != Matr1.rowLen()) {
-        throw std::string("Кол-во столбцов первой матрицы не равно кол-ву строк второй - умножение невозможно ");
-    }    
-    MATRIX ResultMatrix(Matr1.rowLen(), Matr2.colLen());
-    for(int i = 0; i < Matr1.colLen(); ++i)
-    {
-        for(int j = 0; j < Matr2.rowLen(); ++j)
-        {
-
-        }
+    size_t count = 0;
+    for(int row = 0; row < matr.size(); ++row) {
+        count++;
     }
-
+    return count;
 }
-
-VECTOR MATRIX::col(int ind)
+int MATRIX::colLen() const 
+{
+    size_t count = 0;
+    for(int col = 0; col < matr[0].size(); ++col) {
+        count++;
+    }
+    return count;
+}
+VECTOR MATRIX::col(int ind) const
 {
     VECTOR ResultVector(matr.size()); // размер столбца
     for(int col = 0; col < matr.size(); ++col)
@@ -97,7 +96,7 @@ VECTOR MATRIX::col(int ind)
     }
     return ResultVector;
 }
-VECTOR MATRIX::row(int ind)
+VECTOR MATRIX::row(int ind) const
 {
     return VECTOR(matr[ind]);
 }
@@ -105,8 +104,49 @@ void MATRIX::setItem(int row, int col, double value)
 {
     matr[row][col] = value;
 }
+int MATRIX::dim() const
+{
+    return rowLen() == 0 ? throw std::string("Матрица не сущ.") : rowLen() * colLen();  
+}
+MATRIX operator*(const MATRIX& Matr1, const MATRIX& Matr2)
+{
+    if ((Matr1.colLen() & Matr2.rowLen()) != Matr1.rowLen()) 
+    {
+        throw std::string("Кол-во столбцов первой матрицы не равно кол-ву строк второй - умножение невозможно ");
+    }    
+    MATRIX ResultMatrix(Matr1.rowLen(), Matr2.colLen());
+    for(int row_ = 0; row_ < Matr1.colLen(); ++row_)
+    {
+        double value = 1.0f;
+        VECTOR rw = Matr1.row(row_);
+        for(int col_ = 0; col_ < Matr2.rowLen(); ++col_)
+        {
+            VECTOR cl = Matr2.col(col_);
+            for(int i = 0; i < cl.size() ; ++i)
+            {
+                value *= rw[col_] * cl[col_];
+            }
+            ResultMatrix.setItem(row_, col_, value);
+        }
+        value = 1.0f;
+    }
+    return ResultMatrix;
+}
+MATRIX MATRIX::T() 
+{
+    MATRIX ResultMatrix(colLen(), rowLen());
+    for(int col = 0; col < colLen(); ++col)
+    {
+        for(int row = 0; row < rowLen(); ++row) 
+        {
+            ResultMatrix.setItem(row, col, matr[row][col]);
+        }
+    }
+    return ResultMatrix;
+}
+
 
 int main(){
-    std::cout << "Hello, world!" << std::endl;
+    MATRIX M1(10, 2), M2(2,2);
     return 0;
 }
