@@ -70,13 +70,12 @@ public:
     friend std::istream & operator>>(std::istream &, MATRIX &);
     friend std::ostream & operator<<(std::ostream &, const MATRIX &);
 };
-MATRIX::MATRIX(int rows, int columns) 
+MATRIX::MATRIX(int rows, int columns) : matr(MASSIVE(rows)) 
 {
     TODO: // INPUT : 2, 3 -> Empty matrix 2 x 3, consisting of zeros
-    matr = MASSIVE(rows);
     for(int row = 0; row < matr.size(); ++row)
     {
-        matr[row] = VECTOR(columns);
+        matr[row] = VECTOR(columns, 0);
     }
 }
 MATRIX::MATRIX(std::initializer_list<std::initializer_list<double>> matr_)
