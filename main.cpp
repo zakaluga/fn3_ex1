@@ -275,7 +275,7 @@ protected:
     std::size_t dim;
 public:
     enum COL_ROW {ROW = 1, COL = 2};
-    Vector_(std::size_t, COL_ROW);
+    explicit Vector_(std::size_t, COL_ROW);
     
     double lenVector() const;
     friend double operator*(const Vector_&, const Vector_&);
