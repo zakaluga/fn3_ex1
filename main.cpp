@@ -8,7 +8,6 @@ using VECTOR = std::vector<double>;
 class MATRIX {
     // Матрица организована как вектор строк(row),
     // т.е. сначала идет строка, потом обращение к колонке
-
 protected:
     MASSIVE matr;
 public:
@@ -259,7 +258,29 @@ std::ostream & operator<<(std::ostream & os, const MATRIX& Matr)
     os << MatrixToStr;
     return os;
 }
+MATRIX MATRIX::operator/(const double& num)
+{
+    MASSIVE::iterator end = matr.end();
+    for(MASSIVE::iterator iter = matr.begin(); iter != end; ++iter)
+    {
+        
+    }
+}
 
+
+class Vector_ : public MATRIX {
+protected:
+    // VECTOR vect;
+    std::size_t dim;
+public:
+    enum COL_ROW {ROW = 1, COL = 2};
+    Vector_(std::size_t, COL_ROW);
+};
+
+Vector_::Vector_(std::size_t size, COL_ROW t) : MATRIX(t == ROW ? 1 : size, t == COL ? 1 : size) 
+{
+
+}
 
 int main(){
     MATRIX M1(10, 2), M2(2,2);
