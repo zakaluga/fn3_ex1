@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cmath>
 
 using MASSIVE = std::vector<std::vector<double>>;
 using VECTOR = std::vector<double>;
@@ -275,11 +276,37 @@ protected:
 public:
     enum COL_ROW {ROW = 1, COL = 2};
     Vector_(std::size_t, COL_ROW);
+    
+    double lenVector() const;
+    friend double operator*(const Vector_&, const Vector_&);
+    int getOrientation() const;
+private:
+    COL_ROW ch;
 };
 
-Vector_::Vector_(std::size_t size, COL_ROW t) : MATRIX(t == ROW ? 1 : size, t == COL ? 1 : size) 
-{
-
+Vector_::Vector_(std::size_t size, COL_ROW t) : MATRIX(t == ROW ? 1 : size, t == COL ? 1 : size), dim(size), ch(t) {}
+double Vector_::lenVector() const {
+    double result = 0.0f;
+    if (ch == COL_ROW::ROW) {
+        VECTOR vect = MATRIX::row(1);
+        if (vect.empty()) throw std::string("vector is empty");
+        for(int i = 0; i < dim; ++i) {
+            result += vect[i] * vect[i];
+        }
+    } else if (ch == COL_ROW::COL) {
+        VECTOR vect = MATRIX::col(1);
+        if (vect.empty()) throw std::string("vector is empty");
+        for(int i = 0; i < dim; ++i) {
+            result += vect[i] * vect[i];
+        }
+    }
+    return sqrt(result);
+}
+int Vector_::getOrientation() const {
+    return ch;
+}
+double operator*(const Vector_& vec1, const Vector_& ve2) {
+    
 }
 
 int main(){
