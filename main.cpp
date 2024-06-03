@@ -12,19 +12,20 @@ class MATRIX {
 protected:
     MASSIVE matr;
 public:
-    MATRIX(int rows, int columns);
+    explicit MATRIX(int rows, int columns);
     MATRIX(std::initializer_list<std::initializer_list<double>> matr_);
     MATRIX(const MATRIX &);
     ~MATRIX(){};
 
-    int    rowLen() const;
-    int    colLen() const;
+    std::size_t     rowLen() const;
+    std::size_t    colLen() const;
     int    dim() const;
     void   resize(int newRow, int newCol, bool isSafeResize = true);
 
     std::string toString() const;
     void   print();
 
+    double getItem(int row, int col) const;
     void   __fastcall setItem(int row, int columns, double value);
     void   __fastcall setRow (int rNum, VECTOR row);
     void   __fastcall setCol (int cNum, VECTOR col);
@@ -42,7 +43,7 @@ public:
     MATRIX MMatr();              // Матрица минора для элементов
     double  ad(int row, int col);// Алгебраическое дополнение
     MATRIX adMatr();             // Матрица алгебраических дополнений
-    MATRIX inv();                // Обратная матрица
+    MATRIX inv();                // Обратная матрица    
 
     bool isE();     // Единичная ли матрица?
     bool isSqr();   // Квадратная ли матрица?
@@ -70,20 +71,19 @@ public:
     friend std::istream & operator>>(std::istream &, MATRIX &);
     friend std::ostream & operator<<(std::ostream &, const MATRIX &);
 };
-MATRIX::MATRIX(int rows, int columns) : matr(MASSIVE(rows)) 
+MATRIX::MATRIX(int rows, int columns) : matr(rows, VECTOR(columns, 0)) 
 {
-    TODO: // INPUT : 2, 3 -> Empty matrix 2 x 3, consisting of zeros
-    for(int row = 0; row < matr.size(); ++row)
-    {
-        matr[row] = VECTOR(columns, 0);
-    }
+    // INPUT : 2, 3 -> Empty matrix 2 x 3, consisting of zeros
 }
 MATRIX::MATRIX(std::initializer_list<std::initializer_list<double>> matr_)
 {
     TODO: example: //{{0,0}, {11,5}} -> matrix 2x2
-    for(const auto& row : matr_) {
-        matr.push_back(VECTOR(row));
-    }
+    matr = MASSIVE(matr_.size());
+    std::size_t count = 0;
+    for(auto & row : matr_) {
+        matr[count] = row;
+        ++count;
+    } 
 }
 MATRIX::MATRIX(const MATRIX& Matr) : matr(MASSIVE(Matr.rowLen()))
 {
@@ -93,21 +93,13 @@ MATRIX::MATRIX(const MATRIX& Matr) : matr(MASSIVE(Matr.rowLen()))
         matr[row] = Matr.row(row);
     }
 }
-int MATRIX::rowLen() const 
+std::size_t  MATRIX::rowLen() const 
 {
-    size_t count = 0;
-    for(int row = 0; row < matr.size(); ++row) {
-        count++;
-    }
-    return count;
+    return matr.size();
 }
-int MATRIX::colLen() const 
+std::size_t MATRIX::colLen() const 
 {
-    size_t count = 0;
-    for(int col = 0; col < matr[0].size(); ++col) {
-        count++;
-    }
-    return count;
+    return std::size(matr[0]);
 }
 VECTOR MATRIX::col(int ind) const
 {
@@ -152,6 +144,10 @@ void __fastcall MATRIX::setItem(int row, int col, double value)
     }
     VECTOR::iterator iter = matr[row].begin();
     matr[row].insert(iter + col, value);
+}
+double MATRIX::getItem(int row, int col) const 
+{
+    return matr[row][col];
 }
 int MATRIX::dim() const
 {
@@ -262,10 +258,119 @@ std::ostream & operator<<(std::ostream & os, const MATRIX& Matr)
 MATRIX MATRIX::operator/(const double& num)
 {
     MASSIVE::iterator end = matr.end();
-    for(MASSIVE::iterator iter = matr.begin(); iter != end; ++iter)
-    {
-        
+    for(int row_ = 0; row_ < rowLen(); ++row_) {
+        for(int col_ = 0; col_ < colLen(); ++col_) {
+            matr[row_][col_] = matr[row_][col_] / num;
+        }
     }
+    return *this;
+}
+MATRIX MATRIX::M(int row, int col) 
+{
+    std::size_t count_row = rowLen();
+    std::size_t count_col = colLen();
+    MATRIX minor (count_row-1, count_col-1);
+    for(int row_ = 0, m_row_ = 0; row_ < count_row; row_++) {
+        if(row_ == row) continue;
+        for(int col_ = 0, m_col_ = 0; col_ < count_col; col_++) {
+            if (col_ == col) continue;
+            minor.setItem(m_row_, m_col_, getItem(row_, col_));
+            ++m_col_;
+        }
+        ++m_row_;
+    }
+    return minor;
+}
+double MATRIX::det() 
+{
+    double det_ = 1.0f;
+    if(rowLen() != colLen()) throw "Невозможно вычислить";
+    if(colLen() == 1) return matr[0][0];
+    if(colLen() == 2) return matr[0][0] * matr[1][1] - matr[0][1] * matr[1][0];
+
+    for(std::size_t row = 0; row < rowLen(); row++) {
+        double maxElement = fabs(matr[row][row]);
+        std::size_t maxRow = row;
+        for(std::size_t col = row + 1; col < rowLen(); col++) {
+            if (fabs(matr[col][row]) > maxElement) {
+                maxElement = fabs(matr[col][row]);
+                maxRow = col;
+            }
+        }
+        if (row != maxRow) {
+            std::swap(matr[row], matr[maxRow]);
+            det_ *= -1;
+        }
+        if (matr[row][row] == 0) return 0;
+        
+        for(std::size_t col = row + 1; col < rowLen(); col++) {
+            double res = matr[col][row] / matr[row][row];
+            for (std::size_t j = row; j < rowLen(); j++) {
+                matr[col][j] -= res * matr[row][j];
+            }
+        }
+    }
+    for(std::size_t row = 0; row < rowLen(); row++) {
+        det_ *= matr[row][row];
+    }
+    
+    return det_;
+}
+void MATRIX::print() 
+{
+    std::size_t row = rowLen(), col = colLen();
+    for(const auto & row : matr) {
+        for(const auto & col : row) {
+            std::cout << col << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+MATRIX MATRIX::inv() 
+{
+    if (rowLen() != colLen()) throw std::invalid_argument("матрица не квадратная");
+    MATRIX extended_matrix (rowLen(), colLen() * 2);
+    for (int row_ = 0; row_ < rowLen(); ++row_) {
+        for (int col = 0; col < rowLen(); ++col) {
+            extended_matrix.setItem(row_, col, getItem(row_, col));
+        }
+        extended_matrix.setItem(row_, row_ + rowLen(), 1.0);
+    }
+    for (int i = 0; i < rowLen(); ++i) {
+        double maxElement = std::fabs(extended_matrix.getItem(i, i));
+        int maxRow = i;
+        for (int k = i + 1; k < rowLen(); ++k) {
+            if (std::fabs(extended_matrix.getItem(k, i)) > maxElement) {
+                maxElement = std::fabs(extended_matrix.getItem(k, i));
+                maxRow = k;
+            }
+        }
+        for (int k = 0; k < 2 * rowLen(); ++k) {
+            std::swap(extended_matrix.matr[i][k], extended_matrix.matr[maxRow][k]);
+        }
+        
+        double diagElement = extended_matrix.getItem(i, i);
+        if (diagElement == 0) throw std::runtime_error("Матрица вырожденная и не имеет обратной");
+        for (int k = 0; k < 2 * rowLen(); ++k) {
+            extended_matrix.matr[i][k] /= diagElement;
+        }
+
+        for (int k = 0; k < rowLen(); ++k) {
+            if (k != i) {
+                double coeff = extended_matrix.getItem(k, i);
+                for (int j = 0; j < 2 * rowLen(); ++j) {
+                    extended_matrix.matr[k][j] -= coeff * extended_matrix.matr[i][j];
+                }
+            }
+        }    
+    }
+    MATRIX inverse(rowLen(), rowLen());
+    for (int i = 0; i < rowLen(); ++i) {
+        for (int j = 0; j < rowLen(); ++j) {
+            inverse.setItem(i, j, extended_matrix.getItem(i, j + rowLen()));
+        }
+    }
+    return inverse;
 }
 
 
@@ -283,7 +388,6 @@ public:
 private:
     COL_ROW ch;
 };
-
 Vector_::Vector_(std::size_t size, COL_ROW t) : MATRIX(t == ROW ? 1 : size, t == COL ? 1 : size), dim(size), ch(t) {}
 double Vector_::lenVector() const {
     double result = 0.0f;
@@ -305,14 +409,26 @@ double Vector_::lenVector() const {
 int Vector_::getOrientation() const {
     return ch;
 }
-double operator*(const Vector_& vec1, const Vector_& ve2) {
-    
-}
 
 int main(){
-    MATRIX M1(10, 2), M2(2,2);
-    TODO: // test
-    VECTOR vec = {1,4};
-    M1.setCol(1, vec);
+    MATRIX M1 = MATRIX { 
+        {1,2,3}, 
+        {2,2,4}, 
+        {9,9,9} 
+    }; 
+
+    MATRIX INVERSE = M1.inv();
+    INVERSE.print();
+    // тест вычисления минора
+    MATRIX min = M1.M(0,0);
+    MATRIX min2 = M1.M(1,1);
+    M1.print();
+    std::cout << std::endl;
+
+    min.print();
+    std::cout << std::endl;
+    min2.print();
+
+    std::cout << M1.det();
     return 0;
 }
