@@ -1,0 +1,122 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+
+\title{Документация к программе MATRIX}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{tcolorbox}[colframe=blue!75!black,colback=blue!10!white]
+\section*{Описание}
+Данный документ описывает классы и методы, используемые в программе для работы с матрицами.
+\end{tcolorbox}
+
+\section*{Класс MATRIX}
+Класс предназначен для работы с матрицами. Включает методы для создания, модификации и выполнения различных операций с матрицами.
+
+\subsection*{Методы}
+\begin{description}
+    \item[\textbf{MATRIX(int rows, int columns)}] \hfill \\
+    Конструктор, создающий матрицу заданного размера.
+    
+    \item[\textbf{MATRIX(std::initializer_list<std::initializer_list<double>> matr\_)}] \hfill \\
+    Конструктор, создающий матрицу из списка инициализации.
+    
+    \item[\textbf{MATRIX(const MATRIX \&)}] \hfill \\
+    Конструктор копирования.
+    
+    \item[\textbf{\textasciitilde MATRIX()}] \hfill \\
+    Деструктор.
+    
+    \item[\textbf{std::size_t rowLen() const}] \hfill \\
+    Возвращает количество строк в матрице.
+    
+    \item[\textbf{std::size_t colLen() const}] \hfill \\
+    Возвращает количество столбцов в матрице.
+    
+    \item[\textbf{int dim() const}] \hfill \\
+    Возвращает размерность матрицы.
+    
+    \item[\textbf{void resize(int newRow, int newCol, bool isSafeResize = true)}] \hfill \\
+    Изменяет размер матрицы.
+    
+    \item[\textbf{std::string toString() const}] \hfill \\
+    Возвращает строковое представление матрицы.
+    
+    \item[\textbf{void print()}] \hfill \\
+    Печатает матрицу.
+    
+    \item[\textbf{double getItem(int row, int col) const}] \hfill \\
+    Возвращает элемент матрицы по заданным индексам.
+    
+    \item[\textbf{void \_\_fastcall setItem(int row, int columns, double value)}] \hfill \\
+    Устанавливает значение элемента матрицы по заданным индексам.
+    
+    \item[\textbf{void \_\_fastcall setRow(int rNum, VECTOR row)}] \hfill \\
+    Устанавливает строку матрицы.
+    
+    \item[\textbf{void \_\_fastcall setCol(int cNum, VECTOR col)}] \hfill \\
+    Устанавливает столбец матрицы.
+    
+    \item[\textbf{double it(int row, int columns) const}] \hfill \\
+    Возвращает элемент матрицы (синоним getItem).
+    
+    \item[\textbf{VECTOR row(int indx) const}] \hfill \\
+    Возвращает строку матрицы.
+    
+    \item[\textbf{VECTOR col(int indx) const}] \hfill \\
+    Возвращает столбец матрицы.
+    
+    \item[\textbf{double det()}] \hfill \\
+    Вычисляет определитель матрицы.
+    
+    \item[\textbf{MATRIX T()}] \hfill \\
+    Возвращает транспонированную матрицу.
+    
+    \item[\textbf{MATRIX M(int row, int col)}] \hfill \\
+    Возвращает минор матрицы для элемента по его индексу.
+    
+    \item[\textbf{double Minor(int row, int col)}] \hfill \\
+    Возвращает определитель минора для элемента.
+    
+    \item[\textbf{MATRIX MMatr()}] \hfill \\
+    Возвращает матрицу миноров.
+    
+    \item[\textbf{double ad(int row, int col)}] \hfill \\
+    Возвращает алгебраическое дополнение.
+    
+    \item[\textbf{MATRIX adMatr()}] \hfill \\
+    Возвращает матрицу алгебраических дополнений.
+    
+    \item[\textbf{MATRIX inv()}] \hfill \\
+    Возвращает обратную матрицу.
+    
+    \item[\textbf{bool isE()}] \hfill \\
+    Проверяет, является ли матрица единичной.
+    
+    \item[\textbf{bool isSqr()}] \hfill \\
+    Проверяет, является ли матрица квадратной.
+    
+    \item[\textbf{static MATRIX solve(MATRIX A, MATRIX B)}] \hfill \\
+    Решает матричное уравнение \(A \times X = B\).
+    
+    \item[\textbf{double\& operator()(int row, int col)}] \hfill \\
+    Перегруженный оператор доступа к элементу матрицы.
+    
+    \item[\textbf{const double\& operator()(int row, int col) const}] \hfill \\
+    Перегруженный оператор доступа к элементу матрицы (константный объект).
+    
+    \item[\textbf{MATRIX\& operator=(const MATRIX \&MAT)}] \hfill \\
+    Перегруженный оператор присваивания.
+\end{description}
+
+\end{document}

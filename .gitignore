@@ -4,3 +4,8 @@ main.exe
 zadanie1.exe
 a.exe
 build
+Documentation.aux
+Documentation.fls
+Documentation.log
+Documentation.fdb_latexmk
+Documentation.synctex.gz

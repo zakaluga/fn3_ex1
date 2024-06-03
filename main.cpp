@@ -372,7 +372,23 @@ MATRIX MATRIX::inv()
     }
     return inverse;
 }
-
+double MATRIX::Minor(int row, int col) 
+{
+    // Определитель минора
+    double determenant = 0.0f; 
+    MATRIX minor = M(row, col);
+    auto detMinor = [&](MATRIX M) -> double {
+        std::size_t rows = M.rowLen();
+        if(rows != colLen()) throw std::invalid_argument("");
+        if (rows == 1) return M.getItem(0,0);
+        if (rows == 2) return M.getItem(0,0) * M.getItem(0,1) - M.getItem(1,0) * M.getItem(0,1);
+        for (std::size_t row = 0; row < rows; row++) {
+            determenant += (row % 2 == 0 ? 1 : -1) * M.M(0, row).det();
+        }
+        return determenant;
+    };
+    return detMinor(minor);
+}
 
 class Vector_ : public MATRIX {
 protected:
@@ -429,6 +445,8 @@ int main(){
     std::cout << std::endl;
     min2.print();
 
-    std::cout << M1.det();
+    std::cout << M1.det() << std::endl;
+
+    std::cout << M1.Minor(0,0);
     return 0;
 }
