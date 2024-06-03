@@ -7,8 +7,8 @@
 \usepackage{fancyhdr}
 \usepackage{tcolorbox}
 
-\title{Документация к программе MATRIX}
-\author{}
+\title{Приложение к программе для работы с матрицами}
+\author{Нечев И.И.}
 \date{\today}
 
 \begin{document}
@@ -28,20 +28,12 @@
     \item[\textbf{MATRIX(int rows, int columns)}] \hfill \\
     Конструктор, создающий матрицу заданного размера.
     
-    \item[\textbf{MATRIX(std::initializer_list<std::initializer_list<double>> matr\_)}] \hfill \\
-    Конструктор, создающий матрицу из списка инициализации.
-    
     \item[\textbf{MATRIX(const MATRIX \&)}] \hfill \\
     Конструктор копирования.
     
     \item[\textbf{\textasciitilde MATRIX()}] \hfill \\
     Деструктор.
     
-    \item[\textbf{std::size_t rowLen() const}] \hfill \\
-    Возвращает количество строк в матрице.
-    
-    \item[\textbf{std::size_t colLen() const}] \hfill \\
-    Возвращает количество столбцов в матрице.
     
     \item[\textbf{int dim() const}] \hfill \\
     Возвращает размерность матрицы.
