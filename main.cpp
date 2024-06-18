@@ -13,7 +13,6 @@ private:
 public:
     Item(const string& name, const string& location, const string& serialNumber, const string& linkedItem) 
      : name(name), location(location), serialNumber(serialNumber), linkedItem(linkedItem){
-
     }
  
     virtual ~Item() {}
