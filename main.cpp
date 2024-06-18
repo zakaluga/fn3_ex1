@@ -11,11 +11,9 @@ private:
     string linkedItem;
  
 public:
-    Item(const string& name, const string& location, const string& serialNumber, const string& linkedItem) {
-        this->name = name;
-        this->location = location;
-        this->serialNumber = serialNumber;
-        this->linkedItem = linkedItem;
+    Item(const string& name, const string& location, const string& serialNumber, const string& linkedItem) 
+     : name(name), location(location), serialNumber(serialNumber), linkedItem(linkedItem){
+
     }
  
     virtual ~Item() {}
@@ -28,7 +26,7 @@ public:
     }
  
     //getters
-    string get_name()
+   string get_name()
     {
         return name;
     }
@@ -423,27 +421,28 @@ public:
  
     int get_size_desks()
     {
-        return this->desks.size();
+        return desks.size();
     }
  
     int get_size_chairs()
     {
-        return this->chairs.size();
+        return chairs.size();
     }
  
     int get_size_comps()
     {
-        return this->computers.size();
+        return computers.size();
     }
  
     int get_size_mons()
     {
-        return this->monitors.size();
+        return monitors.size();
     }
  
     int get_size_mItems()
     {
-        return this->miscItems.size();
+        
+        return miscItems.size();
     }
  
     // Удаление учебных предметов
@@ -553,6 +552,7 @@ void addItem(int choice_of_item, Inventory& inv)
     {
     case 1: {
         string numdrawers;
+
         cout << "Введите количество ящиков в столе:";
         cin >> numdrawers;
         Desk new_obj = Desk(name, location, serialNumber, linkedItem, numdrawers);
@@ -615,7 +615,8 @@ void modifyItemMenu(Inventory& inv, int choice_of_item)
     case 1: {
         inv.displayDesks();
         cout << "\nВведите индекс предмета, который хотите изменить: ";
-        cin >> index; index -= 1;
+        cin >> index; 
+        index -= 1;
         if (index <= inv.get_size_desks())
         {
             cout << "\nИзменяемый объект: \n";
