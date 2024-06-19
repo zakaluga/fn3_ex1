@@ -54,7 +54,7 @@ public:
         {
             if (row >= rows || columns >= cols || row < 0 || columns < 0)
             {
-                throw std::out_of_range("Index out of range");
+                throw std::out_of_range("Index not in range");
             }
             return data[row][columns];
         }
@@ -250,7 +250,7 @@ public:
         {
             if (Matr1.cols != Matr2.rows)
             {
-                throw std::invalid_argument("Matrix dimensions must agree for multiplication");
+                throw std::invalid_argument("The sizes don't match");
             }
             MATRIX result(Matr1.rows, Matr2.cols);
             for (int i = 0; i < Matr1.rows; ++i)
@@ -325,7 +325,7 @@ double ad(int row, int col) { return ((row + col) % 2 == 0 ? Minor(row, col) : -
     double det()
     {
         if (!isSqr())
-            throw std::runtime_error("Матрица не является квадратной.");
+            throw std::runtime_error("The matrix is not square");
 
         if (rows == 1)
             return data[0][0];
@@ -403,7 +403,7 @@ double ad(int row, int col) { return ((row + col) % 2 == 0 ? Minor(row, col) : -
             double determinant = det();
             if (determinant == 0)
             {
-                throw std::logic_error("Matrix is not invertible");
+                throw std::logic_error("Can not invert matrix");
             }
             return adMatr() * (1.0 / determinant);
         }
