@@ -1,0 +1,297 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <tuple>
+
+
+class Inventory
+{
+public:
+    Inventory(unsigned id, std::string& name, unsigned count, std::tuple<int, int, int> size, std::string& details, std::string& dataType, bool isUsable = false)
+        : id(id), name(name), count(count), isUsable(isUsable), size(size), details(details), dataType(dataType)
+    {}
+    operator std::string() const
+    {
+        char buff[100];
+        snprintf(buff, sizeof(buff), "Id: %u, name: %s, count: %u, size h:%d, size w:%d, size l:%d, details: %s", id, name.data(), count, std::get<0>(size), std::get<1>(size), std::get<2>(size), details.data());
+        std::string result = buff;
+        return result;
+    }
+    std::string dataType;
+    std::string details;
+    std::string name;
+    unsigned count;
+    unsigned id;
+    bool isUsable;
+    std::tuple<int, int, int> size;
+};
+
+class Table : public Inventory
+{
+public:
+    Table(unsigned id, std::string& name, unsigned count, std::tuple<int, int, int> size, std::string& details, std::string& dataType, bool isUsable = false)
+        : Inventory(id, name, count, size, details, dataType, isUsable)
+    {}
+    
+};
+
+class Board : public Inventory
+{
+public:
+    Board(unsigned id, std::string& name, unsigned count, std::tuple<int, int, int> size, std::string& details, std::string& dataType, bool isUsable = false)
+        : Inventory(id, name, count, size, details, dataType, isUsable)
+    {}
+};
+
+class Computer : public Inventory
+{
+public:
+    Computer(unsigned id, std::string& name, unsigned count, std::tuple<int, int, int> size, std::string& details, std::string& dataType, bool isUsable = false)
+        : Inventory(id, name, count, size, details, dataType, isUsable)
+    {}
+};
+
+
+
+int main()
+{
+    setlocale(LC_ALL, "ru");
+
+    std::vector<Inventory> regItems{};
+    std::vector<std::string> unregItems{};
+    while (true)
+    {
+        std::cout << "1. Просмотреть" << std::endl; // англ или рус
+        std::cout << "2. Добавить" << std::endl; // зарег или незарег
+        std::cout << "3. Изменить" << std::endl;
+        std::cout << "4. Удалить" << std::endl;
+        std::cout << "5. Выход" << std::endl;
+        std::cout << "Выберите действие: ";
+        char choice; std::cin >> choice;
+        int type;
+        switch (choice)
+        {
+        case '1':
+            if (regItems.size() > 0)
+            {
+                std::cout << "\nЗарегистрированные предметы: " << std::endl;
+                for (Inventory item : regItems)
+                {
+                    std::cout << std::string(item) << std::endl;
+                }
+            }
+            if (unregItems.size() > 0)
+            {
+                std::cout << "\nНезарегистрированные предметы: " << std::endl;
+                for (std::string item : unregItems)
+                {
+                    std::cout << item << std::endl;
+                }
+            }
+            std::cout << '\n';
+            break;
+        case '2':
+            std::cout << "1. Зарегистрированные предметы\n2. Незарегистрированные предметы" << std::endl;
+            std::cout << "Введите тип добавляемого предмета: "; std::cin >> type;
+            if (type == 1) {
+                try //для того чтобы не возникало конфликтов
+                {
+                    int classType;
+                    std::cout << "1. Стол\n2. Доска\n3. Компьютер" << std::endl;
+                    std::cout << "Выберите предмет: "; std::cin >> classType;
+                    unsigned id = regItems.size() + 1;
+                    std::string name{};
+                    std::cout << "Введите название добавляемого предмета: "; std::cin >> name;
+                    unsigned count;
+                    std::cout << "Введите кол-во предметов: "; std::cin >> count;
+                    int x, y, z;
+                    std::cout << "Введите три размера предмета: "; std::cin >> x >> y >> z;
+                    std::tuple<int, int, int> size{ x,y,z };
+                    std::string details{};
+                    std::cout << "Введите дополнительные детали: "; std::cin >> details;
+
+
+                    std::string tableType = "table";
+                    std::string boardType = "board";
+                    std::string computerType = "computer";
+
+                    Table t{ id, name, count, size, details, tableType };
+                    Board b{ id, name, count, size, details, boardType };
+                    Computer c{ id, name, count, size, details, computerType };
+
+                    switch (classType)
+                    {
+                    case 1:
+                        regItems.push_back(t);
+                        std::cout << "Предмет успешно добавлен!\n\n";
+                        break;
+                    case 2:
+                        regItems.push_back(b);
+                        std::cout << "Предмет успешно добавлен!\n\n";
+                        break;
+                    case 3:
+                        regItems.push_back(c);
+                        std::cout << "Предмет успешно добавлен!\n\n";
+                        break;
+                    default:
+                        std::cout << "Нет такого варианта ответа. Попробуйте еще раз!" << std::endl;
+                        break;
+                    }
+
+                }
+                catch (const std::exception&)
+                {
+                    std::cout << "Ошибка при создании объекта! Введите данные еще раз!" << std::endl;
+                }
+            }
+            else if (type == 2)
+            {
+                std::string definition;
+                std::cout << "Введите описание предмета: "; std::cin >> definition;
+                unregItems.push_back(definition);
+            }
+            else
+            {
+                std::cout << "Нет такого варианта предмета!\n";
+            }
+            break;
+        case '3':
+            std::cout << "1. Зарегистрированные предметы\n2. Незарегистрированные предметы" << std::endl;
+            std::cout << "Введите тип изменяемого предмета: "; std::cin >> type;
+
+            if (type == 1) {
+                try
+                {
+                    int itemNumber;
+                    std::cout << "Введите номер изменяемого объекта: "; std::cin >> itemNumber;
+                    Inventory& item = regItems.at(itemNumber - 1);
+
+                    if (regItems.empty())
+                    {
+                        std::cout << "Нет предметов!\n";
+                    }
+                    else if (itemNumber <= regItems.size())
+                    {
+                        char prmtr;
+
+
+                        std::cout << "1. Название\n";
+                        std::string name{};
+                        std::cout << "2. Кол-во объектов\n";
+                        unsigned count;
+                        std::cout << "3. Размеры объекта\n";
+                        int x, y, z;
+                        std::tuple<int, int, int> size{ x,y,z };
+                        std::cout << "4. Детали\n";
+                        std::string details{};
+                        std::cout << "Выберите параметр для изменения: ";
+                        std::cin >> prmtr;
+
+                        switch (prmtr)
+                        {
+                        case '1':
+                            std::cout << "Введите новое имя: ";
+                            std::cin >> name;
+                            item.name = name;
+                            std::cout << "Имя успешно изменено\n";
+                            break;
+                        case '2':
+                            std::cout << "Введите новое кол-во: ";
+                            std::cin >> count;
+                            item.count = count;
+                            std::cout << "Кол-во успешно изменено\n";
+                            break;
+                        case '3':
+                            std::cout << "Введите новый размер: ";
+                            
+                            std::cin >> x >> y >> z;
+                            item.size = size;
+                            std::cout << "Размер успешно изменен\n";
+                            break;
+                        case '4':
+                            std::cout << "Введите новые детали: ";
+                            std::cin >> details;
+                            item.details = details;
+                            std::cout << "Детали успешно изменены\n";
+                            break;
+                        default:
+                            std::cout << "Нет такого параметра!\n";
+                            break;
+                        }
+                    }
+                }
+                catch (const std::exception&)
+                {
+                    std::cout << "Ошибка при изменении объекта! Введите значения заново";
+                }
+            }
+            else if (type == 2) {
+                try
+                {
+                    int itemNumber;
+                    std::cout << "Введите номер изменяемого объекта: "; std::cin >> itemNumber;
+
+                    std::string& item = unregItems.at(itemNumber - 1);
+                    std::string definition{};
+                    std::cout << "Введите новое описание объекта: "; std::cin >> definition;
+                    item = definition;
+
+                    std::cout << "Предмет успешно изменен\n\n";
+
+                }
+                catch (const std::exception&)
+                {
+                    std::cout << "Ошибка при изменении объекта! Введите значения заново";
+                }
+            }
+            else {
+                std::cout << "Нет такого варианта ответа!";
+            }
+            break;
+        case '4':
+            int number;
+            std::cout << "1. Зарегистрированные предметы\n2. Незарегистрированные предметы" << std::endl;
+            std::cout << "Введите тип удаляемого предмета: "; std::cin >> type;
+
+            if (type == 1)
+            {
+                std::cout << "Введите номер: "; std::cin >> number;
+                for (auto it = regItems.begin(); it != regItems.end(); it++)
+                {
+                    if ((*it).id == number)
+                    {
+                        regItems.erase(it);
+                        break;
+                    }
+                }
+            }
+            else if (type == 2)
+            {
+                std::cout << "Введите номер: "; std::cin >> number;
+                int i = 1;
+                for (std::vector<std::string>::iterator it = unregItems.begin(); it != unregItems.end(); it++, i++)
+                {
+                    if (i == number)
+                    {
+                        unregItems.erase(it);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                std::cout << "Нет такого варианта ответа\n";
+            }
+            break;
+        case '5':
+            std::cout << "Использование завершено!\n";
+            exit(0);
+            break;
+        default:
+            std::cout << "Нет такого варианта ответа, попробуйте ещё раз!" << std::endl;
+            continue;
+            break;
+        }
+    }
+}
