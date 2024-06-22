@@ -1,0 +1,472 @@
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <iomanip>
+using namespace std;
+
+class Matrix
+{
+private:
+	int rows;
+	int cols;
+	double** matrix;
+public:
+	// Конструктор
+	Matrix(const int rows, const int cols) {
+		this->rows = rows;
+		this->cols = cols;
+		matrix = new double* [rows];
+		for (size_t i = 0; i < rows; ++i) {
+			matrix[i] = new double[cols];
+		}
+	}
+
+	// Конструктор копирования
+	Matrix(const Matrix& other) {
+		rows = other.rows;
+		cols = other.cols;
+		matrix = new double* [rows];
+		for (size_t i = 0; i < rows; ++i) {
+			matrix[i] = new double[cols];
+			for (size_t j = 0; j < cols; ++j) {
+				matrix[i][j] = other.matrix[i][j];
+			}
+		}
+	}
+
+	// Оператор присваивания
+	Matrix& operator=(const Matrix& other) {
+		if (this == &other) return *this; // самоприсваивание
+
+		// Освобождаем старую память
+		for (size_t i = 0; i < rows; ++i) {
+			delete[] matrix[i];
+		}
+		delete[] matrix;
+
+		// Копируем новые данные
+		rows = other.rows;
+		cols = other.cols;
+		matrix = new double* [rows];
+		for (size_t i = 0; i < rows; ++i) {
+			matrix[i] = new double[cols];
+			for (size_t j = 0; j < cols; ++j) {
+				matrix[i][j] = other.matrix[i][j];
+			}
+		}
+
+		return *this;
+	}
+
+	// Деструктор
+	~Matrix() {
+		for (size_t i = 0; i < rows; ++i) {
+			delete[] matrix[i];
+		}
+		delete[] matrix;
+	}
+	void fillWithZeros() {
+		for (size_t i = 0; i < rows; ++i) {
+			for (size_t j = 0; j < cols; ++j) {
+				matrix[i][j] = 0.0;
+			}
+		}
+	}
+	Matrix(double** matrix, int rows, int cols) : Matrix(rows, cols) {
+
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				this->matrix[i][j] = matrix[i][j];
+			}
+		}
+	}
+	double* getItem(int row, int col) const
+	{
+		if (rows == 0 || cols == 0) {
+			std::cout << "Matrix doesnt exist!";
+			exit(-1);
+		}
+		return &matrix[row][col];
+	}
+	int getRows() const
+	{
+		return rows;
+	}
+	int getCols() const
+	{
+		return cols;
+	}
+	int getItemsCount() const
+	{
+		return rows * cols;
+	}
+	void writeColumn(int columnIndex, int* newColumn, int size) {
+		if ((columnIndex <= -1 || columnIndex >= cols) && size > cols) {
+			std::cout << "Index is out of range!";
+			exit(-1);
+		}
+
+		for (int i = 0; i < cols; ++i) {
+			matrix[i][columnIndex] = newColumn[i];
+		}
+	}
+	double* getColumn(int columnIndex) {
+		if (columnIndex <= -1 || columnIndex >= cols) {
+			std::cout << "Index is out of range!";
+			exit(-1);
+		}
+		double* arrayCols = new double[cols];
+		for (int i = 0; i < cols; ++i) {
+			arrayCols[i] = matrix[i][columnIndex];
+		}
+		return arrayCols;
+	}
+	double* getRow(int rowIndex) {
+		if (rowIndex <= -1 || rowIndex >= rows) {
+			std::cout << "Index is out of range!";
+			exit(-1);
+		}
+		double* arrayRows = new double[rows];
+		for (int i = 0; i < rows; ++i) {
+			arrayRows[i] = matrix[rowIndex][i];
+		}
+		return arrayRows;
+	}
+	void writeRow(int rowIndex, int* newRow, int size) {
+		if ((rowIndex <= -1 || rowIndex >= rows) && size > rows) {
+			std::cout << "Index is out of range!";
+			exit(-1);
+		}
+
+		for (int i = 0; i < rows; ++i) {
+			matrix[rowIndex][i] = newRow[i];
+		}
+	}
+	/*void changeSize(int newRows, int newCols) {
+		Matrix newArray = Matrix{newRows, newCols};
+		if (getItemsCount() == newArray.getItemsCount()) {
+			for (int i = 0; i < rows; ++i) {
+				for (int j = 0; j < cols; ++j) {
+
+				}
+			}
+		}
+	}*/
+	double** getMatrix() {
+		return matrix;
+	}
+	std::string textRepres() {
+		std::string textArray = "";
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				textArray.append(std::to_string(matrix[i][j]) + " ");
+			}
+			textArray.append("\n");
+		}
+		return textArray;
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Matrix& mt) {
+		for (int i = 0; i < mt.rows; ++i) {
+			for (int j = 0; j < mt.cols; ++j) {
+				os << mt.matrix[i][j] << '\t';
+			}
+			os << std::endl;
+		}
+		return os;
+	}
+
+	Matrix& operator=(Matrix& other) {
+		auto rows = other.getRows();
+		auto cols = other.getCols();
+		this->rows = rows;
+		this->cols = cols;
+		matrix = new double* [rows];
+		for (size_t i = 0; i < rows; ++i) {
+			matrix[i] = new double[cols];
+		}
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				this->matrix[i][j] = *other.getItem(i, j);
+			}
+		}
+	}
+	bool matrixQuad() {
+		return cols == rows;
+	}
+	bool matrixEdin() {
+		if (!matrixQuad()) {
+			return false;
+		}
+		for (int i = 0; i < rows; ++i) {
+			if (matrix[i][i] != 1) {
+				return false;
+			}
+		}
+		return true;
+	}
+	int operator()(int row, int col) const {
+		return matrix[row][col];
+	}
+	double& operator()(int row, int col) {
+		return matrix[row][col];
+	}
+	Matrix operator+(Matrix other) {
+		if (other.getCols() != cols || other.getRows() != rows) {
+			std::cerr << "Martix shoud be the same size!";
+			exit(-1);
+		}
+		Matrix newMatrix = *this;
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				newMatrix(i, j) += other(i, j);
+			}
+		}
+		return newMatrix;
+	}
+	Matrix operator-(Matrix other) {
+		if (other.getCols() != cols || other.getRows() != rows) {
+			std::cerr << "Martix shoud be the same size!";
+			exit(-1);
+		}
+		Matrix newMatrix = *this;
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				newMatrix(i, j) -= other(i, j);
+			}
+		}
+		return newMatrix;
+	}
+	Matrix operator*(double skalyar) {
+		Matrix newMatrix = *this;
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				newMatrix.matrix[i][j] *= skalyar;
+			}
+		}
+		return newMatrix;
+	}
+	Matrix operator/(int skalyar) {
+		Matrix newMatrix = *this;
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				newMatrix(i, j) /= skalyar;
+			}
+		}
+		return newMatrix;
+	}
+	int determinant() const {
+		if (rows != cols) {
+			throw std::invalid_argument("Матрица должна быть квадратной для вычисления детерминанта.");
+		}
+
+		if (rows == 1) {
+			return matrix[0][0];
+		}
+
+		if (rows == 2) {
+			return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+		}
+
+		int det = 0;
+		for (int j = 0; j < cols; ++j) {
+			Matrix minor = minorMatrix(0, j);
+			det += (j % 2 == 0 ? 1 : -1) * matrix[0][j] * minor.determinant();
+		}
+
+		return det;
+	}
+	bool operator==(Matrix other) {
+		return determinant() == other.determinant();
+	}
+	Matrix transpose() const {
+		double** transposedMatrix = new double* [cols];
+		for (int i = 0; i < cols; ++i) {
+			transposedMatrix[i] = new double[rows];
+			for (int j = 0; j < rows; ++j) {
+				transposedMatrix[i][j] = matrix[j][i];
+			}
+		}
+		return Matrix(transposedMatrix, cols, rows);
+	}
+	Matrix minorMatrix(int row, int col) const {
+		int minorRows = rows - 1;
+		int minorCols = cols - 1;
+		double** minor = new double* [minorRows];
+		for (int i = 0; i < minorRows; ++i) {
+			minor[i] = new double[minorCols];
+		}
+
+		int minorRow = 0, minorCol = 0;
+		for (int i = 0; i < rows; ++i) {
+			if (i == row) continue;
+			minorCol = 0;
+			for (int j = 0; j < cols; ++j) {
+				if (j == col) continue;
+				minor[minorRow][minorCol] = matrix[i][j];
+				minorCol++;
+			}
+			minorRow++;
+		}
+
+		return Matrix(minor, minorRows, minorCols);
+	}
+	int minorDeterminant(int row, int col) {
+		Matrix minor = minorMatrix(row, col);
+		return determinant();
+	}
+	int algebraicComplement(int row, int col) const {
+		Matrix minor = minorMatrix(row, col);
+		int minorDet = minor.determinant();
+		return std::pow(-1, row + col) * minorDet;
+	}
+	Matrix algebraicComplementsMatrix() const {
+		double** algebraicComplements = new double* [rows];
+		for (int i = 0; i < rows; ++i) {
+			algebraicComplements[i] = new double[cols];
+			for (int j = 0; j < cols; ++j) {
+				Matrix minor = minorMatrix(i, j);
+				int minorDet = minor.determinant();
+				algebraicComplements[i][j] = std::pow(-1, i + j) * minorDet;
+			}
+		}
+		return Matrix(algebraicComplements, rows, cols);
+	}
+
+	Matrix getInverse() const {
+		if (this->determinant() == 0) {
+			throw std::invalid_argument("Matrix is singular, inverse does not exist");
+		}
+		double** adj = new double* [rows];
+		for (int i = 0; i < rows; ++i) {
+			adj[i] = new double[cols];
+		}
+
+
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				adj[i][j] = ((i + j) % 2 == 0 ? 1 : -1) * minorMatrix(i, j).determinant();
+			}
+		}
+
+		auto mt = Matrix(adj, rows, cols);
+		return mt.transpose() * (1.0 / determinant());
+
+	}
+
+	void minorElements() {//Ошибка
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				// Получаем минор для текущего элемента
+				Matrix minor = minorMatrix(i, j);
+
+				// Находим определитель минора
+				int minorDet = minor.determinant();
+
+				// Умножаем исходный элемент на определитель минора
+				matrix[i][j] *= minorDet;
+			}
+		}
+	}
+	Matrix multiply(const Matrix& other) const {
+		if (this->cols != other.rows) {
+			throw std::invalid_argument("Количество столбцов первой матрицы должно быть равно количеству строк второй матрицы.");
+		}
+
+		// Создаем новую матрицу для хранения результата
+		Matrix result(this->rows, other.cols);
+
+		// Инициализируем элементы результирующей матрицы нулями
+		for (int i = 0; i < result.rows; ++i) {
+			for (int j = 0; j < result.cols; ++j) {
+				result.matrix[i][j] = 0;
+			}
+		}
+
+		// Выполняем умножение матриц
+		for (int i = 0; i < this->rows; ++i) {
+			for (int j = 0; j < other.cols; ++j) {
+				for (int k = 0; k < this->cols; ++k) {
+					result.matrix[i][j] += this->matrix[i][k] * other.matrix[k][j];
+				}
+			}
+		}
+
+		return result;
+	}
+	Matrix solveEquation(Matrix A, Matrix B) {
+		Matrix inverseA = A.getInverse();
+		return inverseA.multiply(B);
+	}
+};
+
+
+int main()
+{
+	setlocale(LC_ALL, "ru");
+
+	double** matrixA = new double* [3] {
+		new double[3] {4, 0, 0},
+			new double[3] {0, 4, 0},
+			new double[3] {0, 0, 4}
+		};
+
+	double** matrixB = new double* [3] {
+		new double[3] {2, 4, 5},
+			new double[3] {3, -1, 2},
+			new double[3] {-4, 1, 1}
+		};
+
+	double** matrixC = new double* [3] {
+		new double[3] {1, 1, 1},
+			new double[3] {7, 1, 6},
+			new double[3] {2, 9, 3}
+		};
+
+	
+	Matrix B(matrixB, 3, 3);
+	
+	Matrix A(matrixA, 3, 3);
+	Matrix C(matrixC, 3, 3);
+	cout << "Матрица А" << endl;
+	cout << A;
+	cout << "Матрица B" << endl;
+	cout << B;
+	cout << "Матрица C" << endl;
+	cout << C;
+
+	cout << "Кол-во колонок А" << endl;
+	cout << A.getCols() << endl;
+	cout << "Кол-во строк А" << endl;
+	cout << A.getRows() << endl;
+	cout << "Размерность А" << endl;
+	cout << A.getItemsCount() << endl;
+	Matrix D = A + C;
+	cout << "Matrix A + C" << endl;
+	cout << D << endl;
+	cout << "Matrix A - C" << endl;
+	Matrix K = A - C;
+	cout << K << endl;
+	cout << "Matrix A is a quad? ";
+	cout << A.matrixQuad() << endl;
+	//Matrix L = A * 3;
+	//cout << L.textRepres() << endl;
+	cout << "Matrix A determinant: ";
+	int detA = A.determinant();
+	cout << detA << endl;
+	Matrix minorC = C.minorMatrix(1, 2);
+	cout << "Minor for matrix C(1,2)" << endl;
+	cout << minorC << endl;
+	cout << "Inverse matrix A" << endl;
+	Matrix invA = B.getInverse();
+	cout << invA << endl;
+	cout << "Transponce matrix C" << endl;
+	Matrix tran = B.transpose();
+	cout << tran << endl;
+	cout << "Solve X:" << endl;
+	Matrix solveX = invA.multiply(C);
+	cout << solveX << endl;
+	cout << "Solve Y:" << endl;
+	Matrix solveY = A.solveEquation(A, C);
+	cout << solveY << endl;
+}
